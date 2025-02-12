@@ -2,20 +2,161 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --current-3: 15, 83%, 45%;
+    --current-2: 356, 70%, 40%, 0.9;
+    --current-1: 0, 0%, 96%;
+    --current: 356, 70%, 40%, 0.9;
+
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --secondary-background:0, 0%, 96%;
+    --secondary-text:0, 0%, 29%;
+    --svg-fill-color: white;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 263.82 38.42% 97.45%;
+
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --current-3: 15, 83%, 45%;
+    --current-2: 356, 70%, 40%, 0.9;
+    --current-1:  0 0% 3.9%;
+    --current: 356, 70%, 40%, 0.9;
+
+    --background: 0 0% 9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --secondary-text:0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground:0 0% 3.9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-background:0, 0%, 96%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+::-webkit-scrollbar {
+  width: 0.3rem;
+  height: 0.3rem;
+}
+
+[data-theme="dark"] {
+  --svg-fill-color: white;
+}
+
+[data-theme="light"] {
+  --svg-fill-color: black;
+}
+::-webkit-scrollbar-thumb {
+  background-color: none; /* Example color */
+  border-radius: 1px;
+  border: none; /* Adjust border and colors */
+}
+
+select{
+  appearance: none;
+  line-height:28px;
+  text-wrap: nowrap;
+}
+::-webkit-scrollbar-track {
+  background: none; /* Track color */
+  border-radius: 2px;
+  box-shadow: inset 0 0 0.1rem grey;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+.text-gradient_indigo-purple {
+  background: linear-gradient(90deg, #6366f1 0%, rgb(168 85 247 / 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.leaflet-container {
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+ 
+}
+
+
+.gm-fullscreen-control{
+  display: none;
+}
+
+.gm-svpc{
+  display: none;
+}
+
+.gm-style-mtc-bbw{
+  display: none;
+}
+.gmnoprint{
+  display: none;
+
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+      display: none;
+  }
+  .no-scrollbar {
+      -ms-overflow-style: none; 
+      scrollbar-width: none; 
+  }
 }

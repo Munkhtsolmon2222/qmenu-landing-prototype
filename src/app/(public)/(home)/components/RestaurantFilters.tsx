@@ -38,7 +38,6 @@ function RestaurantFilters(props: Props) {
 
   const { categories } = searchParams;
   // const both = categories?.concat(filters);
-
   const activeFilters = categories?.filter((f): f is string => f !== null);
 
   return (
@@ -79,5 +78,4 @@ function RestaurantFilters(props: Props) {
     </div>
   );
 }
-
 export default RestaurantFilters;

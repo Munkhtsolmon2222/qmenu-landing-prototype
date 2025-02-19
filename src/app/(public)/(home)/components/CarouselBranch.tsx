@@ -8,6 +8,7 @@ import { ORDERS_ARRAY, TagType } from "@/lib/config/constant";
 import { useFilterContext } from "@/lib/providers/filter.context";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "next/navigation";
+
 interface Props {
   branches;
   branch?: string | null;
@@ -144,5 +145,4 @@ function CarouselBranch(props: Props) {
     </div>
   );
 }
-
 export default CarouselBranch;

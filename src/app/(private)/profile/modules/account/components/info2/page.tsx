@@ -6,9 +6,9 @@ import { useState } from "react";
 import { Icons } from "@/components/shared/icons";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import ChangeEmail from "./components/ChangeEmail";
-import ChangePassword from "./components/ChangePassword";
-import ChangePhone from "./components/ChangePhone";
+import ChangeEmail from "@/app/(private)/profile/modules/account/components/info2/components/ChangeEmail";
+import ChangePassword from "@/app/(private)/profile/modules/account/components/info2/components/ChangePassword";
+import ChangePhone from "@/app/(private)/profile/modules/account/components/info2/components/ChangePhone";
 interface Props {
   customer?: Customer;
 }

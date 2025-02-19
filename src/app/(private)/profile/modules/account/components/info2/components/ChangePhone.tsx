@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Dialog,
   DialogContent,
@@ -33,12 +34,9 @@ const FormSchema = z.object({
     .min(8, {
       message: "Утасны дугаараа оруулна уу.",
     })
-    .refine(
-      (phone) => {
-        return /^\d{8}$/.test(phone);
-      },
-      { message: "Утасны дугаар буруу байна" }
-    ),
+    .refine((phone) => /^\d{8}$/.test(phone), {
+      message: "Утасны дугаар буруу байна",
+    }),
   password: z.string({ required_error: "Нууц үгээ оруулна уу." }).min(2, {
     message: "Нууц үгээ оруулна уу.",
   }),
@@ -50,12 +48,13 @@ const ChangePhone: React.FC<Props> = ({ onClose: onCloseModal, visible }) => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const [step, setStep] = useState<number>(0);
   const [sessionId, setSessionId] = useState<string>();
-  const [time, setTime] = useState(() => {
-    const sessionTime =
-      typeof window !== undefined && localStorage
-        ? localStorage?.getItem("sessionTime")
-        : "";
-    return sessionTime ? Number(sessionTime) : 0;
+
+  const [time, setTime] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const sessionTime = localStorage.getItem("sessionTime");
+      return sessionTime ? Number(sessionTime) : 0;
+    }
+    return 0;
   });
 
   const [getSession, { loading }] = useMutation(GET_SESSION);
@@ -95,39 +94,37 @@ const ChangePhone: React.FC<Props> = ({ onClose: onCloseModal, visible }) => {
   }, [visible]);
 
   const onSubmit = (e: FormSchema) => {
-    const firstSession =
-      typeof window !== undefined && localStorage
-        ? localStorage?.getItem("sessionPhone")
-        : "";
-    if (step < Components.length - 1) {
-      if (firstSession !== e.phone) {
-        getSession({
-          variables: { ...e, type: SessionType.C },
-          onCompleted: (data) => {
-            setSessionId(data.getSession);
-            setStep(step + 1);
-            setTime(59);
-            if (typeof window !== "undefined" && localStorage) {
-              localStorage?.setItem("sessionPhone", phone);
-            }
-          },
-        });
-      } else {
-        setStep(step + 1);
+    if (typeof window !== "undefined") {
+      const firstSession = localStorage.getItem("sessionPhone") || "";
+      if (step < Components.length - 1) {
+        if (firstSession !== e.phone) {
+          getSession({
+            variables: { ...e, type: SessionType.C },
+            onCompleted: (data) => {
+              setSessionId(data.getSession);
+              setStep(step + 1);
+              setTime(59);
+              localStorage.setItem("sessionPhone", e.phone);
+            },
+          });
+        } else {
+          setStep(step + 1);
+        }
       }
     }
   };
 
   useEffect(() => {
-    if (typeof window !== undefined && localStorage) {
-      localStorage?.setItem("sessionTime", time.toString());
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sessionTime", time.toString());
     }
+
     let interval: ReturnType<typeof setInterval> | undefined;
-    if (time > 0)
+    if (time > 0) {
       interval = setInterval(() => setTime((seconds) => seconds - 1), 1000);
-    else if (time === 0) {
-      if (typeof window !== undefined && localStorage) {
-        localStorage?.removeItem("sessionPhone");
+    } else if (time === 0) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("sessionPhone");
       }
       clearInterval(interval);
     }
@@ -248,17 +245,14 @@ const ChangePhone: React.FC<Props> = ({ onClose: onCloseModal, visible }) => {
     <Dialog open={visible} onOpenChange={onClose}>
       <DialogContent className="h-full sm:h-max rounded-none px-0 sm:px-4">
         <CloseButton onClick={onClose} />
-        <DialogHeader className="px-4 sm:px-0">
-          <DialogTitle className="text-start">Утасны дугаар солих</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>Утасны дугаар солих</DialogTitle>
         </DialogHeader>
-        <div className="relative">
-          <div className="flex flex-col gap-5 p-4">{Components[step]}</div>
-        </div>
-        <DialogFooter className="px-3 flex">
-          {ComponentFooters[step]}
-        </DialogFooter>
+        <div className="p-4">{Components[step]}</div>
+        <DialogFooter>{ComponentFooters[step]}</DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
+
 export default ChangePhone;

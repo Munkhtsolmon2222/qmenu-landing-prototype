@@ -1,3 +1,4 @@
+"use client";
 import BranchTypeCard from "@/components/cards/BranchTypeCard";
 import HomeFilter from "@/components/shared/header/components/home/components/filter";
 import { Icons } from "@/components/shared/icons";
@@ -5,10 +6,8 @@ import { useTag } from "@/hooks/useTags";
 import { reviews } from "@/lib/config/categories";
 import { ORDERS_ARRAY, TagType } from "@/lib/config/constant";
 import { useFilterContext } from "@/lib/providers/filter.context";
-// import { Translate } from "react-auto-translate";
-
 import { useTranslation } from "react-i18next";
-
+import { useSearchParams } from "next/navigation";
 interface Props {
   branches;
   branch?: string | null;
@@ -16,7 +15,7 @@ interface Props {
 }
 function CarouselBranch(props: Props) {
   const { branches, plain } = props;
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
 
   const { addFilter, removeFilter } = useFilterContext();

@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { LOGIN_OAUTH } from "@/graphql/mutation";

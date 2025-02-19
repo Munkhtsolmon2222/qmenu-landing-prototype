@@ -1,3 +1,4 @@
+"use client";
 import { QMENU_URL } from "@/lib/config/constant";
 import { PAGE_NOT_FOUND } from "@/lib/config/page";
 import { useEffect } from "react";

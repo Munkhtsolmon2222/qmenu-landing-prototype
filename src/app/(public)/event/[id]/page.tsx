@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import Loader from "@/components/shared/loader";
 import { Separator } from "@/components/ui/separator";
@@ -5,14 +6,12 @@ import { GET_EVENT } from "@/graphql/query";
 import { IEvent, priceType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@apollo/client";
-// import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
-import { ImageList } from "./components";
+import ImageList from "../components/ImageList";
 import { Button } from "@/components/ui/button";
 import { PAGE_RESTAURANT } from "@/lib/config/page";
-import "./styles.css";
 import { useTranslation } from "react-i18next";
 import { useParams } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -20,7 +19,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 const Edit: React.FC = () => {
   const { id } = useParams();
-  const [_, set] = useSearchParams();
+  const setSearchParams = useSearchParams()[1];
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
@@ -31,7 +30,7 @@ const Edit: React.FC = () => {
     fetchPolicy: "network-only",
     variables: { id, times: true },
     onCompleted({ getEvent }) {
-      set({ event: getEvent.name }, { replace: true });
+      setSearchParams({ event: getEvent.name }, { replace: true });
     },
   });
 

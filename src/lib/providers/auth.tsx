@@ -39,15 +39,20 @@ export const getPayload = (): Payload | null => {
 };
 
 export const setAccessToken = (token: string) => {
-  localStorage.setItem("token", token);
+  localStorage?.setItem("token", token);
 };
 
 const clientDefault = "u2x4z6C9EbHeKgNkRnTqWtYv2y5A7DaFcHfMhPkSpUrWuZw3z6";
 
+// const getAccessToken = (): string => {
+//   return localStorage.getItem("token") ?? clientDefault;
+// };
 const getAccessToken = (): string => {
-  return localStorage.getItem("token") ?? clientDefault;
+  if (typeof window !== "undefined") {
+    return localStorage?.getItem("token") ?? clientDefault;
+  }
+  return clientDefault;
 };
-
 export const isValidToken = () => {
   const token = getAccessToken();
   if (!token) return false;
@@ -92,7 +97,7 @@ export const AuthProvider = ({ children }) => {
     const item = PartnerObjType[payload?.type ?? ("" as SystemType)];
 
     if (!item) {
-      localStorage.removeItem("token");
+      localStorage?.removeItem("token");
       setAuthenticated(false);
     }
 

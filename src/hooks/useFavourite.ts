@@ -13,7 +13,7 @@ export const useFavourite = (
   toast: boolean = true
 ) => {
   const [liked, setLiked] = useState<boolean>(false);
-  const token = localStorage.getItem("token");
+  const token = localStorage?.getItem("token");
 
   const {
     loading,

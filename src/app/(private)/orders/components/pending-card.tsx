@@ -1,3 +1,4 @@
+"use client";
 import { Order } from "@/lib/types";
 import BaseCard from "./base-card";
 import { Button } from "@/components/ui/button";

@@ -1,3 +1,4 @@
+"use client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import useMediaQuery from "@/hooks/use-media-query";

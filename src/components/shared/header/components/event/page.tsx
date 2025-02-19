@@ -1,12 +1,13 @@
 "use client";
 import { Icons } from "@/components/shared/icons";
 import { cn } from "@/lib/utils";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 export const Event = () => {
-  const [get] = useSearchParams();
+  const get = useSearchParams();
   const router = useRouter();
-  const pathname = useLocation().pathname;
+  const pathname = usePathname();
   const name = get.get("filters") || get.get("event") || "Хүлээн авалт";
 
   const isDetail = pathname.split("/").length > 2;

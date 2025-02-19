@@ -11,9 +11,9 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ItemWrapper } from "../../ItemWrapper";
+import ItemWrapper from "../../ItemWrapper";
 import { Icons } from "@/components/shared/icons";
-import { CloseButton } from "./CloseButton";
+import CloseButton from "./CloseButton";
 import { useEffect, useState } from "react";
 import { PhoneOTP } from "./PhoneOTP";
 import { GET_SESSION, UPDATE_PHONE } from "@/graphql/mutation";
@@ -46,15 +46,15 @@ const FormSchema = z.object({
 
 type FormSchema = z.infer<typeof FormSchema>;
 
-export const ChangePhone: React.FC<Props> = ({
-  onClose: onCloseModal,
-  visible,
-}) => {
+const ChangePhone: React.FC<Props> = ({ onClose: onCloseModal, visible }) => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const [step, setStep] = useState<number>(0);
   const [sessionId, setSessionId] = useState<string>();
   const [time, setTime] = useState(() => {
-    const sessionTime = localStorage.getItem("sessionTime");
+    const sessionTime =
+      typeof window !== undefined && localStorage
+        ? localStorage?.getItem("sessionTime")
+        : "";
     return sessionTime ? Number(sessionTime) : 0;
   });
 
@@ -95,7 +95,10 @@ export const ChangePhone: React.FC<Props> = ({
   }, [visible]);
 
   const onSubmit = (e: FormSchema) => {
-    const firstSession = localStorage.getItem("sessionPhone");
+    const firstSession =
+      typeof window !== undefined && localStorage
+        ? localStorage?.getItem("sessionPhone")
+        : "";
     if (step < Components.length - 1) {
       if (firstSession !== e.phone) {
         getSession({
@@ -104,7 +107,9 @@ export const ChangePhone: React.FC<Props> = ({
             setSessionId(data.getSession);
             setStep(step + 1);
             setTime(59);
-            localStorage.setItem("sessionPhone", phone);
+            if (typeof window !== "undefined" && localStorage) {
+              localStorage?.setItem("sessionPhone", phone);
+            }
           },
         });
       } else {
@@ -114,13 +119,16 @@ export const ChangePhone: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    localStorage.setItem("sessionTime", time.toString());
-
+    if (typeof window !== undefined && localStorage) {
+      localStorage?.setItem("sessionTime", time.toString());
+    }
     let interval: ReturnType<typeof setInterval> | undefined;
     if (time > 0)
       interval = setInterval(() => setTime((seconds) => seconds - 1), 1000);
     else if (time === 0) {
-      localStorage.removeItem("sessionPhone");
+      if (typeof window !== undefined && localStorage) {
+        localStorage?.removeItem("sessionPhone");
+      }
       clearInterval(interval);
     }
 
@@ -149,7 +157,7 @@ export const ChangePhone: React.FC<Props> = ({
           ? "bg-primary"
           : "bg-primary-foreground hover:bg-primary-foreground"
       }`}
-      onClick={handleSubmit(onSubmit)} // ✅ Fix here
+      onClick={handleSubmit(onSubmit)}
     >
       <span className={`${isValid ? "text-white" : "text-primary"}`}>
         Үргэлжлүүлэх
@@ -253,3 +261,4 @@ export const ChangePhone: React.FC<Props> = ({
     </Dialog>
   );
 };
+export default ChangePhone;

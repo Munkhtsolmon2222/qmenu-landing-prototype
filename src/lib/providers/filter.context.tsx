@@ -11,6 +11,7 @@ import { useLazyQuery } from "@apollo/client";
 import { FILTER_BRANCHES, FILTER_RESULT } from "@/graphql/query";
 import { CENTER } from "../config/constant";
 import { PAGE_EVENT } from "../config/page";
+
 export const branchListLimit = 40;
 
 const skipRoutes: string[] = [PAGE_EVENT];
@@ -62,29 +63,38 @@ export const useFilterContext = () => {
 
 export const FilterProvider = ({ children }) => {
   const [open, setOpen] = useState(false);
-  const [filtered, setFiltered] = useState<string[] | null>(null);
-  const [activeFilters, setActiveFilters] = useState<string[] | null>(null);
-  const [state, setState] = useState<BranchDetail[]>([]);
+  const [filtered] = useState<string[] | null>(null);
+  const [activeFilters] = useState<string[] | null>(null);
+  const branchDetailState = useState<BranchDetail[]>([]);
+  const setState = branchDetailState[1];
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
 
-  const position = JSON.parse(
-    localStorage?.getItem("position") ??
-      `{"latitude":${CENTER.lat},"longitude":${CENTER.long},"timestamp":1725855945238}`
-  );
-  console.log(setFiltered, setActiveFilters, state);
+  const position =
+    typeof window !== "undefined"
+      ? JSON.parse(
+          localStorage?.getItem("position") ??
+            JSON.stringify({
+              latitude: CENTER.lat,
+              longitude: CENTER.long,
+              timestamp: 1725855945238,
+            })
+        )
+      : {
+          latitude: CENTER.lat,
+          longitude: CENTER.long,
+          timestamp: 1725855945238,
+        };
+
   const [
     filterResult,
-    {
-      loading: loadResult,
-      data: { filterResult: results } = { filterResult: { branches: [] } },
-    },
+    { data: { filterResult: results } = { filterResult: { branches: [] } } },
   ] = useLazyQuery<{
     filterResult: { branches: BranchDetail[] };
   }>(FILTER_RESULT, {
     fetchPolicy: "cache-and-network",
   });
-  console.log(loadResult);
+
   const [
     filterBranches,
     { loading, data: { filterBranches: branche } = { filterBranches: [] } },
@@ -95,6 +105,7 @@ export const FilterProvider = ({ children }) => {
   });
 
   const getSearchParams = () => {
+    if (typeof window === "undefined") return {};
     const params = new URLSearchParams(window.location.search);
     return {
       star: params.get("star"),
@@ -106,59 +117,38 @@ export const FilterProvider = ({ children }) => {
     };
   };
 
-  const setSearchParams = (
-    newParams: Partial<ReturnType<typeof getSearchParams>>,
-    replace: boolean = false
-  ) => {
-    const params = new URLSearchParams(window.location.search);
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (value === null) {
-        params.delete(key);
-      } else if (Array.isArray(value)) {
-        params.set(key, value.join(","));
+  const setSearchParams = useCallback(
+    (
+      newParams: Partial<ReturnType<typeof getSearchParams>>,
+      replace: boolean = false
+    ) => {
+      const params = new URLSearchParams(window.location.search);
+      Object.entries(newParams).forEach(([key, value]) => {
+        if (value === null) {
+          params.delete(key);
+        } else if (Array.isArray(value)) {
+          params.set(key, value.join(","));
+        } else {
+          params.set(key, value);
+        }
+      });
+
+      if (replace) {
+        window.history.replaceState(
+          {},
+          "",
+          `${window.location.pathname}?${params}`
+        );
       } else {
-        params.set(key, value);
+        window.history.pushState(
+          {},
+          "",
+          `${window.location.pathname}?${params}`
+        );
       }
-    });
-
-    if (replace) {
-      window.history.replaceState(
-        {},
-        "",
-        `${window.location.pathname}?${params}`
-      );
-    } else {
-      window.history.pushState({}, "", `${window.location.pathname}?${params}`);
-    }
-  };
-
-  const addFilter = (
-    key: string,
-    value: string | null,
-    limit?: number,
-    location?: Location
-  ) => {
-    if (key === "branch") {
-      setSearchParams({ categories: null }, true);
-    }
-    if (key === "categories") {
-      setSearchParams({ branch: null }, true);
-    }
-    if (["star", "type", "food", "branch"].includes(key)) {
-      setSearchParams({ [key]: value });
-    }
-    // else if (key === "categories") {
-    //   setSearchParams({ categories: value }, true);
-    // }
-    else if (value !== null) {
-      const currentParams = getSearchParams();
-      const newFilters = [
-        ...new Set([...(currentParams.categories || []), value]),
-      ];
-      setSearchParams({ categories: newFilters }, true);
-    }
-    applyFilters({ replace: true, limit, ...(location ?? {}) });
-  };
+    },
+    []
+  );
 
   const removeFilter = (key: string, location?: Location) => {
     if (key === "all") {
@@ -256,8 +246,37 @@ export const FilterProvider = ({ children }) => {
       offset,
       filterBranches,
       filterResult,
+      setState,
     ]
   );
+
+  const addFilter = useCallback(
+    (
+      key: string,
+      value: string | null,
+      limit?: number,
+      location?: Location
+    ) => {
+      if (key === "branch") {
+        setSearchParams({ categories: null }, true);
+      }
+      if (key === "categories") {
+        setSearchParams({ branch: null }, true);
+      }
+      if (["star", "type", "food", "branch"].includes(key)) {
+        setSearchParams({ [key]: value });
+      } else if (key === "categories" && value !== null) {
+        const currentParams = getSearchParams();
+        const newFilters = [
+          ...new Set([...(currentParams.categories || []), value]),
+        ];
+        setSearchParams({ categories: newFilters }, true);
+      }
+      applyFilters({ replace: true, limit, ...(location ?? {}) });
+    },
+    [applyFilters, setSearchParams]
+  );
+
   useEffect(() => {
     if (!skipRoutes.includes(window.location.pathname))
       applyFilters({ replace: true });

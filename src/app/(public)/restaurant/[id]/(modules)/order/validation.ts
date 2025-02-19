@@ -1,3 +1,4 @@
+"use client";
 import { SessionType } from "@/lib/config/constant";
 import { z } from "zod";
 

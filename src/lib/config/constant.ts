@@ -24,7 +24,7 @@ import Korea from "@/assets/images/category-tags/korea.png";
 import China from "@/assets/images/category-tags/china.png";
 import SeaFood from "@/assets/images/category-tags/seaFood.png";
 import Skewer from "@/assets/images/category-tags/skewer.png";
-import { icons } from "lucide-react";
+
 export const CENTER = {
   lat: 47.918822,
   long: 106.917561,
@@ -174,13 +174,13 @@ export const BRANCH_LIST_TYPE = new Map<BranchListType, string>([
 ]);
 
 export const BRANCH_TYPES = new Map<BranchType, string>([
-  [BranchType.Restaurant, "Ресторан"],
-  [BranchType.Pub, "Паб"],
-  [BranchType.Club, "Клуб"],
-  [BranchType.CoffeeShop, "Кофе шоп"],
-  [BranchType.Karaoke, "Караоке"],
-  [BranchType.Hotel, "Зочид буудал"],
-  [BranchType.Resort, "Амралтын газар"],
+  [BranchType.Restaurant, ""],
+  [BranchType.Pub, ""],
+  [BranchType.Club, ""],
+  [BranchType.CoffeeShop, ""],
+  [BranchType.Karaoke, ""],
+  [BranchType.Hotel, ""],
+  [BranchType.Resort, ""],
 ]);
 
 export const ORDER_STATES = new Map<OrderState, string>([

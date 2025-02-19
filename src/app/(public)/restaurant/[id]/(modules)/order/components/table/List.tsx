@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import { TabsContent } from "@/components/ui/tabs";
 import { OrderType, SectionInfo, Table } from "@/lib/types";

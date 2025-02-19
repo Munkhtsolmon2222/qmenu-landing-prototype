@@ -42,7 +42,9 @@ const MenuTab: React.FC<Props> = ({ participant }) => {
     if (configTheme) {
       isList = JSON.parse(configTheme.value ?? "{}")?.menuTheme === "list";
     } else {
-      isList = (width ?? window.innerWidth) > 1280;
+      isList =
+        (width ?? (typeof window !== "undefined" ? window.innerWidth : 0)) >
+        1280;
     }
 
     const configImage = participant?.configs?.find(

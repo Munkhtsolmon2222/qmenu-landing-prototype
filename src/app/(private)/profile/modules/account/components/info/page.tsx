@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
-import { ItemWrapper } from "../ItemWrapper";
+import ItemWrapper from "../ItemWrapper";
 import { useEffect, useState } from "react";
 import female from "@/assets/images/profile/female.svg";
 import male from "@/assets/images/profile/male.svg";
@@ -51,7 +51,7 @@ const FormSchema = z.object({
   }),
 });
 
-export const Info: React.FC<Props> = ({ customer }) => {
+const Info: React.FC<Props> = ({ customer }) => {
   const { mainTheme } = useTheme();
   const [changed, setChanged] = useState<boolean>(false);
 
@@ -213,3 +213,4 @@ export const Info: React.FC<Props> = ({ customer }) => {
     </>
   );
 };
+export default Info;

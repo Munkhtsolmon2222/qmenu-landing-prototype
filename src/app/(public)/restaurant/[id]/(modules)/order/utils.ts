@@ -200,7 +200,7 @@ export const generateTimeArray = (timeTable?: Timetable) => {
 };
 
 export const sessionTime = () => {
-  const sessionStart = localStorage.getItem("sessionStart");
+  const sessionStart = localStorage?.getItem("sessionStart");
   if (!sessionStart) return 0;
   const start = +sessionStart;
   const current = new Date().getTime();

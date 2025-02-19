@@ -6,7 +6,7 @@ type Props = {
   onClick?: () => void;
 };
 
-export const CloseButton: React.FC<Props> = ({ className, onClick }) => {
+const CloseButton: React.FC<Props> = ({ className, onClick }) => {
   return (
     <div
       onClick={() => onClick?.()}
@@ -19,3 +19,4 @@ export const CloseButton: React.FC<Props> = ({ className, onClick }) => {
     </div>
   );
 };
+export default CloseButton;

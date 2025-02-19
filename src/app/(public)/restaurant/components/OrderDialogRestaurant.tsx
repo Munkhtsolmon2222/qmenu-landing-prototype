@@ -1,3 +1,4 @@
+"use client";
 import OrderDialog from "@/components/modal/OrderDialog/page";
 import { PAGE_ORDER, PAGE_PAYMENT, PAGE_RESTAURANT } from "@/lib/config/page";
 import { useRestaurantStore } from "@/lib/providers/restaurant";

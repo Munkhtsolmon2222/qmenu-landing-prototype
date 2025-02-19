@@ -1,3 +1,4 @@
+"use client";
 import { CarouselEventCard } from "@/components/cards/EventCard/CarouselEventCard";
 import Empty from "@/components/shared/empty";
 import { Button } from "@/components/ui/button";

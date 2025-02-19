@@ -1,3 +1,4 @@
+"use client";
 import CategoryCard from "@/components/cards/CategoryCard";
 import { useTag } from "@/hooks/useTags";
 import { TagType } from "@/lib/config/constant";

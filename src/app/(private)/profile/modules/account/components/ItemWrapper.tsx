@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { FieldError } from "react-hook-form";
-export const ItemWrapper: React.FC<
+const ItemWrapper: React.FC<
   React.PropsWithChildren<{
     title?: string;
     className?: string;
@@ -22,3 +22,4 @@ export const ItemWrapper: React.FC<
     </div>
   );
 };
+export default ItemWrapper;

@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { ItemWrapper } from "../../components/ItemWrapper";
-import { Info } from "../../components/table/page";
+import ItemWrapper from "../../components/ItemWrapper";
+import Info from "../../components/table";
 import { List } from "../../components/table/List";
 import { Plan } from "../../components/table/Plan";
 import { Icons } from "@/components/shared/icons";
@@ -124,7 +124,7 @@ const Index: React.FC = () => {
 
     const orderInput: OrderInput = {
       ...input,
-      tables,
+      // tables,
       items,
     };
 

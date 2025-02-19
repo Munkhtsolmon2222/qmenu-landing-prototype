@@ -1,7 +1,7 @@
 "use client";
 import { z } from "zod";
-import { ItemWrapper } from "../Login/components/ItemWrapper";
-import { OTP } from "../Login/components/OTP";
+import ItemWrapper from "@/app/(public)/login/components/ItemWrapper";
+import { OTP } from "@/app/(public)/login/components/OTP";
 import { useContext, useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_SESSION } from "@/graphql/mutation";
@@ -17,8 +17,8 @@ import { SignUpReturnValue } from "@/lib/types";
 import { AuthContext } from "@/lib/providers/auth";
 import { GET_CURRENT_CUSTOMER } from "@/graphql/query/customer";
 import { useTranslation } from "react-i18next";
-
 import { useRouter } from "next/navigation";
+
 const FormSchema = z.object({
   phone: z
     .string({
@@ -38,9 +38,13 @@ const ForgotPassword = () => {
   const [step, setStep] = useState<number>(0);
   const [sessionId, setSessionId] = useState<string>();
   const { t } = useTranslation();
+
   const [time, setTime] = useState(() => {
-    const sessionTime = localStorage.getItem("sessionTime");
-    return sessionTime ? Number(sessionTime) : 0;
+    if (typeof window !== "undefined") {
+      const sessionTime = localStorage?.getItem("sessionTime");
+      return sessionTime ? Number(sessionTime) : 0;
+    }
+    return 0;
   });
 
   const [getMe, { loading: userLoading }] = useLazyQuery(GET_CURRENT_CUSTOMER, {
@@ -82,32 +86,38 @@ const ForgotPassword = () => {
   };
 
   const onSubmit = ({ phone }: FormSchema) => {
-    const sessionPhone = localStorage.getItem("sessionPhone");
-    if (step < Steps.length - 1) {
-      if (phone !== sessionPhone) {
-        getSession({
-          variables: { phone, type: SessionType.P },
-          onCompleted: (data) => {
-            setSessionId(data.getSession);
-            setStep(step + 1);
-            setTime(59);
-            localStorage.setItem("sessionPhone", phone);
-          },
-        });
-      } else {
-        setStep(step + 1);
+    if (typeof window !== "undefined") {
+      const sessionPhone = localStorage?.getItem("sessionPhone");
+      if (step < Steps.length - 1) {
+        if (phone !== sessionPhone) {
+          getSession({
+            variables: { phone, type: SessionType.P },
+            onCompleted: (data) => {
+              setSessionId(data.getSession);
+              setStep(step + 1);
+              setTime(59);
+              localStorage?.setItem("sessionPhone", phone);
+            },
+          });
+        } else {
+          setStep(step + 1);
+        }
       }
     }
   };
 
   useEffect(() => {
-    localStorage.setItem("sessionTime", time.toString());
+    if (typeof window !== "undefined") {
+      localStorage?.setItem("sessionTime", time.toString());
+    }
 
     let interval: ReturnType<typeof setInterval> | undefined;
-    if (time > 0)
+    if (time > 0) {
       interval = setInterval(() => setTime((seconds) => seconds - 1), 1000);
-    else if (time === 0) {
-      localStorage.removeItem("sessionPhone");
+    } else if (time === 0) {
+      if (typeof window !== "undefined") {
+        localStorage?.removeItem("sessionPhone");
+      }
       clearInterval(interval);
     }
 
@@ -115,8 +125,10 @@ const ForgotPassword = () => {
   }, [time]);
 
   const onSuccessVerify = () => {
-    localStorage.removeItem("sessionTime");
-    localStorage.removeItem("sessionPhone");
+    if (typeof window !== "undefined") {
+      localStorage?.removeItem("sessionTime");
+      localStorage?.removeItem("sessionPhone");
+    }
     setStep(step + 1);
   };
 

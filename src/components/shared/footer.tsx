@@ -5,8 +5,10 @@ import { useTranslation } from "react-i18next";
 import logo from "@/assets/images/logo.svg";
 import { Icons } from "../shared/icons";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 export function Footer() {
-  const home = window.location.pathname === "/";
+  const pathname = usePathname();
+  const home = pathname === "/";
   const { restaurant } = useHeader();
   const { t } = useTranslation();
   if (!home) return <></>;
@@ -18,7 +20,7 @@ export function Footer() {
         id="footer"
         className={`justify-center w-full flex  items-center  rounded-t-xl bg-current-1 px-14 mt-14   `}
       >
-        <div className="max-w-[90rem] w-full flex-col flex md:flex-row justify-between md:gap-8 md:items-end py-8  gap-1   border-b-[2px] border-gray-600 ">
+        <div className="max-w-[90rem] w-full flex-col flex md:flex-row justify-between md:gap-8 md:items-end py-8  gap-1   border-b-[2px] border-gray-600  ">
           <div className="md:w-3/5 w-full flex md:flex-row flex-col md:items-end gap-4 justify-between">
             <div className=" flex-row md:items-end items-end justify-center sm:justify-start md:gap-4 font-medium">
               <Image width={150} height={350} src={logo} alt="logo" />

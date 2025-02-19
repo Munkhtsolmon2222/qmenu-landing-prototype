@@ -2,9 +2,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, OverlayView } from "@react-google-maps/api";
 import { Icons } from "@/components/shared/icons";
-
-import defaultImage from "@/assets/images/restaurant.png";
 import { Center } from "../page";
+import defaultImage from "@/assets/images/restaurant.png";
 import { BranchDetail } from "@/lib/types";
 import Loader from "@/components/shared/loader";
 import { useRouter } from "next/navigation";

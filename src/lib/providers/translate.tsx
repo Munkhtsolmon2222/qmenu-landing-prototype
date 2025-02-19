@@ -1,7 +1,6 @@
 "use client";
-
+import { Translator } from "@/components/translator";
 import React, { createContext, useContext } from "react";
-import { Translator as OriginalTranslator } from "react-auto-translate";
 import { useTranslation } from "react-i18next";
 
 // export const cacheProvider = {
@@ -33,16 +32,16 @@ import { useTranslation } from "react-i18next";
 // example procider
 const cacheProvider = {
   get: (language: string, key: string) =>
-    ((JSON.parse(localStorage.getItem("translations") || "{}") || {})[key] ||
+    ((JSON.parse(localStorage?.getItem("translations") || "{}") || {})[key] ||
       {})[language],
   set: (language: string, key: string, value: string) => {
     const existing = JSON.parse(
-      localStorage.getItem("translations") || "{}"
+      localStorage?.getItem("translations") || "{}"
     ) || {
       [key]: {},
     };
     existing[key] = { ...existing[key], [language]: value };
-    localStorage.setItem("translations", JSON.stringify(existing));
+    localStorage?.setItem("translations", JSON.stringify(existing));
   },
 };
 
@@ -116,14 +115,14 @@ export const TranslateProvider: React.FC<TranslateProviderProps> = ({
 
   return (
     <TranslateContext.Provider value={{ translate }}>
-      <OriginalTranslator
+      <Translator
         from={defaultLanguage}
         to={language}
         googleApiKey={googleApiKey}
         cacheProvider={cacheProvider}
       >
         {children}
-      </OriginalTranslator>
+      </Translator>
     </TranslateContext.Provider>
   );
 };

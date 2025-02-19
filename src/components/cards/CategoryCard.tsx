@@ -1,9 +1,8 @@
-import { ReactNode } from "react";
-import { Translate } from "react-auto-translate";
 import { categoryItems } from "@/lib/config/constant";
+import { Translate } from "@/components/translator";
 import Image from "next/image";
 interface Props {
-  name: ReactNode;
+  name;
   icon: string;
 }
 
@@ -19,7 +18,7 @@ function CategoryCard(props: Props) {
         <Image
           width={40}
           height={40}
-          className="flex items-center"
+          className="object-contain w-10 h-10"
           alt={icon}
           src={Icon}
         />

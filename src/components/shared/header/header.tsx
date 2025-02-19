@@ -1,3 +1,4 @@
+"use client";
 import { Home } from "./components/home/page";
 import { Event } from "./components/event/page";
 import { Profile } from "./components/profile/page";

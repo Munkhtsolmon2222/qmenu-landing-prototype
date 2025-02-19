@@ -66,7 +66,7 @@ export const Map = () => {
       <div className="gap-2  overflow-y-auto no-scrollbar w-full pl-5  my-2 flex flex-row">
         {selecters.map((filter, index) => {
           const active = filter.select
-            ? filter.filters.some((e: any) => filters?.includes(e))
+            ? filter.filters.some((e) => filters?.includes(e.name))
             : filters?.includes(filter.name);
 
           return (

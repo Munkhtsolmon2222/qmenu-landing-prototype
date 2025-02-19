@@ -10,7 +10,7 @@ import { MenuDetail } from "./MenuDetail";
 import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/shared/icons";
 import { useTranslation } from "react-i18next";
-import { Translate } from "react-auto-translate";
+import { Translate } from "@/components/translator";
 
 type ListCategory = Category & {
   child?: boolean;
@@ -34,7 +34,7 @@ export const List: React.FC<ChildProps> = ({
   const [search, setSearch] = useState<string>();
   const [isSticky, setIsSticky] = useState<boolean>(false);
   const [delay, setDelay] = useState<boolean>(false);
-  const { width = window.innerWidth } = useMediaQuery();
+  const { width } = useMediaQuery();
 
   const { categories, count } = useMemo(() => {
     let count = 0;
@@ -101,10 +101,14 @@ export const List: React.FC<ChildProps> = ({
   }, [delay, categories, setCategoryId, setSubCategoryId]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    if (typeof window !== "undefined" && window) {
+      window?.addEventListener("scroll", handleScroll);
+    }
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      if (typeof window !== "undefined" && window) {
+        window?.removeEventListener("scroll", handleScroll);
+      }
     };
   }, [handleScroll]);
 
@@ -123,13 +127,16 @@ export const List: React.FC<ChildProps> = ({
     );
     if (element) {
       setDelay(true);
-      const offset = (width ?? window.innerWidth) < 640 ? 0 : -64;
+      const offset =
+        (width ?? (typeof window !== "undefined" ? window.innerWidth : 0)) < 640
+          ? 0
+          : -64;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
       const offsetPosition = elementPosition + offset;
 
-      window.scrollTo({
+      window?.scrollTo({
         top: offsetPosition,
         behavior: "instant",
       });

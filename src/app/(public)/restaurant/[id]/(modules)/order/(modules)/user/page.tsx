@@ -1,7 +1,7 @@
 "use client";
 import OrderDialog from "@/components/modal/OrderDialog/page";
 import { FieldError } from "@/app/(public)/restaurant/components/FieldError";
-import { ItemWrapper } from "../../components/ItemWrapper";
+import ItemWrapper from "../../components/ItemWrapper";
 import { FormField } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,7 +48,7 @@ const Index: React.FC = () => {
     resolver: zodResolver(OrderUserSchema),
     defaultValues: {
       phone: input?.contact,
-      user: localStorage.getItem("sessionType") === SessionType.P,
+      user: localStorage?.getItem("sessionType") === SessionType.P,
     },
   });
 
@@ -62,7 +62,7 @@ const Index: React.FC = () => {
     SEARCH_CUSTOMERS,
     {
       onCompleted: (data) => {
-        localStorage.removeItem("sessionId");
+        localStorage?.removeItem("sessionId");
         setInput((e) => ({ ...e, contact: phone }));
 
         const item = data.searchCustomers[0];
@@ -81,9 +81,9 @@ const Index: React.FC = () => {
   );
 
   const onFinish = (token: string) => {
-    localStorage.removeItem("sessionType");
-    localStorage.removeItem("sessionId");
-    localStorage.removeItem("sessionStart");
+    localStorage?.removeItem("sessionType");
+    localStorage?.removeItem("sessionId");
+    localStorage?.removeItem("sessionStart");
 
     authenticate(token, () => {
       if (!input) {

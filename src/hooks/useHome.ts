@@ -37,7 +37,8 @@ export const useHome = () => {
     }
   );
 
-  const token = localStorage.getItem("token");
+  const token =
+    typeof window !== "undefined" ? localStorage?.getItem("token") : null;
 
   useEffect(() => {
     if (token) {
@@ -87,7 +88,7 @@ export const useHome = () => {
         systemType,
       },
       onCompleted: (data) => {
-        localStorage.setItem("token", data?.getToken?.token);
+        localStorage?.setItem("token", data?.getToken?.token);
       },
     });
   }, [getToken, searchParams]);
@@ -136,7 +137,7 @@ export const useHome = () => {
       const { latitude, longitude } = position.coords;
       const now = new Date().getTime();
       setPosition({ lat: latitude, lon: longitude });
-      localStorage.setItem(
+      localStorage?.setItem(
         "position",
         JSON.stringify({ latitude, longitude, timestamp: now })
       );
@@ -144,7 +145,7 @@ export const useHome = () => {
     };
 
     const handleGeolocationError = () => {
-      localStorage.setItem(
+      localStorage?.setItem(
         "position",
         JSON.stringify({
           latitude: CENTER.lat,

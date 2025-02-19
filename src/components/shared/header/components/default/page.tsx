@@ -3,13 +3,12 @@ import { Icons } from "@/components/shared/icons";
 import InputSuffix from "@/components/ui/input-suffix";
 import useHeader from "@/hooks/use-header";
 import { PATH_NAMES } from "@/lib/config/page";
-import { useLocation } from "react-router-dom";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 export const Default = () => {
   const { restaurant } = useHeader();
   const router = useRouter();
-  const location = useLocation();
-  const pathName = location.pathname;
+  const pathName = usePathname();
 
   if (restaurant) return <></>;
 

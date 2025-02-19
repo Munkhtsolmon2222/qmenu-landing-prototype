@@ -1,14 +1,16 @@
 "use client";
+
 import { CarouselEventCard } from "@/components/cards/EventCard/CarouselEventCard";
 import { FILTER_EVENTS } from "@/graphql/query";
 import { PAGE_EVENT } from "@/lib/config/page";
 import { IEvent } from "@/lib/types";
 import { useLazyQuery } from "@apollo/client";
 import { LoaderIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
+
 const limit = 20;
 
 const Events = () => {
@@ -19,27 +21,29 @@ const Events = () => {
   const searchParams = useSearchParams();
   const filters = searchParams.get("filters");
 
-  const [getEvents, { loading }] = useLazyQuery<{ filterEvents: IEvent[] }>(
-    FILTER_EVENTS,
-    {
-      fetchPolicy: "network-only",
-      onCompleted({ filterEvents }) {
-        if (filterEvents.length < limit) setHasMore(false);
-        else setOffset((prev) => prev + limit);
-        setEvents((prev) => [...prev, ...filterEvents]);
-      },
-    }
-  );
+  const [getEvents, { loading, error }] = useLazyQuery<{
+    filterEvents: IEvent[];
+  }>(FILTER_EVENTS, {
+    fetchPolicy: "network-only",
+    onCompleted({ filterEvents }) {
+      if (filterEvents.length < limit) setHasMore(false);
+      else setOffset((prev) => prev + limit);
+      setEvents((prev) => [...prev, ...filterEvents]);
+    },
+    onError: (err) => {
+      console.error("Error fetching events:", err);
+    },
+  });
 
   useEffect(() => {
     if (filters)
       getEvents({ variables: { filters: [filters], limit, offset } });
   }, [filters, getEvents, offset]);
 
-  const refetch = () => {
+  const refetch = useCallback(() => {
     if (!hasMore) return;
     getEvents({ variables: { filters, offset: offset + limit, limit } });
-  };
+  }, [hasMore, filters, offset, getEvents]);
 
   const onScroll = (e) => {
     const target = e.target as HTMLDivElement;
@@ -55,9 +59,9 @@ const Events = () => {
   return (
     <div className="p-4 pt-20 overflow-y-auto pb-24" onScroll={onScroll}>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
-        {events.map((event, index) => (
+        {events.map((event) => (
           <CarouselEventCard
-            key={index}
+            key={event.id} // Use unique id here
             event={event}
             className="max-w-full w-full"
             onClick={() => router.push(`${PAGE_EVENT}/${event.id}`)}
@@ -69,8 +73,14 @@ const Events = () => {
           <LoaderIcon className="animate-spin" />
         </div>
       )}
+      {error && <div>Error: {error.message}</div>}
     </div>
   );
 };
-
-export default Events;
+export default function EventsWithSuspense() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Events />
+    </Suspense>
+  );
+}

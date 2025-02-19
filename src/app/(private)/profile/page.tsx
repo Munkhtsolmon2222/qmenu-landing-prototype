@@ -1,5 +1,5 @@
 "use client";
-import { Menu } from "./components/page";
+import { Menu } from "./components";
 import useMediaQuery from "@/hooks/use-media-query";
 import { Suspense, lazy } from "react";
 import Loader from "@/components/shared/loader";
@@ -7,12 +7,12 @@ import { useQuery } from "@apollo/client";
 import { GET_CURRENT_CUSTOMER } from "@/graphql/query/customer";
 import { Customer } from "@/lib/types";
 import { usePathname } from "next/navigation";
-const Account = lazy(() => import("./modules/account/page"));
+const Account = lazy(() => import("./modules/account"));
 
 const changeWidth = 768;
 
 const Index = () => {
-  const { width = window.innerWidth } = useMediaQuery();
+  const { width } = useMediaQuery();
   const pathname = usePathname();
   const { data: { me: customer } = {} } = useQuery<{ me: Customer }>(
     GET_CURRENT_CUSTOMER,

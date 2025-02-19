@@ -1,3 +1,4 @@
+"use client";
 import { FilteredCard } from "@/components/cards/filteredCard";
 import { useFilterContext } from "@/lib/providers/filter.context";
 import Loader from "@/components/shared/loader";

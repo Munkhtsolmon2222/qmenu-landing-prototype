@@ -13,11 +13,13 @@ import { useRestaurantStore } from "@/lib/providers/restaurant";
 import { FavouriteItemType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useContext, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ShareModal } from "@/components/modal/ShareModal";
 import useMediaQuery from "@/hooks/use-media-query";
 import { AuthContext, getPayload } from "@/lib/providers/auth";
+import { useRouter } from "next/navigation";
 import SelectLanguage from "@/components/ui/selectLanguage";
-import { usePathname, useRouter } from "next/navigation";
+
 export const Restaurant = () => {
   const router = useRouter();
   const { current } = useRestaurantStore();

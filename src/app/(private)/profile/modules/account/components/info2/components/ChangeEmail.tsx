@@ -12,7 +12,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const ChangeEmail: React.FC<Props> = ({ onClose, visible }) => {
+const ChangeEmail: React.FC<Props> = ({ onClose, visible }) => {
   return (
     <Dialog open={visible} onOpenChange={onClose}>
       <DialogContent>
@@ -29,3 +29,5 @@ export const ChangeEmail: React.FC<Props> = ({ onClose, visible }) => {
     </Dialog>
   );
 };
+
+export default ChangeEmail;

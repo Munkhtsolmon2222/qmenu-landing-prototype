@@ -1,6 +1,5 @@
 "use client";
-
-import RestaurantTabs from "@/app/(public)/restaurant/components/tabs/page";
+import RestaurantTabs from "@/app/(public)/restaurant/components/tabs";
 import { GET_PARTICIPANT } from "@/graphql/query/menu";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { LoaderIcon } from "lucide-react";
@@ -18,7 +17,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { id: id2 } = useParams();
-  const token = localStorage.getItem("token");
+  const token = localStorage?.getItem("token");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { loadParticipant } = useRestaurantStore();
@@ -55,8 +54,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             },
           });
         },
-        (error) => {
-          console.error("Error getting user location:", error);
+        () => {
+          // console.error("Error getting user location:", error);
           getParticipant({ variables: { id } });
         }
       );
@@ -79,7 +78,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           systemType: null,
         },
         onCompleted: (data) => {
-          localStorage.setItem("token", data?.getToken?.token);
+          localStorage?.setItem("token", data?.getToken?.token);
           fetchLocations(id);
         },
       });

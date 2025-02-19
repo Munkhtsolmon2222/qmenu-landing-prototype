@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import { BranchDetail, OrderType } from "@/lib/types";
 import { ReactNode } from "react";

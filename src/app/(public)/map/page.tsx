@@ -11,7 +11,7 @@ import { BRANCHES } from "@/lib/config/constant";
 import { BranchType } from "@/lib/types";
 import { useTranslation } from "react-i18next";
 
-export const fallbackCenter = {
+const fallbackCenter = {
   lat: 47.9024278,
   lng: 106.9386946,
 };

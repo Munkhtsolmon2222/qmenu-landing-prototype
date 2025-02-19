@@ -25,7 +25,6 @@ import Image from "next/image";
 interface Props {
   branch: Branch;
   width: number;
-  // children: React.ReactNode;
 }
 
 type Action = {
@@ -222,7 +221,6 @@ const About: React.FC<Props> = ({ branch }) => {
           )}
         </Flex>
       </Flex>
-      {/* {children} */}
       <ReviewForm visible={visible} onClose={() => setVisible(false)} />
       <ShareModal
         title={branch.name}

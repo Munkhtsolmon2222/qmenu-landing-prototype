@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 type Props = {

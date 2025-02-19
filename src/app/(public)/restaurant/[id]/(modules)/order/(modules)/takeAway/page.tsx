@@ -12,7 +12,7 @@ import { generateTimeArray, getDateByTime } from "../../utils";
 import { useRestaurantStore } from "@/lib/providers/restaurant";
 import { ButtonItem } from "../../components/ButtonItem";
 import { FieldError } from "@/app/(public)/restaurant/components/FieldError";
-import { ItemWrapper } from "../../components/ItemWrapper";
+import ItemWrapper from "../../components/ItemWrapper";
 import { Textarea } from "@/components/ui/textarea";
 import { FormField } from "@/components/ui/form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

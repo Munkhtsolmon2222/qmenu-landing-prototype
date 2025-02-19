@@ -10,7 +10,7 @@ interface Props {
 }
 
 const GalleryTab = ({ branch }: Props) => {
-  const { width = window.innerWidth } = useMediaQuery();
+  const { width } = useMediaQuery();
   const { t } = useTranslation();
   const web = useMemo(() => width >= 1280, [width]);
 

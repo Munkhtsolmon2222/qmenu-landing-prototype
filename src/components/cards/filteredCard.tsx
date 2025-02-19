@@ -1,3 +1,4 @@
+"use client";
 import { BranchDetail, FavouriteItemType, TableInfo } from "@/lib/types";
 import { Icons } from "../shared/icons";
 import defaultImage from "@/assets/images/restaurant.png";

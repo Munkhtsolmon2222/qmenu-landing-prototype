@@ -5,8 +5,7 @@ interface Wrapper extends React.PropsWithChildren {
   className?: string;
   titleClassName?: string;
 }
-
-export const ItemWrapper: React.FC<Wrapper> = ({
+const ItemWrapper: React.FC<Wrapper> = ({
   children,
   title,
   className,
@@ -23,3 +22,4 @@ export const ItemWrapper: React.FC<Wrapper> = ({
     </div>
   );
 };
+export default ItemWrapper;

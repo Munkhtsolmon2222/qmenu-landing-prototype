@@ -11,10 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
-import { ItemWrapper } from "../../ItemWrapper";
+import ItemWrapper from "../../ItemWrapper";
 import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/shared/icons";
-import { CloseButton } from "./CloseButton";
+import CloseButton from "./CloseButton";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useMutation } from "@apollo/client";
 import { UPDATE_PASSWORD } from "@/graphql/mutation";
@@ -48,7 +48,7 @@ const FormSchema = BaseSchema.superRefine(({ password, rePassword }, ctx) => {
   return z.NEVER;
 });
 
-export const ChangePassword: React.FC<Props> = ({
+const ChangePassword: React.FC<Props> = ({
   onClose: onCloseModal,
   visible,
 }) => {
@@ -220,3 +220,4 @@ export const ChangePassword: React.FC<Props> = ({
     </Dialog>
   );
 };
+export default ChangePassword;

@@ -34,7 +34,7 @@ function useTopup() {
 
   const [getToken, { loading: getting }] = useMutation(CURRENT_TOKEN, {
     onCompleted(data) {
-      localStorage.setItem("token", data?.getToken?.token);
+      localStorage?.setItem("token", data?.getToken?.token);
       getMerchantByDomain({ variables: { domain } });
     },
   });

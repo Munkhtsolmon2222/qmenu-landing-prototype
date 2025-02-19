@@ -1,7 +1,7 @@
 "use client";
 import OrderDialog from "@/components/modal/OrderDialog/page";
-import { FieldError } from "../../components/page";
-import { ItemWrapper } from "../../components/ItemWrapper";
+import { FieldError } from "../../components";
+import ItemWrapper from "../../components/ItemWrapper";
 import { FormField } from "@/components/ui/form";
 import {
   InputOTP,
@@ -49,9 +49,10 @@ const OrderOtp: React.FC = () => {
       mode: "onSubmit",
       resolver: zodResolver(OrderOtpSchema),
       defaultValues: {
-        type: (localStorage.getItem("sessionType") as SessionType) ?? undefined,
+        type:
+          (localStorage?.getItem("sessionType") as SessionType) ?? undefined,
         phone: input?.contact ?? "",
-        sessionId: localStorage.getItem("sessionId") ?? "",
+        sessionId: localStorage?.getItem("sessionId") ?? "",
       },
     });
 
@@ -108,7 +109,7 @@ const OrderOtp: React.FC = () => {
 
       if (graphQLErrors) {
         graphQLErrors.forEach((err) => {
-          const { errorType: code } = err;
+          const code = err.extensions?.code;
           if (code === "SS0001") {
             toast({
               title: "Та шинэ код авна уу.",

@@ -1,8 +1,9 @@
+"use client";
 import { SHAPE_TYPES, Table } from "@/lib/types";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/shared/icons";
-import { Info } from "./page";
+import Info from ".";
 
 interface Props {
   item: Table;

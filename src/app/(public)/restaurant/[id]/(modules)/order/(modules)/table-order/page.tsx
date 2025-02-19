@@ -6,8 +6,8 @@ import {
   PAGE_TABLE_ORDER_TABLE,
 } from "@/lib/config/page";
 import OrderDialog from "@/components/modal/OrderDialog/page";
-import { ItemWrapper } from "../../components/ItemWrapper";
-import { ButtonItem } from "../../components/page";
+import ItemWrapper from "../../components/ItemWrapper";
+import { ButtonItem } from "../../components";
 import { FieldError } from "@/app/(public)/restaurant/components/FieldError";
 import { ParticipantsModal } from "../../components/ParticipantsModal";
 import { FormField } from "@/components/ui/form";
@@ -16,7 +16,7 @@ import { Icons } from "@/components/shared/icons";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, LoaderIcon } from "lucide-react";
-import { TimesSkeleton } from "./components/page";
+import TimesSkeleton from "./components/TimesSkeleton";
 import { AvatarType, AvatarStack } from "@/components/ui/avatar-stack";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
@@ -58,7 +58,7 @@ const getDefaultValues = (
 };
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-const Index = () => {
+const TableOrder = () => {
   const { id } = useParams();
   const router = useRouter();
   const [visible, setVisible] = useState(false);
@@ -514,4 +514,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default TableOrder;

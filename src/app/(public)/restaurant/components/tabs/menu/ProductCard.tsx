@@ -1,9 +1,10 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import { Button } from "@/components/ui/button";
 import { getMainVariant, useRestaurantStore } from "@/lib/providers/restaurant";
 import { ProductChildProps } from "./Product";
 import { useTranslation } from "react-i18next";
-import { Translate } from "react-auto-translate";
+import { Translate } from "@/components/translator";
 import Image from "next/image";
 export const ProductCard: React.FC<ProductChildProps> = ({
   product,

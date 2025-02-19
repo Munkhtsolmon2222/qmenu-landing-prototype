@@ -1,7 +1,7 @@
 "use client";
 import { FormField } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { ItemWrapper } from "../../../components/ItemWrapper";
+import ItemWrapper from "../../../components/ItemWrapper";
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from "react";
 import { ChildProps } from "../../../page";

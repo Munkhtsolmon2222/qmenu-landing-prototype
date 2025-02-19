@@ -20,7 +20,7 @@ import clean from "@/assets/images/reviews/clean.svg";
 import food from "@/assets/images/reviews/food.svg";
 import service from "@/assets/images/reviews/service.svg";
 import { useTranslation } from "react-i18next";
-import { Translate } from "react-auto-translate";
+import { Translate } from "@/components/translator";
 import Image from "next/image";
 interface Props {
   onClose: () => void;

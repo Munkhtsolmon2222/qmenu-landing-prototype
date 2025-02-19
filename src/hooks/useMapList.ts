@@ -11,7 +11,8 @@ export const useMapList = (branches) => {
   const [position, setPosition] = useState({ lat: null, lng: null });
   const [loading, setLoading] = useState(true);
   const [center, setCenter] = useState({ lat: null, lng: null });
-  const local = localStorage.getItem("position");
+  const local =
+    typeof window !== "undefined" ? localStorage?.getItem("position") : null;
   const resRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
@@ -52,16 +53,14 @@ export const useMapList = (branches) => {
     resRefs.current.forEach((img) => {
       if (img) observer.observe(img);
     });
-
-    return () => {
-      resRefs.current.forEach((img) => {
-        if (img) observer.unobserve(img);
-      });
-    };
+    const currentRefs = resRefs.current;
+    currentRefs.forEach((img) => {
+      if (img) observer.observe(img);
+    });
   }, [branches, local]);
 
   useEffect(() => {
-    const location = localStorage.getItem("position");
+    const location = localStorage?.getItem("position");
 
     if (!location) {
       navigator.geolocation.getCurrentPosition(

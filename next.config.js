@@ -24,7 +24,7 @@ module.exports = {
     ],
   },
   reactStrictMode: true,
-  basePath: process.env.NODE_ENV === "production" ? basenameProd : "",
+  // basePath: process.env.NODE_ENV === "production" ? basenameProd : "",
   webpack(config) {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -38,5 +38,10 @@ module.exports = {
   },
   env: {
     BASE_URL: process.env.NODE_ENV === "production" ? basenameProd : "http://localhost:5173/",
+    APP_REGION: process.env.APP_REGION,
+    NEXT_PUBLIC_APP_STAGE: process.env.NEXT_PUBLIC_APP_STAGE,
+    GOOGLE_MAPS_API: process.env.GOOGLE_MAPS_API,
+    GOOGLE_URL: process.env.GOOGLE_URL,
+    GOOGLE_TRANSLATE_KEY: process.env.GOOGLE_TRANSLATE_KEY
   },
 };

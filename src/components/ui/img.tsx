@@ -1,3 +1,4 @@
+"use client";
 import Image, { StaticImageData } from "next/image";
 import { cn } from "@/lib/utils";
 import { LoaderIcon } from "lucide-react";

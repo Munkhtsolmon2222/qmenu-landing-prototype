@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import Loader from "@/components/shared/loader";
 import { GET_MASTER_CATEGORIES } from "@/graphql/query/menu";

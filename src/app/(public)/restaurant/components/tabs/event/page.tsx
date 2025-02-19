@@ -17,7 +17,7 @@ const typeName: Record<EventType, string> = {
 
 const Event: React.FC<Props> = ({ participant }) => {
   const { events = [] } = participant ?? { events: [] };
-  const { width = window.innerWidth } = useMediaQuery();
+  const { width } = useMediaQuery();
   const router = useRouter();
 
   const types: EventType[] = Array.from(

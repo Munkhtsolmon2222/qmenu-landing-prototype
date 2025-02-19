@@ -5,7 +5,7 @@ import AuthButtons from "./components/auth-buttons";
 import ProfileButtons from "./components/profile-buttons";
 import { getPayload } from "@/lib/providers/auth";
 import { useEffect, useState } from "react";
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo.svg";
 import useMediaQuery from "@/hooks/use-media-query";
 import logosmall from "@/assets/favicon.ico";
 import { Button } from "@/components/ui/button";

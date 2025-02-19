@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import { Button } from "@/components/ui/button";
 import useMediaQuery from "@/hooks/use-media-query";

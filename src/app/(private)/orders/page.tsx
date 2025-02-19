@@ -3,13 +3,13 @@ import { useQuery } from "@apollo/client";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs-1";
 import { GET_CUSTOMER_ORDERS } from "@/graphql/query";
 import Loader from "@/components/shared/loader";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Order, OrderState } from "@/lib/types";
 import { getOrderCards } from "./components/cards";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-export default function Orders() {
+function OrdersContent() {
   const searchParams = useSearchParams();
   const { t } = useTranslation();
   const tabs = [
@@ -75,5 +75,13 @@ export default function Orders() {
         </div>
       </Tabs>
     </div>
+  );
+}
+
+export default function Orders() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <OrdersContent />
+    </Suspense>
   );
 }

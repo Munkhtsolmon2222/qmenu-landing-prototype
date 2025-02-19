@@ -2,15 +2,16 @@
 import { Icons } from "@/components/shared/icons";
 import { useFilterContext } from "@/lib/providers/filter.context";
 import { useEffect, useState } from "react";
-
+import { useSearchParams } from "next/navigation";
 interface Props {
   reset: () => void;
 }
 function RestaurantFilters(props: Props) {
   const { reset } = props;
-
+  const Params = useSearchParams();
   const { removeFilter } = useFilterContext();
   const getSearchParams = () => {
+    if (typeof window === "undefined") return {};
     const params = new URLSearchParams(window.location.search);
     return {
       star: params.get("star"),
@@ -27,7 +28,7 @@ function RestaurantFilters(props: Props) {
 
   useEffect(() => {
     setSearchParams(getSearchParams());
-  }, []);
+  }, [Params]);
 
   const onRemove = (value: string) => {
     removeFilter(value);

@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "@/components/shared/icons";
 import Loader from "@/components/shared/loader";
 import { GET_MASTER_CATEGORIES } from "@/graphql/query/menu";
@@ -7,7 +8,7 @@ import { ORDERS_ARRAY, TagType } from "@/lib/config/constant";
 import { FilterKey } from "@/lib/providers/filter.context";
 import { useQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
-import { Translate } from "react-auto-translate";
+import { Translate } from "@/components/translator";
 interface Props {
   filters: string[];
   onClear: () => void;

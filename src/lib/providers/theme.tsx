@@ -28,30 +28,35 @@ export function ThemeProvider({
   storageKey = "shadcn-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem(storageKey) ?? defaultTheme
-  );
+  const [theme, setTheme] = useState<string>("system");
   const [mainTheme, setMainTheme] = useState<string>("dark");
 
   useEffect(() => {
-    const root = window.document.documentElement;
-
-    root.classList.remove("light", "dark");
-
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-
-      setMainTheme(mainTheme);
-      root.classList.add(systemTheme);
-      return;
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage?.getItem(storageKey);
+      setTheme(savedTheme ?? defaultTheme);
     }
+  }, [defaultTheme, storageKey]);
 
-    setMainTheme(theme);
-    root.classList.add(theme);
-  }, [theme, mainTheme]);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const root = window.document.documentElement;
+      root.classList.remove("light", "dark");
+
+      if (theme === "system") {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+
+        setMainTheme(systemTheme);
+        root.classList.add(systemTheme);
+      } else {
+        setMainTheme(theme);
+        root.classList.add(theme);
+      }
+    }
+  }, [theme]);
 
   return (
     <ThemeProviderContext.Provider
@@ -60,7 +65,9 @@ export function ThemeProvider({
         theme,
         mainTheme,
         setTheme: (theme: string) => {
-          localStorage.setItem(storageKey, theme);
+          if (typeof window !== "undefined") {
+            localStorage?.setItem(storageKey, theme);
+          }
           setTheme(theme);
         },
       }}

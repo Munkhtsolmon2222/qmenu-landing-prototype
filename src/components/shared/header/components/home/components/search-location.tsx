@@ -37,7 +37,7 @@ function SearchLocation() {
   }) => {
     const { latitude, longitude } = position.coords;
     const now = new Date().getTime();
-    localStorage.setItem(
+    localStorage?.setItem(
       "position",
       JSON.stringify({ latitude, longitude, timestamp: now })
     );
@@ -45,7 +45,7 @@ function SearchLocation() {
 
   const handleGeolocationError = () => {
     const now = new Date().getTime();
-    localStorage.setItem(
+    localStorage?.setItem(
       "position",
       JSON.stringify({
         latitude: CENTER.lat,
@@ -140,7 +140,7 @@ function SearchLocation() {
                                   setSearchParam("q", result.displayName.text);
                                   setName(result.displayName.text);
                                   const now = new Date().getTime();
-                                  localStorage.setItem(
+                                  localStorage?.setItem(
                                     "position",
                                     JSON.stringify({
                                       latitude: result.location.latitude,

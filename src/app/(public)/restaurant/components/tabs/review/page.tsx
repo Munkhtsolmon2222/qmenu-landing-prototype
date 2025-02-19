@@ -17,7 +17,8 @@ interface Props {
 const ReviewTab = (props: Props) => {
   const { branch } = props;
   const [visible, setVisible] = useState<boolean>(false);
-  const token = localStorage.getItem("token");
+  const token =
+    typeof window !== "undefined" ? localStorage?.getItem("token") : null;
   const [getReviews, { data, loading }] = useLazyQuery<{
     getReviews: FetchReview;
   }>(GET_REVIEWS, {
@@ -77,7 +78,7 @@ const ReviewTab = (props: Props) => {
         </div>
         <div className="w-2/3 xl:w-3/4 flex flex-col gap-1 sm:gap-2 px-1 sm:px-0">
           {Array.from({ length: 5 }).map((_, i) => {
-            let r = 5;
+            const r = 5;
             const itemsTotal = total.stars.find((e) => e.star === r - i);
 
             return (

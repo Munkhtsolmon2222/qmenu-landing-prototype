@@ -18,8 +18,8 @@ function List() {
     applyFilters,
   } = useFilterContext();
 
-  const params = new URLSearchParams(location.search).get("cuisine");
-  const params2 = new URLSearchParams(location.search).get("offer");
+  const params = new URLSearchParams(location?.search).get("cuisine");
+  const params2 = new URLSearchParams(location?.search).get("offer");
 
   useEffect(() => {
     let filter;

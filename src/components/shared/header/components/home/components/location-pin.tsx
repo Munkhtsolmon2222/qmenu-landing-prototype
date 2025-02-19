@@ -1,3 +1,4 @@
+"use client";
 import { Icons } from "../../../../icons";
 import { useRouter } from "next/navigation";
 export function LocationPin() {

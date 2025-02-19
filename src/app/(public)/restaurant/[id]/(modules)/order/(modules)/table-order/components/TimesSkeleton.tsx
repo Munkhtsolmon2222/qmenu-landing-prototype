@@ -1,6 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-
-export const TimesSkeleton = () => {
+const TimesSkeleton = () => {
   return (
     <div className="flex gap-2 overflow-x-auto py-2 px-1 no-scrollbar">
       {new Array(5).fill(null).map((_, i) => (
@@ -9,3 +8,4 @@ export const TimesSkeleton = () => {
     </div>
   );
 };
+export default TimesSkeleton;

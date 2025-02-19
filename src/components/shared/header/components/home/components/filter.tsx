@@ -1,3 +1,4 @@
+"use client";
 import { useFilterContext } from "@/lib/providers/filter.context";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Icons } from "@/components/shared/icons";

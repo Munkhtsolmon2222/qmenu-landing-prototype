@@ -1,3 +1,4 @@
+"use client";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Toast, useToast } from "@/components/ui/use-toast";
@@ -22,7 +23,7 @@ export const getPartnerToken = (): string => {
   let token = "";
 
   try {
-    token = JSON.parse(localStorage.getItem("partnerToken") as string);
+    token = JSON.parse(localStorage?.getItem("partnerToken") as string);
   } catch {}
 
   return token;
@@ -30,12 +31,12 @@ export const getPartnerToken = (): string => {
 
 export const setPartnerToken = (token: string): void => {
   try {
-    localStorage.setItem("partnerToken", JSON.parse(token));
+    localStorage?.setItem("partnerToken", JSON.parse(token));
   } catch {}
 };
 
 export const removePartnerType = (): void => {
-  localStorage.removeItem("partnerToken");
+  localStorage?.removeItem("partnerToken");
 };
 
 export const shuffleArray = <T>(array: T[]) => {

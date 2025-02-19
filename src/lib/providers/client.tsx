@@ -17,9 +17,7 @@ import { PAGE_HOME } from "../config/page";
 const region = process.env.APP_REGION ?? "ap-southeast-1";
 const url = process.env.NEXT_PUBLIC_APP_STAGE || "";
 
-const ApolloClientContext = createContext<ApolloClient<React.ReactNode> | null>(
-  null
-);
+const ApolloClientContext = createContext<ApolloClient<unknown> | null>(null);
 
 const initializeClient = () => {
   const auth: AuthOptions = {
@@ -36,11 +34,11 @@ const initializeClient = () => {
         if ("errorType" in err) {
           switch (err.errorType) {
             case "UnauthorizedException":
-              localStorage.removeItem("token");
+              localStorage?.removeItem("token");
               // location.reload();
               break;
             case "CE0003":
-              localStorage.removeItem("token");
+              localStorage?.removeItem("token");
               const path = location.pathname.split("/").join("");
               if (path && path.length > 0) window.location.href = PAGE_HOME;
               break;

@@ -15,7 +15,6 @@ import ClientOnly from "@/components/ui/client-only";
 import Script from "next/script";
 import { Buffer } from "buffer";
 import "@/lib/providers/i18";
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

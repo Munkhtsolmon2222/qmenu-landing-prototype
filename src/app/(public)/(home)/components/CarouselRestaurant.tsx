@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import useMediaQuery from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { Translate } from "react-auto-translate";
+import { Translate } from "@/components/translator";
 import Link from "next/link";
 interface Props {
   index: number;

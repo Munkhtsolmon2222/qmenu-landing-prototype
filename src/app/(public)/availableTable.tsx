@@ -1,3 +1,4 @@
+"use client";
 import { BranchDetail } from "@/lib/types";
 import { useTranslation } from "react-i18next";
 interface Props {

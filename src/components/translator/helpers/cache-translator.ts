@@ -5,7 +5,7 @@ export default class CacheTranslator extends GoogleTranslator {
   cacheProvider: CacheProvider = undefined;
 
   async translate(value: string): Promise<string | undefined> {
-    let translation = await this.cacheProvider.get(this.to, value);
+    let translation = await this?.cacheProvider?.get(this.to, value);
 
     if (!translation) {
       translation = await this.tryGetGoogleTranslationAndCache(value);
@@ -25,7 +25,7 @@ export default class CacheTranslator extends GoogleTranslator {
 
   setCachedTranslationForValue(value: string, translation?: string): void {
     if (translation) {
-      this.cacheProvider.set(this.to, value, translation);
+      this?.cacheProvider?.set(this.to, value, translation);
     }
   }
 }

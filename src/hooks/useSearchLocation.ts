@@ -7,8 +7,6 @@ const useNearbyPlaces = (query: string | unknown) => {
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown | string>(null);
-  // const test = process.env.test;
-  // console.log(test);
   const API_KEY = process.env.GOOGLE_MAPS_API;
   useEffect(() => {
     if (!query) return;

@@ -31,7 +31,7 @@ const PendingCard: React.FC<Props> = ({ order }) => {
   return (
     <Card className="px-3 py-2">
       <div className="w-full flex justify-between pb-2">
-        <p className="font-medium ">{formatDate(order.date)}</p>
+        <p className="font-medium ">{formatDate(order?.date)}</p>
         <span className="flex gap-2">
           <p className="text-sm font-normal opacity-80">{t("Reminder")}</p>
           <Switch className="bg-current" />

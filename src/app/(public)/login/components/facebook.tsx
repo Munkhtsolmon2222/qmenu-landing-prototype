@@ -1,28 +1,24 @@
 "use client";
-import { Icons } from "@/components/shared/icons";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { LOGIN_OAUTH } from "@/graphql/mutation";
 import { getPayload, setAccessToken } from "@/lib/providers/auth";
 import { useMutation } from "@apollo/client";
-import Facebook from "react-facebook-login";
-
+import { FacebookProvider, LoginButton } from "react-facebook";
 import { useRouter } from "next/navigation";
-
-const FacebookLogin = Facebook;
 
 const FacebookButton = () => {
   const [loginOAuth] = useMutation(LOGIN_OAUTH);
   const router = useRouter();
 
-  const responseFacebook = (event) => {
+  const responseFacebook = (response) => {
     const input = {
-      firstName: event.name.split(" ")[0] ?? event.name,
-      lastName: event.name.split(" ")[1] ?? event.name,
-      email: event?.email,
+      firstName: response.name.split(" ")[0] ?? response.name,
+      lastName: response.name.split(" ")[1] ?? response.name,
+      email: response?.email,
       type: "FB",
-      data: JSON.stringify(event),
-      accountId: event.userID,
-      picture: event.picture.data.url,
+      data: JSON.stringify(response),
+      accountId: response.userID,
+      picture: response.picture.data.url,
     };
 
     if (getPayload()?.role === "customer") {
@@ -39,22 +35,21 @@ const FacebookButton = () => {
       });
     }
   };
-  const componentClicked = () => {
-    console.log("clicked");
+
+  const handleError = (error: Error) => {
+    console.error("Facebook login error:", error);
   };
 
   return (
-    <LoadingButton>
-      <Icons.facebook className="h-6 w-6" />
-      <FacebookLogin
-        cssClass="border-radius:14px; diplay:flex; flex-direction:column"
-        appId="3751029981840526"
-        scope="public_profile"
-        fields="name,email,picture"
-        onClick={componentClicked}
-        callback={responseFacebook}
-      />
-    </LoadingButton>
+    <FacebookProvider appId="your-app-id-here">
+      <LoadingButton>
+        <LoginButton
+          scope="email"
+          onSuccess={responseFacebook}
+          onError={handleError}
+        />
+      </LoadingButton>
+    </FacebookProvider>
   );
 };
 

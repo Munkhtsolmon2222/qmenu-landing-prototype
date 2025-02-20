@@ -45,8 +45,8 @@ export function NewsletterForm() {
           render={({ field }: { field }) => (
             <FormItem>
               <FormControl>
-                <div className="flex  flex-col gap-2 items-start justify-center">
-                  <FormLabel htmlFor="rating" className="pl-3">
+                <div className="flex  flex-col gap-2 items-start justify-center pt-4">
+                  <FormLabel htmlFor="rating" className="pl-3 sm:text-center ">
                     {t("Register an organization")}
                   </FormLabel>
                   <div className="flex flex-row border-2 rounded-full w-max">

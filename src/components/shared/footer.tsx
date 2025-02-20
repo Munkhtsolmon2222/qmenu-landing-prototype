@@ -22,12 +22,12 @@ export function Footer() {
       >
         <div className="max-w-[90rem] w-full flex-col flex md:flex-row justify-between md:gap-8 md:items-end py-8  gap-1   border-b-[2px] border-gray-600  ">
           <div className="md:w-3/5 w-full flex md:flex-row flex-col md:items-end gap-4 justify-between">
-            <div className=" flex-row md:items-end items-end justify-center sm:justify-start md:gap-4 font-medium">
+            <div className=" flex-row md:items-end items-end justify-center sm:justify-center md:gap-4 font-medium sm:gap-6 ">
               <Image width={150} height={350} src={logo} alt="logo" />
-              <p className="max-w-80  text-gray-600 mb-2">
+              <p className="max-w-80 text-gray-600 mb-2 hidden md:block">
                 {t("Comprehensive restaurant management system")}
               </p>
-              <div className="flex items-center gap-2 pt-1 ">
+              <div className="hidden sm:flex items-center gap-2 pt-1">
                 <a href="https://www.facebook.com/QmenuDigitalMenu">
                   <Icons.facebook className="w-6 h-6 text-gray-700 hover:text-blue-700  " />
                 </a>
@@ -36,7 +36,7 @@ export function Footer() {
                 </a>
               </div>
             </div>
-            <div className="font-semibold -mt-2.5  text-gray-600">
+            <div className="font-semibold -mt-2.5  text-gray-600 sm:text-center ">
               <div>
                 <div className="flex items-center gap-3">
                   <div className="">

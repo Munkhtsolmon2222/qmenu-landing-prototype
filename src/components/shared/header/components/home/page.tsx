@@ -51,12 +51,12 @@ export const Home = () => {
          items-center gap-3 lg:px-4 md:flex-row flex-row`}
       >
         <Image
-          width={100}
-          height={100}
+          width={40}
+          height={40}
           src={device === "mobile" ? logosmall : icon}
           alt="logo"
           className={`md:max-h-14 md:w-32  max-w-32 cursor-pointer max-h-14 ${
-            scrolled && device !== "mobile" && "mb-4"
+            scrolled && device !== "mobile" && "mb-4 "
           }`}
           onClick={() => router.push("/")}
         />

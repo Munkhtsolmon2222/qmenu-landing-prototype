@@ -14,7 +14,7 @@ import { CURRENT_TOKEN } from "@/graphql/query";
 import { OrderDialogRestaurant } from "../components/OrderDialogRestaurant";
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-
+import { Restaurant } from "@/components/shared/header/components/restaurant/page";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { id: id2 } = useParams();
   const token = localStorage?.getItem("token");
@@ -101,6 +101,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="w-full max-w-3xl xl:max-w-full xl:px-10 sm:mt-2 mx-auto px-0 sm:px-4 bg-background flex flex-col sm:gap-5">
       <div className="relative z-0 w-full overflow-x-hidden flex gap-3 h-96 sm:rounded-xl sm:h-60">
+        <Restaurant />
         <Image
           id="restaurant-image"
           alt="Restaurant Exterior"

@@ -214,7 +214,7 @@ const Index: React.FC = () => {
         disabled={!isValid}
         loading={loading}
       >
-        <div className="w-full text-center">{t("Phone number")}</div>
+        <div className="w-full text-center">{t("Continue")}</div>
       </OrderDialog.Footer>
     </>
   );

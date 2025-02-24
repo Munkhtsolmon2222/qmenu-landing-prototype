@@ -1,7 +1,7 @@
 "use client";
 import { z } from "zod";
 import { ChildProps } from "../../page";
-import ItemWrapper from "@/app/(public)/login/components/ItemWrapper";
+import ItemWrapper from "../../components/ItemWrapper";
 import { useContext, useState } from "react";
 import { AuthContext, getPayload } from "@/lib/providers/auth";
 import { useMutation } from "@apollo/client";

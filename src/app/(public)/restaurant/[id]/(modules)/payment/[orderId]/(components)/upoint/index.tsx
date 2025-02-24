@@ -7,7 +7,7 @@ import { BankImages } from "../banks";
 import { Icons } from "@/components/shared/icons";
 import { UpointModal } from "./components/UpointModal";
 import { UpointContext } from "@/lib/providers/upoint.context";
-import { BlockItem } from "../..";
+import BlockItem from "../BlockItem";
 import Image from "next/image";
 type Props = {
   user: Customer;

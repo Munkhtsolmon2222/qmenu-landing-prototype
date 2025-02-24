@@ -11,7 +11,6 @@ import { PAGE_RESTAURANT } from "@/lib/config/page";
 import { useRestaurantStore } from "@/lib/providers/restaurant";
 import { Participant } from "@/lib/types";
 import { useState } from "react";
-
 import { useRouter } from "next/navigation";
 
 type Props = {

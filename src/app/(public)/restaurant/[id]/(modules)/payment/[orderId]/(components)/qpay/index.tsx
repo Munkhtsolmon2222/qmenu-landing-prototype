@@ -1,6 +1,7 @@
 "use client";
 import { PAYMENT_TYPE, QPAY_BANK_TYPE } from "@/lib/config/constant";
-import { BlockItem, PaymentSchemaType } from "../..";
+import BlockItem from "../BlockItem";
+import { PaymentSchemaType } from "../../page";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { Payment } from "@/lib/types";
 import { Icons } from "@/components/shared/icons";

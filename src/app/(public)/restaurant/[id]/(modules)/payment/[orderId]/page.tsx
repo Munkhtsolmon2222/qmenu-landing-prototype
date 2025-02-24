@@ -3,30 +3,20 @@ import { GET_ORDER } from "@/graphql/query";
 import { Customer, Order, Transaction } from "@/lib/types";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { LoaderIcon } from "lucide-react";
-// import {
-//   BanksForm,
-//   OrderInfo,
-//   QpayForm,
-//   SuccesOrder,
-//   UpointForm,
-//   VatForm,
-//   VoucherForm,
-//   WaitPaymentModal,
-// } from "@/pages/public/Restaurant/modules/Payment/components";
-import { OrderInfo } from "./[orderId]";
-import { QpayForm } from "./[orderId]";
-import { SuccesOrder } from "./[orderId]";
-import { UpointForm } from "./[orderId]";
-import { VatForm } from "./[orderId]";
-import { VoucherForm } from "./[orderId]";
-import { WaitPaymentModal } from "./[orderId]";
-import BanksForm from "./[orderId]/banks";
+import { OrderInfo } from "./(components)";
+import { QpayForm } from "./(components)";
+import { SuccesOrder } from "./(components)";
+import { UpointForm } from "./(components)";
+import { VatForm } from "./(components)";
+import { VoucherForm } from "./(components)";
+import { WaitPaymentModal } from "./(components)";
+import BanksForm from "./(components)/banks";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Icons } from "@/components/shared/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { cn } from "@/lib/utils";
 import { z } from "zod";
+import BlockItem from "./(components)/BlockItem";
 import {
   LoyaltyType,
   PAYMENT_TYPE,
@@ -47,16 +37,8 @@ import { UpointContext } from "@/lib/providers/upoint.context";
 import { useRestaurantStore } from "@/lib/providers/restaurant";
 import { getPayload } from "@/lib/providers/auth";
 import OrderDialog from "@/components/modal/OrderDialog/page";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-// import {
-//   QpayForm,
-//   SuccesOrder,
-//   UpointForm,
-//   VatForm,
-//   VoucherForm,
-//   WaitPaymentModal,
-// } from "./[orderId]/page";
+import { useParams, useRouter } from "next/navigation";
+
 const baseSchema = z.object({
   vatType: z.string({ required_error: "НӨАТ-ийн төрлөө сонгоно уу" }),
   code: z.string().optional(),
@@ -100,10 +82,10 @@ const formSchema = baseSchema.superRefine(
 
 export type PaymentSchemaType = z.infer<typeof formSchema>;
 
-const Payment = () => {
+const Index = () => {
   const router = useRouter();
   const { current } = useRestaurantStore();
-  const orderId = useSearchParams();
+  const { orderId } = useParams();
   const [partner, setPartner] = useState<SystemType>();
   const [visiblePending, setVisiblePending] = useState(false);
   const [visibleSucces, setVisibleSucces] = useState(false);
@@ -455,30 +437,4 @@ const Payment = () => {
   );
 };
 
-export default Payment;
-
-export const BlockItem: React.FC<
-  React.PropsWithChildren<{
-    className?: string;
-    active?: boolean;
-    onClick?: () => void;
-  }>
-> = ({ children, className, active, onClick }) => {
-  return (
-    <div
-      onClick={onClick}
-      className={cn(
-        "mx-3 bg-background p-4 rounded-md overflow-hidden",
-        active && "border-2 border-primary",
-        className
-      )}
-    >
-      {active && (
-        <div className="absolute top-2 left-2 w-5 h-5 border-2 rounded-full flex items-center justify-center border-primary bg-primary">
-          <Icons.check className="w-4 h-4 text-primary-foreground" />
-        </div>
-      )}
-      {children}
-    </div>
-  );
-};
+export default Index;

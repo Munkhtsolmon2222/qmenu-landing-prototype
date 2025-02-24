@@ -3,8 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import Signin from "./tabs/signin";
-import { Signup } from "./tabs";
+import Signin from "@/app/(public)/login/tabs/signin";
+import Signup from "@/app/(public)/login/tabs/signup";
 type TabItems = "signin" | "signup" | "forgot";
 
 export interface ChildProps {

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { BlockItem, PaymentSchemaType } from "../..";
+import BlockItem from "../BlockItem";
+import { PaymentSchemaType } from "../../page";
 import { UseFormWatch } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_CUSTOMER_PRODUCTS } from "@/graphql/query/customer";

@@ -1,6 +1,7 @@
 "use client";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { BlockItem, PaymentSchemaType } from "../..";
+import BlockItem from "../BlockItem";
+import { PaymentSchemaType } from "../../page";
 import { Participant } from "@/lib/types";
 import { useMemo } from "react";
 import {

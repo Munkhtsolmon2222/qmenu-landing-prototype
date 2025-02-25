@@ -1,2 +1,2 @@
-export * from './ItemWrapper';
+export * from './item-wrapper';
 export * from './OTP';

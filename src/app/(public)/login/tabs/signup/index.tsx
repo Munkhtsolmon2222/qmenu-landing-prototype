@@ -1,7 +1,7 @@
 'use client';
 import { z } from 'zod';
 import { ChildProps } from '../../page';
-import ItemWrapper from '../../components/ItemWrapper';
+import { ItemWrapper } from '../../components';
 import { OTP } from '../../components';
 import { useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';

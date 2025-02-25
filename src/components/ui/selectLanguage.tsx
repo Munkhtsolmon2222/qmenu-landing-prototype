@@ -55,15 +55,8 @@ const SelectLanguage = () => {
       flag: de,
     },
   ];
-  const [currentLanguage, setCurrentLanguage] = useState(selectLanguage[0]);
 
-  useEffect(() => {
-    const savedLangCode = localStorage.getItem('saveLang');
-    const lang =
-      selectLanguage.find((lang) => lang.code === savedLangCode) ||
-      selectLanguage[0];
-    setCurrentLanguage(lang);
-  }, []);
+  const [currentLanguage, setCurrentLanguage] = useState(selectLanguage[0]);
 
   const onChangeLanguage = (langCode: string) => {
     const selected = selectLanguage.find((lang) => lang.code === langCode);
@@ -74,6 +67,7 @@ const SelectLanguage = () => {
     }
     setOpen(false);
   };
+
   useEffect(() => {
     const savedLangCode = localStorage?.getItem('saveLang');
     if (savedLangCode && savedLangCode !== i18n.language) {

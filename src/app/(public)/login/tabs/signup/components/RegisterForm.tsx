@@ -1,21 +1,21 @@
-"use client";
-import { FormField } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import ItemWrapper from "@/app/(public)/login/components/ItemWrapper";
-import { Input } from "@/components/ui/input";
-import { useEffect, useRef, useState } from "react";
-import { ChildProps } from "../../../page";
-import { LoadingButton } from "@/components/ui/loading-button";
-import { useMutation } from "@apollo/client";
-import { REGISTER } from "@/graphql/mutation";
-import { Icons } from "@/components/shared/icons";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Gender, SignUpReturnValue } from "@/lib/types";
-import { Button } from "@/components/ui/button";
-import { useTheme } from "@/hooks/useTheme";
-import female from "@/assets/images/profile/female.svg";
-import male from "@/assets/images/profile/male.svg";
+'use client';
+import { FormField } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import ItemWrapper from '../../../components/ItemWrapper';
+import { Input } from '@/components/ui/input';
+import { useEffect, useRef, useState } from 'react';
+import { ChildProps } from '../../../page';
+import { LoadingButton } from '@/components/ui/loading-button';
+import { useMutation } from '@apollo/client';
+import { REGISTER } from '@/graphql/mutation';
+import { Icons } from '@/components/shared/icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Gender, SignUpReturnValue } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { useTheme } from '@/hooks/useTheme';
+import female from '@/assets/images/profile/female.svg';
+import male from '@/assets/images/profile/male.svg';
 import {
   Select,
   SelectContent,
@@ -24,26 +24,26 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { getMonths } from "@/lib/utils";
-import Image from "next/image";
+} from '@/components/ui/select';
+import { getMonths } from '@/lib/utils';
+import Image from 'next/image';
 function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 const Genders: { label: string; icon?: string; value: Gender }[] = [
   {
-    label: "Эрэгтэй",
+    label: 'Эрэгтэй',
     value: Gender.Male,
     icon: male,
   },
   {
-    label: "Эмэгтэй",
+    label: 'Эмэгтэй',
     value: Gender.Female,
     icon: female,
   },
   {
-    label: "Бусад",
+    label: 'Бусад',
     value: Gender.Custom,
   },
 ];
@@ -51,20 +51,20 @@ const Genders: { label: string; icon?: string; value: Gender }[] = [
 const FormSchema = z
   .object({
     firstName: z.string().min(2, {
-      message: "Нэрээ оруулна уу.",
+      message: 'Нэрээ оруулна уу.',
     }),
     lastName: z.string().min(2, {
-      message: "Овгоо оруулна уу.",
+      message: 'Овгоо оруулна уу.',
     }),
     gender: z.enum([Gender.Custom, Gender.Female, Gender.Male], {
-      required_error: "Утгыг оруулна уу.",
+      required_error: 'Утгыг оруулна уу.',
     }),
-    password: z.string({ required_error: "Нууц үгээ оруулна уу." }).min(2, {
-      message: "Нууц үгээ оруулна уу.",
+    password: z.string({ required_error: 'Нууц үгээ оруулна уу.' }).min(2, {
+      message: 'Нууц үгээ оруулна уу.',
     }),
-    rePassword: z.string({ required_error: "Нууц үгээ давтан оруулна уу" }),
+    rePassword: z.string({ required_error: 'Нууц үгээ давтан оруулна уу' }),
 
-    year: z.string({ required_error: "Төрсөн оноо оруулна уу" }),
+    year: z.string({ required_error: 'Төрсөн оноо оруулна уу' }),
     month: z.string().optional(),
     day: z.string().optional(),
   })
@@ -72,8 +72,8 @@ const FormSchema = z
     if (rePassword !== password)
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Нууц үг таарахгүй байна.",
-        path: ["rePassword"],
+        message: 'Нууц үг таарахгүй байна.',
+        path: ['rePassword'],
       });
 
     return z.NEVER;
@@ -112,7 +112,7 @@ export const RegisterForm: React.FC<Props> = ({
     watch,
     setValue,
   } = useForm<FormSchema>({
-    mode: "onSubmit",
+    mode: 'onSubmit',
     resolver: zodResolver(FormSchema),
     defaultValues: {
       gender: Gender.Male,
@@ -131,7 +131,7 @@ export const RegisterForm: React.FC<Props> = ({
     signUp({
       variables: {
         input: {
-          email: "",
+          email: '',
           gender: capitalizeFirstLetter(data.gender),
           name: data.firstName,
           password: data.password,
@@ -156,7 +156,7 @@ export const RegisterForm: React.FC<Props> = ({
     return times;
   };
 
-  const getDays = (month: string = "") => {
+  const getDays = (month: string = '') => {
     const days = [];
     const totalDays = new Date(
       new Date().getFullYear(),
@@ -170,7 +170,7 @@ export const RegisterForm: React.FC<Props> = ({
   };
   const daysRef = useRef(getDays(month));
   useEffect(() => {
-    setValue("day", "");
+    setValue('day', '');
     daysRef.current = getDays(month);
   }, [month, setValue]);
 
@@ -178,70 +178,70 @@ export const RegisterForm: React.FC<Props> = ({
   const Years = getYears();
   return (
     <>
-      <div className="flex justify-between gap-3">
+      <div className='flex justify-between gap-3'>
         <FormField
           control={control}
-          name="lastName"
+          name='lastName'
           render={({
-            field: { value = "", ...field },
+            field: { value = '', ...field },
             fieldState: { error },
           }) => (
             <ItemWrapper
-              title="Овог"
+              title='Овог'
               error={error}
-              titleClassName="text-sm"
-              className="mb-4 w-full"
+              titleClassName='text-sm'
+              className='mb-4 w-full'
             >
               <Input
                 {...field}
                 value={value}
-                className="h-12"
-                placeholder="Овог"
+                className='h-12'
+                placeholder='Овог'
               />
             </ItemWrapper>
           )}
         />
         <FormField
           control={control}
-          name="firstName"
+          name='firstName'
           render={({
-            field: { value = "", ...field },
+            field: { value = '', ...field },
             fieldState: { error },
           }) => (
             <ItemWrapper
-              title="Нэр"
+              title='Нэр'
               error={error}
-              titleClassName="text-sm"
-              className="mb-4 w-full"
+              titleClassName='text-sm'
+              className='mb-4 w-full'
             >
               <Input
                 {...field}
                 value={value}
-                className="h-12"
-                placeholder="Нэр"
+                className='h-12'
+                placeholder='Нэр'
               />
             </ItemWrapper>
           )}
         />
       </div>
 
-      <div className="grid grid-cols-3">
+      <div className='grid grid-cols-3'>
         <FormField
           control={control}
-          name="year"
+          name='year'
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <ItemWrapper
               error={error}
-              title="Төрсөн он"
-              titleClassName="text-sm"
-              className="mb-4"
+              title='Төрсөн он'
+              titleClassName='text-sm'
+              className='mb-4'
             >
               <Select value={value} onValueChange={onChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Он" />
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder='Он' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectGroup className="h-full max-h-96 overflow-y-auto">
+                  <SelectGroup className='h-full max-h-96 overflow-y-auto'>
                     <SelectLabel>Төрсөн он</SelectLabel>
                     {Years.map((year, index) => (
                       <SelectItem key={index} value={year.label.toString()}>
@@ -256,20 +256,20 @@ export const RegisterForm: React.FC<Props> = ({
         />
         <FormField
           control={control}
-          name="month"
+          name='month'
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <ItemWrapper
               error={error}
-              title="Төрсөн сар"
-              titleClassName="text-sm"
-              className="mb-4"
+              title='Төрсөн сар'
+              titleClassName='text-sm'
+              className='mb-4'
             >
               <Select value={value} onValueChange={onChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Сар" />
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder='Сар' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectGroup className="h-full max-h-96 overflow-y-auto">
+                  <SelectGroup className='h-full max-h-96 overflow-y-auto'>
                     <SelectLabel>Төрсөн сар</SelectLabel>
                     {getMonths.map((month, index) => (
                       <SelectItem key={index} value={month.label}>
@@ -284,20 +284,20 @@ export const RegisterForm: React.FC<Props> = ({
         />
         <FormField
           control={control}
-          name="day"
+          name='day'
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <ItemWrapper
               error={error}
-              title="Төрсөн он"
-              titleClassName="text-sm"
-              className="mb-4"
+              title='Төрсөн он'
+              titleClassName='text-sm'
+              className='mb-4'
             >
               <Select value={value} onValueChange={onChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Өдөр" />
+                <SelectTrigger className='w-full'>
+                  <SelectValue placeholder='Өдөр' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectGroup className="h-full max-h-96 overflow-y-auto">
+                  <SelectGroup className='h-full max-h-96 overflow-y-auto'>
                     <SelectLabel>Өдөр</SelectLabel>
                     {Days.map((year, index) => (
                       <SelectItem key={index} value={year.label.toString()}>
@@ -314,41 +314,41 @@ export const RegisterForm: React.FC<Props> = ({
 
       <FormField
         control={control}
-        name="gender"
+        name='gender'
         render={({ field: { onChange }, fieldState: { error } }) => (
           <ItemWrapper
             error={error}
-            title="Хүйс"
-            titleClassName="text-sm"
-            className="mb-4"
+            title='Хүйс'
+            titleClassName='text-sm'
+            className='mb-4'
           >
-            <div className="grid grid-cols-3 gap-2">
+            <div className='grid grid-cols-3 gap-2'>
               {Genders.map((item, index) => {
                 const active = item.value === gender;
                 return (
                   <Button
                     onClick={() => onChange(item.value)}
                     key={index}
-                    variant={active ? "default" : "outline"}
-                    className="h-12"
+                    variant={active ? 'default' : 'outline'}
+                    className='h-12'
                   >
                     {item.icon && (
                       <Image
                         width={100}
                         height={100}
-                        className="w-auto h-auto"
-                        alt="itemPhoto"
+                        className='w-auto h-auto'
+                        alt='itemPhoto'
                         src={item.icon}
                         style={{
                           filter:
-                            (mainTheme === "light" && active) ||
-                            (mainTheme !== "light" && !active)
-                              ? "brightness(0) saturate(100%) invert(100%) sepia(94%) saturate(0%) hue-rotate(229deg) brightness(105%) contrast(107%)"
-                              : "",
+                            (mainTheme === 'light' && active) ||
+                            (mainTheme !== 'light' && !active)
+                              ? 'brightness(0) saturate(100%) invert(100%) sepia(94%) saturate(0%) hue-rotate(229deg) brightness(105%) contrast(107%)'
+                              : '',
                         }}
                       />
                     )}
-                    <div className="ml-1">{item.label}</div>
+                    <div className='ml-1'>{item.label}</div>
                   </Button>
                 );
               })}
@@ -359,35 +359,35 @@ export const RegisterForm: React.FC<Props> = ({
 
       <FormField
         control={control}
-        name="password"
+        name='password'
         render={({
-          field: { value = "", ...field },
+          field: { value = '', ...field },
           fieldState: { error },
         }) => (
           <ItemWrapper
             error={error}
-            title="Хэрэглэгчийн нууц үг"
-            titleClassName="text-sm"
-            className="mb-4"
+            title='Хэрэглэгчийн нууц үг'
+            titleClassName='text-sm'
+            className='mb-4'
           >
-            <div className="relative w-full">
+            <div className='relative w-full'>
               <Input
                 {...field}
                 value={value}
-                type={hidePassword[0] ? "password" : "text"}
-                placeholder="Нууц үгээ оруулна уу"
-                className="pr-10 h-12"
+                type={hidePassword[0] ? 'password' : 'text'}
+                placeholder='Нууц үгээ оруулна уу'
+                className='pr-10 h-12'
               />
               <div
-                className="absolute cursor-pointer bottom-2.5 right-4 opacity-40 hover:opacity-100"
+                className='absolute cursor-pointer bottom-2.5 right-4 opacity-40 hover:opacity-100'
                 onClick={() =>
                   setHidePassword({ ...hidePassword, 0: !hidePassword[0] })
                 }
               >
                 {hidePassword[0] ? (
-                  <Icons.eye className="h-7 w-5" />
+                  <Icons.eye className='h-7 w-5' />
                 ) : (
-                  <Icons.eyeOff className="h-7 w-5" />
+                  <Icons.eyeOff className='h-7 w-5' />
                 )}
               </div>
             </div>
@@ -396,34 +396,34 @@ export const RegisterForm: React.FC<Props> = ({
       />
       <FormField
         control={control}
-        name="rePassword"
+        name='rePassword'
         render={({
-          field: { value = "", ...field },
+          field: { value = '', ...field },
           fieldState: { error },
         }) => (
           <ItemWrapper
             error={error}
-            title="Хэрэглэгчийн нууц үг давтах"
-            titleClassName="text-sm"
+            title='Хэрэглэгчийн нууц үг давтах'
+            titleClassName='text-sm'
           >
-            <div className="relative w-full">
+            <div className='relative w-full'>
               <Input
                 {...field}
                 value={value}
-                type={hidePassword[1] ? "password" : "text"}
-                placeholder="Нууц үгээ давтан оруулна уу"
-                className="pr-10 h-12"
+                type={hidePassword[1] ? 'password' : 'text'}
+                placeholder='Нууц үгээ давтан оруулна уу'
+                className='pr-10 h-12'
               />
               <div
-                className="absolute cursor-pointer bottom-2.5 right-4 opacity-40 hover:opacity-100"
+                className='absolute cursor-pointer bottom-2.5 right-4 opacity-40 hover:opacity-100'
                 onClick={() =>
                   setHidePassword({ ...hidePassword, 1: !hidePassword[1] })
                 }
               >
                 {hidePassword[1] ? (
-                  <Icons.eye className="h-7 w-5" />
+                  <Icons.eye className='h-7 w-5' />
                 ) : (
-                  <Icons.eyeOff className="h-7 w-5" />
+                  <Icons.eyeOff className='h-7 w-5' />
                 )}
               </div>
             </div>
@@ -431,19 +431,19 @@ export const RegisterForm: React.FC<Props> = ({
         )}
       />
 
-      <div className="px-2 w-full">
+      <div className='px-2 w-full'>
         <LoadingButton
           loading={loading || userLoad}
           disabled={!isValid}
-          type="submit"
+          type='submit'
           className={`w-full mt-6 rounded-full bg-current ${
             isValid
-              ? "bg-primary"
-              : "bg-primary-foreground hover:bg-primary-foreground"
+              ? 'bg-primary'
+              : 'bg-primary-foreground hover:bg-primary-foreground'
           }`}
           onClick={handleSubmit(onSubmit)}
         >
-          <span className={`${isValid ? "text-white" : "text-primary"}`}>
+          <span className={`${isValid ? 'text-white' : 'text-primary'}`}>
             Бүртгүүлэх
           </span>
         </LoadingButton>

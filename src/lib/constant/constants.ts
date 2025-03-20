@@ -21,6 +21,7 @@ import Skewer from '@/assets/images/category-tags/skewer.png';
 import { StaticImageData } from 'next/image';
 import primeat from '@/assets/images/primeat.png';
 
+export const QMENU_URL = 'https://qmenu.mn';
 export const ID = 'id';
 export const CUSTOMER = 'customer';
 export const GUEST = 'guest';

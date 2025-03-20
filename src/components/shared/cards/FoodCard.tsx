@@ -23,8 +23,8 @@ export const FoodCard = (props: Props) => {
     >
       <div className="absolute inset-0">
         <Image
-          width={100}
-          height={100}
+          width={1280}
+          height={720}
           src={food?.image}
           alt="BBQ Pizza"
           className="w-full h-full object-cover"

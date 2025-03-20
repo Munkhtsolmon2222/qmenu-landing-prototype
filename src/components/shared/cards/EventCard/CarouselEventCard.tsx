@@ -37,8 +37,8 @@ export const CarouselEventCard = forwardRef<HTMLDivElement, Props>(
         onClick={() => onClick?.()}
       >
         <Image
-          width={100}
-          height={100}
+          width={1280}
+          height={720}
           className={cn(
             'w-full h-3/5 object-cover z-0 opacity-0 transition-opacity duration-300 ease-in-out transform',
             imageClassName,

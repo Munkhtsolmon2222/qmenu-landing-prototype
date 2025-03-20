@@ -18,8 +18,8 @@ export function SearchProduct({ food }: Props) {
     >
       <div className="relative">
         <Image
-          width={100}
-          height={100}
+          width={1280}
+          height={720}
           alt="picture"
           className="w-full h-20 object-cover"
           src={food.image ?? defaultImage}

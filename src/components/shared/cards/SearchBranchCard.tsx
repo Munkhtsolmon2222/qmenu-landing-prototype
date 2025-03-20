@@ -51,8 +51,8 @@ export function SearchBranch({ place }: Props) {
           ></span>
         </div>
         <Image
-          width={100}
-          height={100}
+          width={1280}
+          height={720}
           alt="picture"
           className="w-full h-[8vh] object-cover"
           src={!place?.image || place.image === '' ? defaultImage : place?.image}

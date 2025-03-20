@@ -85,8 +85,8 @@ export function FilteredCard(props: Props) {
         )}
         <div></div>
         <Image
-          width={100}
-          height={100}
+          width={1280}
+          height={720}
           alt="picture"
           className="w-full h-[16vh] object-cover"
           src={!place?.image || place.image === '' ? defaultImage : place?.image}

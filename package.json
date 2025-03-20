@@ -1,6 +1,6 @@
 {
-  "name": "new-v5",
-  "version": "0.1.0",
+  "name": "qmenu",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "dev": "PORT=5173 next dev --turbopack",

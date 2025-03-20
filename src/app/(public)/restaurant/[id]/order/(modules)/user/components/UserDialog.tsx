@@ -16,21 +16,20 @@ import { useRestaurantStore } from '@/lib/providers';
 import { OrderType } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams } from 'next/navigation';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ItemWrapper } from '../../../components';
 import { authenticate, LOGIN, SEARCH_CUSTOMERS } from '@/actions';
 import { redirectWithNProgress as navigate } from '@/lib/utils';
-import { hookFormSubmit } from '@/lib/helpers';
 import { LoginInput, LoginSchema } from '@/lib/validations';
 import { useAction } from '@/lib/hooks';
+import nProgress from 'nprogress';
 
 interface Props {
   isAuthenticated: boolean;
 }
 
-export const UserDialog: React.FC<Props> = ({ isAuthenticated }) => {
+export const UserDialog: React.FC<Props> = ({}) => {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const { input, setInput } = useRestaurantStore();
@@ -43,9 +42,9 @@ export const UserDialog: React.FC<Props> = ({ isAuthenticated }) => {
     watch,
     control,
     setValue,
-    getValues,
     trigger,
     clearErrors,
+    handleSubmit,
     formState: { isValid },
   } = useForm<LoginInput>({
     mode: 'onSubmit',
@@ -58,37 +57,47 @@ export const UserDialog: React.FC<Props> = ({ isAuthenticated }) => {
 
   const { phone = '', user } = watch();
 
-  const onFinish = ({ data }: Awaited<ReturnType<typeof LOGIN>> | undefined = {}) => {
+  const { action: login, loading: logging } = useAction(LOGIN, {
+    lazy: true,
+  });
+
+  const onSubmit = async (e: LoginInput) => {
+    login(e, {
+      onSuccess: (data) => data && onFinish(data),
+    });
+  };
+
+  const onFinish = (data: { token: string }) => {
     localStorage.removeItem('sessionType');
     localStorage.removeItem('sessionId');
     localStorage.removeItem('sessionStart');
 
     authenticate(data?.token ?? '').then(() => {
-      if (!input) {
-        navigate(`${PAGE_RESTAURANT}/${id}`);
-        return;
+      let path = '';
+
+      if (!input) path = `${PAGE_RESTAURANT}/${id}`;
+      else {
+        switch (input.type) {
+          case OrderType.PreOrder:
+          case OrderType.TableOrder:
+            path = `${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TABLE_ORDER}`;
+            break;
+          case OrderType.Event:
+            path = `${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_ORDER_EVENT}`;
+            break;
+          case OrderType.TakeAway:
+            path = `${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TAKE_AWAY}`;
+            break;
+          default:
+            path = `${PAGE_RESTAURANT}/${id}`;
+            break;
+        }
       }
 
-      switch (input.type) {
-        case OrderType.PreOrder:
-        case OrderType.TableOrder:
-          navigate(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TABLE_ORDER}`);
-          return;
-        case OrderType.Event:
-          navigate(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_ORDER_EVENT}`);
-          return;
-        case OrderType.TakeAway:
-          navigate(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TAKE_AWAY}`);
-          return;
-        default:
-          navigate(`${PAGE_RESTAURANT}/${id}`);
-      }
+      nProgress.start();
+      window.location.replace(path);
     });
   };
-
-  useEffect(() => {
-    if (isAuthenticated) navigate(`${PAGE_RESTAURANT}/${id}`);
-  }, [isAuthenticated]);
 
   return (
     <>
@@ -180,9 +189,11 @@ export const UserDialog: React.FC<Props> = ({ isAuthenticated }) => {
         )}
       </OrderDialog.Container>
       <OrderDialog.Footer
-        onSubmit={undefined}
-        action={hookFormSubmit({ action: LOGIN, onFinish, trigger, getValues })}
-        buttonProps={{ disabled: !isValid }}
+        buttonProps={{
+          disabled: !isValid || logging,
+          loading: logging,
+          onClick: handleSubmit(onSubmit),
+        }}
       >
         <div className="w-full text-center">{t('Continue')}</div>
       </OrderDialog.Footer>

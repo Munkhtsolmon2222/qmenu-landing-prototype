@@ -53,3 +53,4 @@ export const PATH_NAMES = new Map<string, string>([
 ]);
 
 export const PRIVATE_PAGES = [PAGE_ORDERS, PAGE_FAVOURITE, PAGE_PROFILE];
+export const GUESTS_PAGES = [PAGE_LOGIN, PAGE_FORGOT];

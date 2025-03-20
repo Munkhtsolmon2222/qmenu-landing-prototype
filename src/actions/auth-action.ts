@@ -23,7 +23,7 @@ export const authenticate = async (token: string) => {
 export const logout = async () => {
   const cookieStore = await cookies();
   cookieStore.delete(ACCESS_TOKEN);
-  redirect(PAGE_HOME);
+  // redirect(PAGE_HOME);
 };
 
 export const GET_ACCESS_TOKEN = async () => {
@@ -34,7 +34,7 @@ export const GET_ACCESS_TOKEN = async () => {
   });
 };
 
-export const GET_CHANNEL_TOKEN1 = async (id: string, type: SystemType = SystemType.C) => {
+export const GET_CHANNEL_TOKEN = async (id: string, type: SystemType = SystemType.C) => {
   let token = (await cookies()).get(ACCESS_TOKEN)?.value;
 
   if (!isValidToken(token)) token = process.env.APP_API_KEY;
@@ -45,7 +45,7 @@ export const GET_CHANNEL_TOKEN1 = async (id: string, type: SystemType = SystemTy
   });
 };
 
-export const GET_CHANNEL_TOKEN = async (id: string, type: SystemType = SystemType.C) => {
+export const GET_CHANNEL_TOKEN1 = async (id: string, type: SystemType = SystemType.C) => {
   return query<{ token: string }>({
     query: PARTICIPANT_QUERY.GET_PARTICIPANT,
     variables: { id },

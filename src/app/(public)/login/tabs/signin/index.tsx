@@ -8,20 +8,21 @@ import { FormField } from '@/components/ui/form';
 import { useTranslation } from 'react-i18next';
 import { SigninInput, SigninSchema } from '@/lib/validations';
 import { Button, Icons, Input } from '@/components/general';
-import { CUSTOMER, PAGE_FORGOT } from '@/lib/constant';
+import { CUSTOMER, PAGE_FORGOT, PAGE_PROFILE } from '@/lib/constant';
 import { useAction } from '@/lib/hooks';
 import { authenticate, GET_PAYLOAD, LOGIN } from '@/actions';
 import { showToast } from '@/lib/helpers';
 import { redirectWithNProgress as navigate } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import nProgress from 'nprogress';
+import { Loader } from '@/components/shared';
 
 interface Props extends ChildProps {}
 
 const Index: React.FC<Props> = ({ nextPath, goBack }) => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
-  const router = useRouter();
 
   const { data: payload } = useAction(GET_PAYLOAD);
 
@@ -32,8 +33,8 @@ const Index: React.FC<Props> = ({ nextPath, goBack }) => {
       authenticate(data.token).then(() => {
         if (goBack) {
           nProgress.start();
-          router.back();
-        } else navigate(nextPath ?? '/');
+          window.location.replace(PAGE_PROFILE);
+        } else window.location.href = nextPath ?? '/';
       });
     },
     onError: ({ message }) => showToast(message),
@@ -55,6 +56,8 @@ const Index: React.FC<Props> = ({ nextPath, goBack }) => {
     if (payload?.role === CUSTOMER) navigate(nextPath ?? '/');
     else login({ phone: data.phone, password: data.password, user: false });
   }
+
+  if (searchParams.get('reload')) return <Loader className="h-screen" />;
 
   return (
     <div className="flex-col overflow-y-auto mb-20 flex items-center w-full max-w-96">

@@ -5,7 +5,7 @@ import discount from '@/assets/images/profile/discount.svg';
 import loyalty from '@/assets/images/profile/loyalty.svg';
 import gift from '@/assets/images/profile/gift.svg';
 import logOut from '@/assets/images/profile/log-out.svg';
-import { PAGE_PROFILE } from '@/lib/constant';
+import { PAGE_HOME, PAGE_PROFILE } from '@/lib/constant';
 import { Customer } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { MenuHeader } from './header';
@@ -100,7 +100,7 @@ export const ProfileMenu: React.FC<Props> = ({ customer }) => {
     nProgress.start();
 
     if (path === 'logout') {
-      logout();
+      logout().then(() => (window.location.href = PAGE_HOME));
       return;
     }
 

@@ -7,6 +7,7 @@ import { calculateDistance, cn } from '@/lib/utils';
 import { Icons } from '@/components/general';
 import { useFavourite } from '@/lib/providers';
 import nProgress from 'nprogress';
+import { Loader } from '../loader';
 
 interface Props {
   place: BranchDetail;
@@ -18,7 +19,7 @@ interface Props {
 export function RestaurantListCard(props: Props) {
   const { place, className, ref } = props;
   const router = useRouter();
-  const { editFavourite, isFavourite } = useFavourite();
+  const { editFavourite, isFavourite, editing: loading, loadingId } = useFavourite();
   const like = isFavourite(FavouriteItemType.BRANCH, place.branch);
 
   const navigate = (e: string) => {
@@ -46,15 +47,19 @@ export function RestaurantListCard(props: Props) {
                 objectFit: 'cover',
               }}
             />
-            <Icons.heart
-              onClick={(e) => {
-                e.stopPropagation();
-                editFavourite(FavouriteItemType.BRANCH, place.branch);
-              }}
-              className={`w-6 h-6 ${
-                like && 'fill-white'
-              } stroke-white absolute top-0 left-0 m-2 bg-secondary-background pt-[0.2rem] pb-[0.1rem]  rounded-full`}
-            />
+            {loading && place.branch === loadingId ? (
+              <Loader className="absolute top-0 left-0 m-2 bg-background p-1 h-6 w-6 rounded-full" />
+            ) : (
+              <Icons.heart
+                onClick={(e) => {
+                  e.stopPropagation();
+                  editFavourite(FavouriteItemType.BRANCH, place.branch);
+                }}
+                className={`w-6 h-6 ${
+                  like && 'fill-current-2'
+                } stroke-white absolute top-0 left-0 m-2 bg-secondary-background pt-[0.2rem] pb-[0.1rem]  rounded-full`}
+              />
+            )}
           </div>
           <div className="px-2 py-2 md:gap-2 gap-1.5 flex flex-col justify-between overflow-hidden text-ellipsis bg-background ">
             <div className="flex items-center justify-between w-full">

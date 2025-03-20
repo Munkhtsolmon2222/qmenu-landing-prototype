@@ -24,6 +24,7 @@ import { redirectWithNProgress as navigate } from '@/lib/utils';
 import { OrderOtpInput, OrderOtpSchema } from '@/lib/validations';
 import { useAction } from '@/lib/hooks';
 import { showToast } from '@/lib/helpers';
+import nProgress from 'nprogress';
 
 function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -180,14 +181,16 @@ export const OtpDialog: React.FC<Props> = ({ isAuthenticated }) => {
     localStorage.removeItem('sessionStart');
 
     authenticate(token).then(() => {
-      if (!input) {
-        navigate(`${PAGE_RESTAURANT}/${id}`);
-        return;
+      let path = `${PAGE_RESTAURANT}/${id}`;
+
+      if (input) {
+        if (input.type === OrderType.TakeAway)
+          path = `${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TAKE_AWAY}`;
+        else path = `${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TABLE_ORDER}`;
       }
 
-      if (input.type === OrderType.TakeAway)
-        navigate(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TAKE_AWAY}`);
-      else navigate(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TABLE_ORDER}`);
+      nProgress.start();
+      window.location.replace(path);
     });
   };
 

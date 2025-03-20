@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
-const path = require('path');
-const basenameProd = 'https://qmenu.mn/';
+// const path = require('path');
+// const basenameProd = 'https://qmenu.mn/';
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
   //   return config;
   // },
   env: {
-    BASE_URL: process.env.NODE_ENV === 'production' ? basenameProd : 'http://localhost:5173/',
+    // BASE_URL: process.env.NODE_ENV === 'production' ? basenameProd : 'http://localhost:5173/',
     APP_REGION: process.env.APP_REGION,
     NEXT_PUBLIC_APP_STAGE: process.env.NEXT_PUBLIC_APP_STAGE,
     GOOGLE_MAPS_API: process.env.GOOGLE_MAPS_API,

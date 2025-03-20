@@ -1,3 +1,5 @@
+import { PaymentType } from '../constant';
+
 export interface Transaction {
   id?: string;
   type: string;
@@ -19,7 +21,7 @@ export interface Transaction {
 export interface Payment {
   id: string;
   name: string;
-  type: string;
+  type: PaymentType;
   active: boolean;
 }
 
@@ -34,7 +36,7 @@ export interface TransactionInput {
   order: string;
   confirm: boolean;
   payment: string;
-  amount: number;
+  amount?: number;
   vatType: number;
   register: string;
   buyer: string;

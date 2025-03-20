@@ -1,15 +1,26 @@
-import Navigationlayout from "@/components/layouts/nav";
-import { Suspense } from "react";
-import Loader from "@/components/shared/loader";
-interface Props {
-  children: React.ReactNode;
-}
+import { FilterControl, Navigationlayout, NavigationlayoutContent } from '@/components/shared';
+import { Separator } from '@/components/ui';
+import { BranchFilters, Categories, HomeHeader } from './components';
+import { isUserAuthenticated } from '@/actions';
+
+interface Props extends React.PropsWithChildren {}
 
 const Layout: React.FC<Props> = async ({ children }) => {
+  const isAuthenticated = await isUserAuthenticated();
+
   return (
-    <Suspense fallback={<Loader />}>
-      <Navigationlayout>{children}</Navigationlayout>
-    </Suspense>
+    <Navigationlayout>
+      <HomeHeader isAuthenticated={isAuthenticated} />
+      <NavigationlayoutContent>
+        <Categories />
+        <Separator className="mt-2" />
+        <div className="flex flex-col h-max w-full justify-between px-3 z-0">
+          <BranchFilters />
+          <FilterControl />
+          {children}
+        </div>
+      </NavigationlayoutContent>
+    </Navigationlayout>
   );
 };
 

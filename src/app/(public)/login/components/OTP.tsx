@@ -1,15 +1,12 @@
-"use client";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { LoadingButton } from "@/components/ui/loading-button";
-import { toast } from "@/components/ui/use-toast";
-import { VERIFY_SESSION } from "@/graphql/mutation";
-import { useMutation } from "@apollo/client";
-import { LoaderIcon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+'use client';
+import { VERIFY_SESSION } from '@/actions';
+import { Button } from '@/components/general';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { showToast } from '@/lib/helpers';
+import { useAction } from '@/lib/hooks';
+import { LoaderIcon } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+
 interface Props {
   phone: string;
   time: number;
@@ -32,31 +29,22 @@ export const OTP: React.FC<Props> = ({
   const ref = useRef<HTMLInputElement>(null);
   const [code, setCode] = useState<string>();
 
-  const [verifySession, { loading }] = useMutation(VERIFY_SESSION, {
-    onCompleted: (data) => {
-      if (data.verifySession) {
-        onFinish();
-      } else {
-        toast({
-          title: "Буруу байна",
-          variant: "default",
-        });
-      }
+  const { action: verifySession, loading } = useAction(VERIFY_SESSION, {
+    lazy: true,
+    onSuccess(data) {
+      if (data) onFinish();
+      else showToast('Буруу байна');
     },
+    onError: () => showToast('Буруу байна'),
   });
 
-  const onSubmit = useCallback(
-    (pin: string) => {
-      if (pin && sessionId) {
-        verifySession({ variables: { id: sessionId, pin } });
-      }
-    },
-    [sessionId, verifySession]
-  );
+  const onSubmit = (pin: string) => {
+    if (pin && sessionId) verifySession(sessionId, pin);
+  };
 
   useEffect(() => {
-    if ((code || "").length === 4) onSubmit(code ?? "");
-  }, [code, onSubmit]);
+    if ((code || '').length === 4) onSubmit(code ?? '');
+  }, [code]);
 
   useEffect(() => {
     if (phone) ref.current?.focus();
@@ -69,20 +57,12 @@ export const OTP: React.FC<Props> = ({
           <LoaderIcon className="animate-spin" />
         </div>
       )}
-      <div
-        className={`${loading ? "opacity-20" : "opacity-70"} overflow-hidden`}
-      >
+      <div className={`${loading ? 'opacity-20' : 'opacity-70'} overflow-hidden`}>
         <div onClick={() => ref.current?.focus()}>
-          <div>Бидний саяхан илгээсэн 4 оронтой кодыг оруулна уу</div>
+          <div className="text-center">Бидний саяхан илгээсэн 4 оронтой кодыг оруулна уу</div>
           <br />
           <div className="mb-4">+(976) {phone}</div>
-          <InputOTP
-            maxLength={4}
-            onChange={setCode}
-            value={code}
-            ref={ref}
-            className="px-4"
-          >
+          <InputOTP maxLength={4} onChange={setCode} value={code} ref={ref}>
             <InputOTPGroup className="w-full p-0 mx-auto flex justify-center">
               <InputOTPSlot index={0} className="w-24 h-16 text-2xl" />
               <InputOTPSlot index={1} className="w-24 h-16 text-2xl" />
@@ -94,9 +74,9 @@ export const OTP: React.FC<Props> = ({
         <div className="flex gap-1 mt-4 text-sm">
           <div>Код хүлээж авсангүй.</div>
           <div
-            className={`hover:underline select-none ${
-              sessionLoad ? "opacity-50" : ""
-            } ${time > 0 ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`hover:underline select-none ${sessionLoad ? 'opacity-50' : ''} ${
+              time > 0 ? 'cursor-not-allowed' : 'cursor-pointer'
+            }`}
             onClick={() => !sessionLoad && time < 1 && tryCode()}
           >
             Дахин авах ({time})
@@ -104,16 +84,14 @@ export const OTP: React.FC<Props> = ({
           {sessionLoad && <LoaderIcon className="h-5 w-5 animate-spin" />}
         </div>
       </div>
-      <div className="px-2 w-full">
-        <LoadingButton
-          loading={loading}
-          type="submit"
-          className={`w-full mt-10 rounded-full bg-current`}
-          onClick={goBack}
-        >
-          <span className="text-white">Буцах</span>
-        </LoadingButton>
-      </div>
+      <Button
+        loading={loading}
+        type="submit"
+        className="w-full mt-10 h-12 rounded-md bg-current-2"
+        onClick={goBack}
+      >
+        <span className="text-white">Буцах</span>
+      </Button>
     </>
   );
 };

@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-export const GET_VAT_PAYER = gql`
+const GET_VAT_PAYER = gql`
   query getVatPayer($register: String) {
     getVatPayer(register: $register) {
       found
@@ -8,3 +8,7 @@ export const GET_VAT_PAYER = gql`
     }
   }
 `;
+
+export const VAT_QUERY = {
+  GET_VAT_PAYER,
+};

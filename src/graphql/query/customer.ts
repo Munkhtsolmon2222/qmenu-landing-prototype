@@ -1,8 +1,8 @@
-import { gql } from "@apollo/client";
-import { PRODUCT_FIELDS, VARIANT_FIELDS } from "../fragment";
+import { gql } from '@apollo/client';
+import { PRODUCT_FIELDS, VARIANT_FIELDS } from '../fragment';
 
-export const GET_CURRENT_CUSTOMER = gql`
-  {
+const GET_CURRENT_CUSTOMER = gql`
+  query me {
     me {
       birthday
       createdAt
@@ -33,8 +33,8 @@ export const GET_CURRENT_CUSTOMER = gql`
   }
 `;
 
-export const GET_CUSTOMER_PRODUCTS = gql`
-  {
+const GET_CUSTOMER_PRODUCTS = gql`
+  query getCustomerProducts {
     getCustomerProducts {
       id
       spentOrder
@@ -56,7 +56,7 @@ export const GET_CUSTOMER_PRODUCTS = gql`
   ${VARIANT_FIELDS}
 `;
 
-export const SEARCH_CUSTOMERS = gql`
+const SEARCH_CUSTOMERS = gql`
   query searchCustomers($query: String!) {
     searchCustomers(query: $query) {
       gender
@@ -69,3 +69,9 @@ export const SEARCH_CUSTOMERS = gql`
     }
   }
 `;
+
+export const CUSTOMER_QUERY = {
+  GET_CURRENT_CUSTOMER,
+  GET_CUSTOMER_PRODUCTS,
+  SEARCH_CUSTOMERS,
+};

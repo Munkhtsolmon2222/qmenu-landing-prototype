@@ -1,15 +1,14 @@
-import Navigationlayout from "@/components/layouts/nav";
-import { Suspense } from "react";
-import Loader from "@/components/shared/loader";
-interface Props {
-  children: React.ReactNode;
-}
+import { DefaultLayout, DefaultLayoutContent } from '@/components/shared';
+import { MapHeader } from './components/MapHeader';
 
-const Layout: React.FC<Props> = async ({ children }) => {
+type Props = React.PropsWithChildren;
+
+const Layout: React.FC<Props> = ({ children }) => {
   return (
-    <Suspense fallback={<Loader />}>
-      <Navigationlayout>{children}</Navigationlayout>
-    </Suspense>
+    <DefaultLayout>
+      <MapHeader />
+      <DefaultLayoutContent className="mb-0">{children}</DefaultLayoutContent>
+    </DefaultLayout>
   );
 };
 

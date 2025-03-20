@@ -1,32 +1,23 @@
-"use client";
-import { Icons } from "@/components/shared/icons";
-import { Button } from "@/components/ui/button";
+'use client';
+import { Button, Icons } from '@/components/general';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  BasketItem,
-  getMainVariant,
-  useRestaurantStore,
-} from "@/lib/providers/restaurant";
-import { MenuItemState, Option, Product, Variant } from "@/lib/types";
-import { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
+} from '@/components/ui/dialog';
+import { BasketItem, getMainVariant, useRestaurantStore } from '@/lib/providers';
+import { MenuItemState, Option, Product, Variant } from '@/lib/types';
+import { useEffect, useState } from 'react';
+
 interface Props {
   visible: boolean;
   onClose: () => void;
   product?: Product;
 }
 
-export const ProductDetail: React.FC<Props> = ({
-  visible,
-  onClose,
-  product,
-}) => {
+export const ProductDetail: React.FC<Props> = ({ visible, onClose, product }) => {
   const [item, setItem] = useState<BasketItem>();
   const [visibleOption, setVisibleOption] = useState<boolean>();
   const [option, setOption] = useState<Option>();
@@ -34,7 +25,7 @@ export const ProductDetail: React.FC<Props> = ({
 
   const onFinish = () => {
     if (item && product) {
-      crudItem("create", {
+      crudItem('create', {
         product,
         variant: item.variant,
         options: item.input.options,
@@ -43,39 +34,34 @@ export const ProductDetail: React.FC<Props> = ({
       onClose();
     }
   };
-  const buildItem = useCallback(
-    (product: Product, variant: Variant): BasketItem => {
-      return {
-        id: "",
-        sort: items.length,
-        product,
-        variant,
-        input: { comment: "", id: variant.id, options: [], quantity: 1 },
-        total: variant.salePrice,
-      };
-    },
-    [items.length]
-  );
+
+  const buildItem = (product: Product, variant: Variant): BasketItem => {
+    return {
+      id: '',
+      sort: items.length,
+      product,
+      variant,
+      input: { comment: '', id: variant.id, options: [], quantity: 1 },
+      total: variant.salePrice,
+    };
+  };
 
   useEffect(() => {
     if (product) {
       const variant = getMainVariant(product);
       if (variant) setItem(buildItem(product, variant));
     }
-  }, [product, buildItem]);
+  }, [product]);
 
   const changeVariant = (variant: Variant) => {
     if (product) setItem(buildItem(product, variant));
   };
 
-  const setCount = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    type: "add" | "remove"
-  ) => {
+  const setCount = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: 'add' | 'remove') => {
     e.stopPropagation();
 
     if (item) {
-      if (type === "add") {
+      if (type === 'add') {
         setItem({
           ...item,
           input: { ...item.input, quantity: item.input.quantity + 1 },
@@ -121,7 +107,7 @@ export const ProductDetail: React.FC<Props> = ({
         setOption(val);
         setVisibleOption(true);
       } else {
-        options = options.concat([{ id: val.id, value: "" }]);
+        options = options.concat([{ id: val.id, value: '' }]);
         setItem({
           ...item,
           input: { ...item.input, options },
@@ -134,14 +120,12 @@ export const ProductDetail: React.FC<Props> = ({
   return (
     <>
       <Dialog open={visible} onOpenChange={onClose}>
-        <DialogContent className="h-screen md:h-[calc(100vh_-_50px)] flex flex-col">
+        <DialogContent className="h-screen max-w-full sm:max-w-lg w-full md:h-[calc(100vh_-_50px)] flex flex-col">
           <DialogHeader className="text-start">
             <DialogTitle>Дэлгэрэнгүй</DialogTitle>
           </DialogHeader>
           <div className="h-full flex flex-col gap-4 overflow-y-auto no-scrollbar">
-            <Image
-              width={100}
-              height={100}
+            <img
               className="w-full h-full max-h-[270px] object-cover rounded-lg"
               src={product?.image}
               alt={product?.name}
@@ -149,16 +133,13 @@ export const ProductDetail: React.FC<Props> = ({
             <div className="flex items-center justify-between">
               <span className="text-gray-400">{product?.name}</span>
               <span className="text-current-2">
-                {product && getMainVariant(product)?.salePrice.toLocaleString()}{" "}
-                MNT
+                {product && getMainVariant(product)?.salePrice.toLocaleString()} MNT
               </span>
             </div>
-            <p>Сонголт</p>
+            <p>Хувилбар</p>
             <div className="flex overflow-y-hidden overflow-x-auto gap-4 min-h-24 no-scrollbar">
               {(
-                mainFirst(product)?.variants?.filter(
-                  (e) => e.state === MenuItemState.ACTIVE
-                ) ?? []
+                mainFirst(product)?.variants?.filter((e) => e.state === MenuItemState.ACTIVE) ?? []
               ).map((variant, i) => {
                 const active = item?.variant.id === variant.id;
                 return (
@@ -166,21 +147,17 @@ export const ProductDetail: React.FC<Props> = ({
                     onClick={() => changeVariant(variant)}
                     key={i}
                     className={`flex flex-col justify-between h-24 min-w-64 rounded-lg border-2 p-2 ${
-                      active ? "border-current-2" : "border-gray-100"
+                      active ? 'border-current-2' : 'border-gray-100'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <span>{variant.name}</span>
                       <div
                         className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${
-                          active
-                            ? "border-current-2 bg-current-2"
-                            : "border-gray-300"
+                          active ? 'border-current-2 bg-current-2' : 'border-gray-300'
                         }`}
                       >
-                        {active && (
-                          <Icons.check className="w-4 h-4 text-white" />
-                        )}
+                        {active && <Icons.check className="w-4 h-4 text-white" />}
                       </div>
                     </div>
                     <div className="flex items-center justify-between gap-3">
@@ -192,17 +169,15 @@ export const ProductDetail: React.FC<Props> = ({
                           <Button
                             variant="outline"
                             className="w-8 h-8 text-current-2 border-current-2 p-0"
-                            onClick={(e) => setCount(e, "remove")}
+                            onClick={(e) => setCount(e, 'remove')}
                           >
                             <Icons.minus className="text-current-2 w-4 h-4" />
                           </Button>
-                          <span className="text-current-2">
-                            {item.input.quantity}
-                          </span>
+                          <span className="text-current-2">{item.input.quantity}</span>
                           <Button
                             variant="outline"
                             className="w-8 h-8 text-current-2 border-current-2 p-0"
-                            onClick={(e) => setCount(e, "add")}
+                            onClick={(e) => setCount(e, 'add')}
                           >
                             <Icons.add className="text-current-2 w-4 h-4" />
                           </Button>
@@ -217,34 +192,26 @@ export const ProductDetail: React.FC<Props> = ({
               {item?.variant?.options
                 ?.filter((e) => e.state === MenuItemState.ACTIVE)
                 .map((option, i) => {
-                  const active = item.input.options.find(
-                    (e) => e.id === option.id
-                  );
+                  const active = item.input.options.find((e) => e.id === option.id);
                   return (
                     <div
                       onClick={() => onSelectOption(option)}
                       key={i}
                       className={`flex items-center justify-between border-[1px] ${
-                        active ? "border-current-2" : "border-gray-200"
+                        active ? 'border-current-2' : 'border-gray-200'
                       } rounded-lg py-3 px-2`}
                     >
                       <div className="flex items-center gap-2">
                         <div
                           className={`w-5 h-5 border-2 rounded-full flex items-center justify-center ${
-                            active
-                              ? "border-current-2 bg-current-2"
-                              : "border-gray-300"
+                            active ? 'border-current-2 bg-current-2' : 'border-gray-300'
                           }`}
                         >
-                          {active && (
-                            <Icons.check className="w-4 h-4 text-white" />
-                          )}
+                          {active && <Icons.check className="w-4 h-4 text-white" />}
                         </div>
                         <span className="text-sm">{option.name}</span>
                       </div>
-                      {active?.value && (
-                        <span className="text-sm">{active.value}</span>
-                      )}
+                      {active?.value && <span className="text-sm">{active.value}</span>}
                       <span className="text-sm text-current-2">
                         {option.price.toLocaleString()} MNT
                       </span>
@@ -291,9 +258,7 @@ export const ProductDetail: React.FC<Props> = ({
 
 function mainFirst(product?: Product): Product | undefined {
   if (!product) return undefined;
-  const index = product.variants.findIndex(
-    (variant) => variant.id === product.id
-  );
+  const index = product.variants.findIndex((variant) => variant.id === product.id);
   if (index > 0) {
     const filtered = product.variants?.filter((_e, i) => i !== index);
     return { ...product, variants: [product.variants[index], ...filtered] };

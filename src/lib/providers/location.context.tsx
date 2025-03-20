@@ -1,0 +1,142 @@
+'use client';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { CENTER, POSITION } from '../constant';
+import { useRouter } from 'next/navigation';
+import { Welcome } from '@/components/shared';
+
+export interface Position {
+  lat: number;
+  lon: number;
+}
+
+export interface PositionStorage extends Position {
+  timestamp: number;
+  name?: string;
+}
+
+export interface LocationContextType {
+  handleSuccess: (
+    item: { coords: { latitude: number; longitude: number } },
+    name?: string,
+    cb?: () => void,
+  ) => void;
+  handleError: () => void;
+}
+
+export const LocationContext = createContext({} as LocationContextType);
+
+export const LocationProvider = ({ children }: React.PropsWithChildren) => {
+  const [position, setPosition] = useState(false);
+  const router = useRouter();
+
+  const refresh = () => {
+    router.refresh();
+    setPosition(true);
+  };
+
+  const getCookieStore = () => {
+    return document.cookie.split('; ').reduce((acc, curr) => {
+      const [name, value] = curr.split('=');
+      acc[name] = value ? decodeURIComponent(value) : '';
+      return acc;
+    }, {} as Record<string, string>);
+  };
+
+  const setCookie = (value: string) => {
+    document.cookie = `${POSITION}=${encodeURIComponent(value)}; path=/; max-age=${
+      30 * 60
+    }; secure; sameSite=strict`;
+  };
+
+  const handleGeolocationSuccess = (
+    position: {
+      coords: { latitude: number; longitude: number };
+    },
+    name?: string,
+    cb?: () => void,
+  ) => {
+    const { latitude, longitude } = position.coords;
+    const timestamp = new Date().getTime();
+
+    const storedPosition: PositionStorage = {
+      lat: latitude,
+      lon: longitude,
+      timestamp,
+    };
+
+    if (name) storedPosition.name = name;
+
+    setCookie(JSON.stringify(storedPosition));
+    cb?.();
+    refresh();
+  };
+
+  const handleGeolocationError = () => {
+    const storedPosition = JSON.stringify({
+      lat: CENTER.lat,
+      lon: CENTER.long,
+      timestamp: new Date().getTime(),
+    });
+
+    setCookie(storedPosition);
+    refresh();
+  };
+
+  const processLocation = () => {
+    const cookieStore = getCookieStore();
+    let storedPosition: PositionStorage | undefined;
+
+    try {
+      storedPosition = JSON.parse(cookieStore[POSITION] || '{}');
+    } catch (error) {}
+
+    const now = new Date().getTime();
+    const timestamp = storedPosition?.timestamp;
+    const thirtyMinutes = 30 * 60 * 1000;
+
+    if (timestamp && now - timestamp < thirtyMinutes) {
+      setCookie(JSON.stringify(storedPosition));
+      setPosition(true);
+    } else {
+      navigator.geolocation.getCurrentPosition(handleGeolocationSuccess, handleGeolocationError);
+
+      setTimeout(() => {
+        const cookieStore = getCookieStore();
+        let storedPosition: PositionStorage | undefined;
+
+        try {
+          storedPosition = JSON.parse(cookieStore[POSITION] || '{}');
+        } catch (error) {}
+
+        if (!storedPosition || !storedPosition.lat || !storedPosition.lon) {
+          handleGeolocationError();
+        }
+      }, 5000);
+    }
+  };
+
+  useEffect(() => {
+    processLocation();
+  }, []);
+
+  const context = useMemo(
+    () => ({ handleSuccess: handleGeolocationSuccess, handleError: handleGeolocationError }),
+    [handleGeolocationSuccess, handleGeolocationError],
+  );
+
+  if (!position) return <Welcome className="w-full h-screen flex items-center justify-center" />;
+
+  return <LocationContext value={context}>{children}</LocationContext>;
+};
+
+export const useLocation = () => {
+  const context = useContext(LocationContext);
+
+  if (!context) {
+    throw new Error('useLocation must be used within a LocationProvider');
+  }
+
+  return context;
+};
+
+export default LocationProvider;

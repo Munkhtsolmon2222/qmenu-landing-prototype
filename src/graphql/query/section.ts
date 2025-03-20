@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
-import { SECTION_INFO_FIELDS } from "../fragment";
+import { gql } from '@apollo/client';
+import { SECTION_INFO_FIELDS } from '../fragment';
 
-export const GET_SECTION_INFO = gql`
+const GET_SECTION_INFO = gql`
   query getSectionInfo($input: OrderInput) {
     getSectionInfo(input: $input) {
       ...SectionInfoFields
@@ -10,7 +10,7 @@ export const GET_SECTION_INFO = gql`
   ${SECTION_INFO_FIELDS}
 `;
 
-export const GET_OPEN_TIMES = gql`
+const GET_OPEN_TIMES = gql`
   query getOpenTimes($input: OrderInput) {
     getOpenTimes(input: $input) {
       times {
@@ -22,3 +22,8 @@ export const GET_OPEN_TIMES = gql`
     }
   }
 `;
+
+export const SECTION_QUERY = {
+  GET_SECTION_INFO,
+  GET_OPEN_TIMES,
+};

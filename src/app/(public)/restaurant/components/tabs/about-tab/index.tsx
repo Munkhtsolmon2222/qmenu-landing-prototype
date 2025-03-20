@@ -1,69 +1,65 @@
-"use client";
-import { Icons } from "@/components/shared/icons";
-import { Branch, Timetable } from "@/lib/types";
-import defaultImage from "@/assets/images/restaurant.png";
-import { AdvancedMarker, Map } from "@vis.gl/react-google-maps";
-import { PAGE_LIST, PAGE_MAP } from "@/lib/config/page";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { Fragment, useState } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import fbLogo from "@/assets/images/fb.avif";
-import igLogo from "@/assets/images/insta.avif";
-import { useTranslation } from "react-i18next";
-import { useRouter } from "next/navigation";
+'use client';
+import { Branch, ParamFilter, Timetable } from '@/lib/types';
+import defaultImage from '@/assets/images/restaurant.png';
+import { AdvancedMarker, Map } from '@vis.gl/react-google-maps';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { Fragment, useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import fbLogo from '@/assets/images/fb.png';
+import igLogo from '@/assets/images/insta.png';
+import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
+import { Icons } from '@/components/general';
+import { PAGE_LIST, PAGE_MAP } from '@/lib/constant';
+import Image from 'next/image';
+
 interface Props {
   branch: Branch;
 }
-import Image from "next/image";
 
 const daysFull = [
   {
-    key: "sun",
-    name: "Ням",
+    key: 'sun',
+    name: 'Ням',
   },
   {
-    key: "mon",
-    name: "Даваа",
+    key: 'mon',
+    name: 'Даваа',
   },
   {
-    key: "tue",
-    name: "Мягмар",
+    key: 'tue',
+    name: 'Мягмар',
   },
   {
-    key: "wed",
-    name: "Лхагва",
+    key: 'wed',
+    name: 'Лхагва',
   },
   {
-    key: "thu",
-    name: "Пүрэв",
+    key: 'thu',
+    name: 'Пүрэв',
   },
   {
-    key: "fri",
-    name: "Бямба",
+    key: 'fri',
+    name: 'Бямба',
   },
   {
-    key: "sat",
-    name: "Даваа",
+    key: 'sat',
+    name: 'Даваа',
   },
 ];
 
 const AboutTab = ({ branch }: Props) => {
   const router = useRouter();
   const [copied, setCopied] = useState<string>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const handleCopy = async (value: string) => {
     try {
       await navigator.clipboard.writeText(value);
       setCopied(value);
       setTimeout(() => setCopied(undefined), 1000);
     } catch (err) {
-      console.error("Failed to copy: ", err);
+      console.error('Failed to copy: ', err);
     }
   };
 
@@ -73,18 +69,14 @@ const AboutTab = ({ branch }: Props) => {
     <>
       <Wrapper className="xl:grid-cols-1">
         <Container title="Тухай">
-          <div className="text-secondary-text opacity-75 line-clamp-3">
-            {branch.description}
-          </div>
+          <div className="text-secondary-text opacity-75 line-clamp-3">{branch.description}</div>
           {branch.tags && branch.tags.length > 0 && (
             <div className="flex gap-2 flex-wrap mt-1 items-center">
               {branch.tags.map((e, index) => {
-                const Icon = e.icon
-                  ? Icons[e.icon as keyof typeof Icons]
-                  : undefined;
+                const Icon = e.icon ? Icons[e.icon as keyof typeof Icons] : undefined;
                 return (
                   <Badge
-                    onClick={() => router.push(PAGE_LIST + "?type=" + e.name)}
+                    onClick={() => router.push(`${PAGE_LIST}?${ParamFilter.TAG}=${e.name}`)}
                     key={index}
                     variant="secondary"
                     className="font-medium cursor-pointer py-2"
@@ -119,9 +111,7 @@ const AboutTab = ({ branch }: Props) => {
                           onClick={() => handleCopy(branch.phone)}
                         />
                       </TooltipTrigger>
-                      <TooltipContent className="text-green-500">
-                        Copied
-                      </TooltipContent>
+                      <TooltipContent className="text-green-500">Copied</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
@@ -147,9 +137,7 @@ const AboutTab = ({ branch }: Props) => {
                           onClick={() => handleCopy(branch.email)}
                         />
                       </TooltipTrigger>
-                      <TooltipContent className="text-green-500">
-                        Copied
-                      </TooltipContent>
+                      <TooltipContent className="text-green-500">Copied</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
@@ -160,24 +148,20 @@ const AboutTab = ({ branch }: Props) => {
 
             <div className="flex gap-3">
               <Image
-                width={100}
-                height={100}
-                alt="fblogo"
+                alt="facebook"
+                width={50}
+                height={50}
                 src={fbLogo}
-                className=" w-full h-full rounded-md cursor-pointer"
-                onClick={() =>
-                  branch.facebook && window.open(branch.facebook, "_blank")
-                }
+                className="w-10 h-10 rounded-md cursor-pointer"
+                onClick={() => branch.facebook && window.open(branch.facebook, '_blank')}
               />
               <Image
-                width={100}
-                height={100}
-                alt="igLogo"
+                alt="instagram"
                 src={igLogo}
-                className=" w-full h-full rounded-md cursor-pointer"
-                onClick={() =>
-                  branch.instagram && window.open(branch.instagram, "_blank")
-                }
+                width={50}
+                height={50}
+                className="w-10 h-10 rounded-md cursor-pointer"
+                onClick={() => branch.instagram && window.open(branch.instagram, '_blank')}
               />
             </div>
           </div>
@@ -187,30 +171,22 @@ const AboutTab = ({ branch }: Props) => {
           {daysFull.map((day, i) => {
             let isOpen = branch.timetable?.[day.key as keyof Timetable];
             const open =
-              (branch.timetable?.[
-                `${day.key}Open` as keyof Timetable
-              ] as string) ?? "00:00";
+              (branch.timetable?.[`${day.key}Open` as keyof Timetable] as string) ?? '00:00';
             const close =
-              (branch.timetable?.[
-                `${day.key}Close` as keyof Timetable
-              ] as string) ?? "00:00";
+              (branch.timetable?.[`${day.key}Close` as keyof Timetable] as string) ?? '00:00';
 
-            isOpen = typeof isOpen === "boolean" ? isOpen : true;
+            isOpen = typeof isOpen === 'boolean' ? isOpen : true;
 
             return (
               <Fragment key={i}>
                 <Item title={day.name}>
                   {!isOpen ? (
-                    <span className="block">{t("Closed")}</span>
+                    <span className="block">{t('Closed')}</span>
                   ) : (
                     <div className="flex gap-1 items-center">
-                      <div className="text-nowrap text-center min-w-12">
-                        {open}
-                      </div>
+                      <div className="text-nowrap text-center min-w-12">{open}</div>
                       <div className="text-nowrap">-</div>
-                      <div className="text-nowrap text-center min-w-12">
-                        {close}
-                      </div>
+                      <div className="text-nowrap text-center min-w-12">{close}</div>
                     </div>
                   )}
                 </Item>
@@ -224,12 +200,12 @@ const AboutTab = ({ branch }: Props) => {
         <Container
           title={
             <div className="flex justify-between">
-              <div className="font-medium"> {t("Address")}</div>
+              <div className="font-medium"> {t('Address')}</div>
               <div
                 className="cursor-pointer text-current-2"
-                onClick={() => router.push(PAGE_MAP + "?branch=" + branch.id)}
+                onClick={() => router.push(PAGE_MAP + '?branch=' + branch.id)}
               >
-                {t("View on map")}
+                {t('View on map')}
               </div>
             </div>
           }
@@ -243,11 +219,9 @@ const AboutTab = ({ branch }: Props) => {
                   lat: branch.latitude,
                   lng: branch.longitude,
                 }}
-                gestureHandling={"greedy"}
+                gestureHandling={'greedy'}
               >
-                <AdvancedMarker
-                  position={{ lat: branch.latitude, lng: branch.longitude }}
-                >
+                <AdvancedMarker position={{ lat: branch.latitude, lng: branch.longitude }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="48"
@@ -266,7 +240,7 @@ const AboutTab = ({ branch }: Props) => {
                       </clipPath>
                     </defs>
                     <image
-                      href={branch.logo ? branch.logo : defaultImage.src}
+                      href={branch.logo ?? defaultImage}
                       x="8"
                       y="6"
                       className="w-8 h-8"
@@ -295,7 +269,7 @@ interface ItemProps extends React.PropsWithChildren {
 const Item: React.FC<ItemProps> = ({ children, title, className, onClick }) => {
   return title ? (
     <div
-      className={cn("grid grid-cols-3 items-center w-full", className)}
+      className={cn('grid grid-cols-3 items-center w-full', className)}
       onClick={() => onClick?.()}
     >
       <div className="text-secondary-text opacity-75 line-clamp-3">{title}</div>
@@ -309,7 +283,7 @@ const Item: React.FC<ItemProps> = ({ children, title, className, onClick }) => {
 const Container: React.FC<
   React.PropsWithChildren<{ title: React.ReactNode; className?: string }>
 > = ({ children, className, title }) => (
-  <div className={cn("flex flex-col gap-2", className)}>
+  <div className={cn('flex flex-col gap-2', className)}>
     <div className="font-medium my-3 border-border border-b pb-3">{title}</div>
     {children}
   </div>
@@ -319,12 +293,7 @@ const Wrapper: React.FC<React.PropsWithChildren<{ className?: string }>> = ({
   children,
   className,
 }) => (
-  <div
-    className={cn(
-      "grid grid-cols-1 gap-3 xl:gap-10 xl:grid-cols-2 my-3",
-      className
-    )}
-  >
+  <div className={cn('grid grid-cols-1 gap-3 xl:gap-10 xl:grid-cols-2 my-3', className)}>
     {children}
   </div>
 );

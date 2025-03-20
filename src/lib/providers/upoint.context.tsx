@@ -1,24 +1,24 @@
-"use client";
-import { useState, useMemo, useCallback, createContext } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { CustomerAccountType } from "@/lib/config/constant";
-import { GET_BALANCE_UPOINT, GET_ORDERS } from "@/graphql/query";
-import { ADD_ORDER_LOYALTY } from "@/graphql/mutation/loyalty";
+'use client';
+import { useState, useMemo, useCallback, createContext } from 'react';
+import { CustomerAccountType } from '@/lib/constant';
+import { useAction } from '../hooks';
+import { ADD_ORDER_LOYALTY, GET_BALANCE_UPOINT } from '@/actions';
+import { QueryError } from '../types';
 
 interface UpointBalanceState {
   phone: string;
   balance: number;
   payment: string;
-  state: "spend" | "collect" | "balance";
+  state: 'spend' | 'collect' | 'balance';
   code: string;
 }
 
 interface ActionType {
-  variables?: () => void;
-  onCompleted?: (data) => void;
-  onError?: (error: Error) => void;
-  options?: () => void;
-  update?: () => void;
+  // variables: UpointBalanceInput;
+  variables: any;
+  onSuccess?: (data: UpointBalance) => void;
+  onError?: (error: QueryError) => void;
+  options?: any;
 }
 
 type UpointContextType = {
@@ -33,9 +33,16 @@ type UpointContextType = {
   addingLoyalty: boolean;
 };
 
-export const UpointContext = createContext<UpointContextType>(
-  {} as UpointContextType
-);
+export const UpointContext = createContext<UpointContextType>({} as UpointContextType);
+
+export interface UpointBalanceInput {
+  mobile?: string;
+  pin_code: string;
+  order: string;
+  payment: string;
+  card_number?: string;
+  verify?: boolean;
+}
 
 export interface UpointBalance {
   id: string;
@@ -55,68 +62,47 @@ export const UpointProvider = ({ children }) => {
   const [upointBalance, setUpointBalance] = useState<UpointBalanceState>();
   const [upointStep, setUpointStep] = useState<number>(0);
 
-  const [getBalanceUpoint, { loading: upointLoadingBalance }] = useLazyQuery<{
-    getBalanceUpoint: UpointBalance;
-  }>(GET_BALANCE_UPOINT);
+  const { action: getBalanceUpoint, loading: upointLoadingBalance } = useAction(
+    GET_BALANCE_UPOINT,
+    { lazy: true },
+  );
 
   const getUpointBalance = useCallback(
-    async ({ variables, onCompleted, onError, options }: ActionType) => {
-      await getBalanceUpoint({
-        fetchPolicy: "network-only",
-        variables,
-        onCompleted:
-          onCompleted ||
+    async ({ variables, onSuccess, onError, options }: ActionType) => {
+      await getBalanceUpoint(variables, {
+        onSuccess:
+          onSuccess ||
           ((data) => {
             setUpointBalance({
-              phone: data.getBalanceUpoint.phone,
-              balance: +data.getBalanceUpoint.balance,
-              payment: "",
-              state: "balance",
-              code: data.getBalanceUpoint.code,
+              phone: data?.phone ?? '',
+              balance: +(data?.balance || 0),
+              payment: '',
+              state: 'balance',
+              code: data?.code ?? '',
             });
             setUpointStep((prevStep) => prevStep + 1);
           }),
-        onError:
-          onError ||
-          ((error) => console.log("Error getBalance", error.message)),
+        onError: onError || ((error) => console.log('Error getBalance', error.message)),
         ...options,
       });
       return Promise.resolve();
     },
-    [getBalanceUpoint]
+    [getBalanceUpoint],
   );
 
-  const [addLoyalty, { loading: addingLoyalty }] =
-    useMutation(ADD_ORDER_LOYALTY);
+  const { action: addLoyalty, loading: addingLoyalty } = useAction(ADD_ORDER_LOYALTY, {
+    lazy: true,
+  });
+
   const addOrderLoyalty = useCallback(
-    async ({ variables, onError, update, options }: ActionType) => {
-      await addLoyalty({
-        variables,
-        update:
-          update ||
-          ((cache, { data: { addOrderLoyalty } }) => {
-            const caches = cache.readQuery<{ getOrders }>({
-              query: GET_ORDERS,
-            });
-            if (caches?.getOrders) {
-              cache.writeQuery({
-                query: GET_ORDERS,
-                data: {
-                  getOrders: caches.getOrders.map((item) =>
-                    item.id === addOrderLoyalty.id ? addOrderLoyalty : item
-                  ),
-                },
-              });
-            }
-          }),
-        onError:
-          onError ||
-          ((error) => console.log("Error addOrderLoyalty", error.message)),
+    async ({ variables, onError, options }: ActionType) => {
+      await addLoyalty(variables.id, variables.type, {
+        onError: onError || ((error) => console.log('Error addOrderLoyalty', error.message)),
         ...options,
       });
       return Promise.resolve();
     },
-    [addLoyalty]
+    [addLoyalty],
   );
 
   const clearUpointState = () => {
@@ -143,12 +129,8 @@ export const UpointProvider = ({ children }) => {
       addOrderLoyalty,
       addingLoyalty,
       getUpointBalance,
-    ]
+    ],
   );
 
-  return (
-    <UpointContext.Provider value={contextValue}>
-      {children}
-    </UpointContext.Provider>
-  );
+  return <UpointContext.Provider value={contextValue}>{children}</UpointContext.Provider>;
 };

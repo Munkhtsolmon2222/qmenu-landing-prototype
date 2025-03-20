@@ -1,4 +1,4 @@
-import { BannerType } from "../config/constant";
+import { BannerType } from '../constant';
 
 export interface BannerAction {
   id: string;
@@ -21,5 +21,5 @@ export interface Banner {
 }
 
 export enum BannerActionType {
-  L = "L", //Link
+  L = 'L', //Link
 }

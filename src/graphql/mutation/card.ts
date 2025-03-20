@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
-import { TRANSACTION_FIELDS } from "../fragment";
+import { gql } from '@apollo/client';
+import { TRANSACTION_FIELDS } from '../fragment';
 
-export const CHECK_CARD = gql`
+const CHECK_CARD = gql`
   mutation checkCard($card: String!, $branch: String!) {
     checkCard(card: $card, branch: $branch) {
       id
@@ -16,7 +16,7 @@ export const CHECK_CARD = gql`
   }
 `;
 
-export const CREATE_TOPUP = gql`
+const CREATE_TOPUP = gql`
   mutation createTopUp($amount: Float!, $id: ID!) {
     createTopUp(amount: $amount, id: $id) {
       ...TransactionFields
@@ -24,3 +24,8 @@ export const CREATE_TOPUP = gql`
   }
   ${TRANSACTION_FIELDS}
 `;
+
+export const CARD_MUTATION = {
+  CHECK_CARD,
+  CREATE_TOPUP,
+};

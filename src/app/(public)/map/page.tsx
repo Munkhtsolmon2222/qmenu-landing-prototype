@@ -1,128 +1,77 @@
-"use client";
-import { useEffect, useState } from "react";
-import { RestaurantList } from "@/components/cards/RestaurantListCard";
-import CarouselBranch from "../(home)/components/CarouselBranch";
-import ListFilter from "./components/ListFilter";
-import { useMapList } from "@/hooks/useMapList";
-import { CarouselRestaurant } from "@/components/carousel/restaurant";
-import Maps from "./components/Maps";
-import { useFilterContext } from "@/lib/providers/filter.context";
-import { BRANCHES } from "@/lib/config/constant";
-import { BranchType } from "@/lib/types";
-import { useTranslation } from "react-i18next";
+import { FILTER_BRANCHES, GET_TAGS_BY_TYPE } from '@/actions';
+import { DrawerFilter, FilterControl, Loader } from '@/components/shared';
+import { PAGE_MAP, POSITION } from '@/lib/constant';
+import { withSuspense } from '@/lib/helpers';
+import { ParamFilter, ParamFilterObjType, TagType } from '@/lib/types';
+import { cookies } from 'next/headers';
+import { ListBranches } from './components/ListBranches';
+import { CarouselBranches } from './components/CarouselBranches';
+import { MapFilterContent } from './components/MapFilterContent';
+import { getAsArray } from '@/lib/utils';
 
-const fallbackCenter = {
-  lat: 47.9024278,
-  lng: 106.9386946,
-};
+const acceptFilters = [
+  ParamFilter.CUISINE,
+  ParamFilter.TAG,
+  ParamFilter.PRICE,
+  ParamFilter.SERVICES,
+  ParamFilter.TYPE,
+  ParamFilter.REVIEW,
+];
 
-export type Center = typeof fallbackCenter;
+interface Props {
+  searchParams: Promise<ParamFilterObjType>;
+}
 
-const distance = "20km";
-const limit = 1000;
+const Page: React.FC<Props> = async (props) => {
+  const cookie = await cookies();
 
-export default function MapList() {
-  const [center, setCenter] = useState<Center>(fallbackCenter);
+  const positionStr = cookie.get(POSITION)?.value;
+  if (!positionStr) return <Loader className="h-screen" />;
 
-  const { filters, applyFilters, addFilter, removeFilter, branches } =
-    useFilterContext();
-  const { t } = useTranslation();
+  const position = JSON.parse(positionStr);
+  const { lat, lon: lng } = position;
 
-  const { params, device, resRefs } = useMapList(branches);
+  let searchParams = await props.searchParams;
 
-  useEffect(() => {
-    if (params && params?.length > 0) {
-      addFilter(params?.split(",")[0], BranchType.Restaurant, limit, {
-        lat: center.lat,
-        lon: center.lng,
-        distance,
-      });
-    } else {
-      addFilter("branch", BranchType.Restaurant, limit, {
-        lat: center.lat,
-        lon: center.lng,
-        distance,
-      });
-    }
-  }, [params, addFilter, center.lat, center.lng]);
+  const filters = Object.entries(searchParams).reduce((res: string[], [_, value]) => {
+    res = [...res, ...getAsArray(value)];
+    return res;
+  }, []);
 
-  useEffect(() => {
-    if (center.lat && center.lng) {
-      applyFilters({
-        limit: limit,
-        lat: center.lat,
-        lon: center.lng,
-        distance,
-        replace: true,
-      });
-    }
-  }, [applyFilters, center.lat, center.lng]);
+  const { data = [] } = await FILTER_BRANCHES({
+    lat,
+    lon: lng,
+    filters,
+    limit: 1000,
+    offset: 0,
+    distance: '20km',
+  });
+
+  const { data: cuisineTags = [] } = await GET_TAGS_BY_TYPE(TagType.K);
+  const { data: advantageTags = [] } = await GET_TAGS_BY_TYPE(TagType.F);
+  const { data: categories = [] } = await GET_TAGS_BY_TYPE(TagType.C);
+
+  const tags = { categories, cuisineTags, advantageTags };
 
   return (
-    <div className="w-screen  flex flex-col mt-14 md:mt-16 md:pt-1 gap-4 md:px-3 md:max-w-[90rem] overflow-hidden  ">
-      <div className={`${device === "mobile" ? "hidden" : "block"}`}>
-        <CarouselBranch branches={BRANCHES} branch={params} />
+    <>
+      <DrawerFilter
+        backPath={PAGE_MAP}
+        accept={acceptFilters}
+        className="fixed md:hidden top-[75px] left-2"
+      />
+      <FilterControl
+        className="p-2 fixed md:sticky top-[75px] sm:top-[84px] md:bg-background md:rounded-full mx-2 z-50 md:shadow left-12 sm:left-0 w-[calc(100%-60px)]"
+        backPath={PAGE_MAP}
+        clearButtonClassName="bg-background rounded-full px-2"
+      />
+      <div className="grid grid-cols-1 md:grid-cols-7 border">
+        <MapFilterContent tags={tags} accept={acceptFilters} />
+        <ListBranches branches={data} lat={lat} lng={lng} />
+        <CarouselBranches branches={data} lat={lat} lng={lng} />
       </div>
-      <div className="w-full flex gap-6 h-[80vh]">
-        <div className="w-1/4 md:flex hidden gap-3 flex-col">
-          <ListFilter
-            filters={filters || []}
-            onClear={() =>
-              removeFilter("filters", {
-                lat: center.lat,
-                lon: center.lng,
-                distance,
-              })
-            }
-            addFilter={addFilter}
-            removeFilter={(value) =>
-              removeFilter(value, {
-                lat: center.lat,
-                lon: center.lng,
-                distance,
-              })
-            }
-          />
-        </div>
-        <div
-          className={`${device === "mobile" ? "w-full" : "w-full"} flex gap-4 `}
-        >
-          <div
-            className={`md:flex flex-col hidden w-3/6  h-90vh overflow-y-auto`}
-          >
-            <p className="font-bold">
-              {t("Search Result")}: {branches?.length}
-            </p>
-            <div className="w-full gap-4 flex flex-col mt-2 mb-20">
-              {branches?.map((e) => (
-                <RestaurantList key={e.id} place={e} />
-              ))}
-            </div>
-          </div>
-
-          {device !== "mobile" ? (
-            <div className="md:w-3/6 md:block sm:absolute md:relative rounded-lg overflow-hidden flex-col hidden ">
-              <div className="mb-2">
-                <p className="font-bold">{t("Location")}</p>
-              </div>
-              <Maps center={center} setCenter={setCenter} branches={branches} />
-            </div>
-          ) : (
-            <div className="h-screen w-full overflow-hidden md:hidden flex rounded-md">
-              <div className="h-screen w-full top-0 absolute">
-                <Maps
-                  center={center}
-                  setCenter={setCenter}
-                  branches={branches}
-                />
-              </div>
-              <div className="absolute z-50  md:bottom-[10%] bottom-[10%] flex justify-between w-screen items-center  overflow-hidden">
-                <CarouselRestaurant locations={branches} resRefs={resRefs} />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+    </>
   );
-}
+};
+
+export default withSuspense(Page, <Loader className="h-screen" />);

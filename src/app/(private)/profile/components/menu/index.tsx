@@ -1,66 +1,67 @@
-"use client";
-import { Icons } from "@/components/shared/icons";
-import { MenuHeader } from "./header";
-import { PAGE_HOME, PAGE_PROFILE } from "@/lib/config/page";
-import { Customer } from "@/lib/types";
-import user from "@/assets/images/profile/user.svg";
-import favourite from "@/assets/images/profile/favourite.svg";
-import discount from "@/assets/images/profile/discount.svg";
-import loyalty from "@/assets/images/profile/loyalty.svg";
-import gift from "@/assets/images/profile/gift.svg";
-import logOut from "@/assets/images/profile/log-out.svg";
-import { useTheme } from "@/hooks/useTheme";
-import { Separator } from "@/components/ui/separator";
-import { Fragment, useContext } from "react";
-import { AuthContext } from "@/lib/providers/auth";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+'use client';
+import user from '@/assets/images/profile/user.svg';
+import favourite from '@/assets/images/profile/favourite.svg';
+import discount from '@/assets/images/profile/discount.svg';
+import loyalty from '@/assets/images/profile/loyalty.svg';
+import gift from '@/assets/images/profile/gift.svg';
+import logOut from '@/assets/images/profile/log-out.svg';
+import { PAGE_PROFILE } from '@/lib/constant';
+import { Customer } from '@/lib/types';
+import { cn } from '@/lib/utils';
+import { MenuHeader } from './header';
+import { Fragment } from 'react';
+import { Separator } from '@/components/ui';
+import { Icons } from '@/components/general';
+import { redirect, usePathname, useRouter } from 'next/navigation';
+import nProgress from 'nprogress';
+import { logout } from '@/actions';
+import Image from 'next/image';
 
 const MenuItems: (pathname: string) => {
   name: string;
-  icon;
+  icon: React.ReactNode;
   active: boolean;
   path: string;
   comingsoon: boolean;
 }[] = (pathname) => [
   {
-    name: "Хэрэглэгчийн мэдээлэл",
-    icon: user,
+    name: 'Хэрэглэгчийн мэдээлэл',
+    icon: user.src,
     comingsoon: false,
-    path: pathname ? "" : "account",
-    active: pathname === PAGE_PROFILE || pathname === PAGE_PROFILE + "/account",
+    path: 'account',
+    active: pathname === PAGE_PROFILE || pathname === PAGE_PROFILE + '/account',
     sort: 1,
   },
   {
-    name: "Дуртай",
-    icon: favourite,
+    name: 'Дуртай',
+    icon: favourite.src,
     comingsoon: true,
-    path: "favourite",
-    active: pathname === PAGE_PROFILE + "/favourite",
+    path: 'favourite',
+    active: pathname === PAGE_PROFILE + '/favourite',
     sort: 3,
   },
   {
-    name: "Хөнгөлөлтийн картууд",
-    icon: discount,
+    name: 'Хөнгөлөлтийн картууд',
+    icon: discount.src,
     comingsoon: true,
-    path: "discount",
-    active: pathname === PAGE_PROFILE + "/discount",
+    path: 'discount',
+    active: pathname === PAGE_PROFILE + '/discount',
     sort: 4,
   },
   {
-    name: "Урамшуулал",
-    icon: loyalty,
+    name: 'Урамшуулал',
+    icon: loyalty.src,
     comingsoon: true,
-    path: "loyalty",
-    active: pathname === PAGE_PROFILE + "/loyalty",
+    path: 'loyalty',
+    active: pathname === PAGE_PROFILE + '/loyalty',
     sort: 5,
   },
   {
-    name: "Бэлэг (Купон)",
-    icon: gift,
+    name: 'Бэлэг (Купон)',
+    icon: gift.src,
     comingsoon: true,
-    path: "coupon",
-    active: pathname === PAGE_PROFILE + "/coupon",
+    path: 'coupon',
+    active: pathname === PAGE_PROFILE + '/coupon',
     sort: 6,
   },
   // {
@@ -78,91 +79,93 @@ const MenuItems: (pathname: string) => {
   //   active: pathname === PAGE_PROFILE + "/ebarimt",
   // },
   {
-    name: "Гарах",
-    icon: logOut,
+    name: 'Гарах',
+    icon: logOut.src,
     comingsoon: false,
-    path: "logout",
+    path: 'logout',
     active: false,
     sort: 7,
   },
 ];
 
 type Props = {
-  pathname: string;
-  hideChild: boolean;
-  customer?: Customer;
+  customer: Customer;
 };
 
-const Menu: React.FC<Props> = ({ pathname, hideChild, customer }) => {
+export const ProfileMenu: React.FC<Props> = ({ customer }) => {
+  const pathname = usePathname();
   const router = useRouter();
-  const { signout } = useContext(AuthContext);
-  const { mainTheme } = useTheme();
+
+  const navigate = (path: string) => {
+    nProgress.start();
+
+    if (path === 'logout') {
+      logout();
+      return;
+    }
+
+    const fullPath = PAGE_PROFILE + '/' + path;
+
+    if (window.innerWidth < 768) {
+      router.push(fullPath);
+      return;
+    }
+
+    redirect(fullPath);
+  };
 
   return (
-    <div className="flex flex-col gap-5">
-      <MenuHeader hideChild={hideChild} customer={customer} />
+    <div
+      className={cn(
+        'col-span-1 relative flex-col gap-5',
+        pathname !== PAGE_PROFILE && 'hidden md:flex',
+      )}
+    >
+      <MenuHeader customer={customer} />
 
-      <div className={`flex flex-col px-2 ${hideChild ? "gap-1" : "gap-4"}`}>
-        {MenuItems(!hideChild ? pathname : "").map((item, index) => {
-          const lastItem = index === MenuItems("").length - 1 && !hideChild;
+      <div className="flex flex-col px-2 gap-1 md:gap-4">
+        {MenuItems(pathname).map((item, index) => {
+          const lastItem = index === MenuItems('').length - 1;
 
           return (
             <Fragment key={index}>
               {lastItem && (
                 <Separator
                   orientation="horizontal"
-                  className=" absolute bottom-14"
+                  className="hidden md:block absolute bottom-14"
                 />
               )}
 
               <div
                 key={index}
                 onClick={() => {
-                  if (!item.comingsoon) {
-                    if (item.path === "logout")
-                      signout(() => router.push(PAGE_HOME));
-                    else router.push(item.path);
-                  }
+                  if (item.comingsoon) return;
+                  navigate(item.path);
                 }}
-                className={`flex text-base sm:text-sm xl:text-base gap-3 py-3 cursor-pointer items-center justify-between rounded 
-                ${hideChild ? "px-1" : "px-4"}
-                ${item.active ? "bg-primary-foreground" : ""}
-                ${lastItem ? " absolute bottom-0" : ""}`}
+                className={cn(
+                  'flex text-base sm:text-sm xl:text-base gap-3 py-3 cursor-pointer items-center justify-between rounded px-4 md:px-1 bottom-0',
+                  item.active && 'md:bg-primary-foreground',
+                  lastItem && 'md:absolute',
+                )}
               >
                 <div className="flex items-center gap-3">
-                  <div
-                    className={`${
-                      hideChild
-                        ? "bg-primary-foreground p-1 h-7 sm:h-8 rounded-md"
-                        : ""
-                    }`}
-                  >
+                  <div className="bg-primary-foreground p-1 h-7 sm:h-8 rounded-md">
                     <Image
-                      width={100}
-                      height={100}
-                      src={item.icon ?? "/fallback-icon.png"}
-                      alt={item.name || "Icon"}
-                      className="w-full h-full"
-                      style={{
-                        filter:
-                          mainTheme === "dark"
-                            ? "brightness(0) invert(100%)"
-                            : "none",
-                      }}
+                      alt={item.name}
+                      width={24}
+                      height={24}
+                      src={item.icon as string}
+                      className="w-full h-full dark:filter-[brightness(0)_saturate(100%)_invert(100%)_sepia(94%)_saturate(0%)_hue-rotate(229deg)_brightness(105%)_contrast(107%)]"
                     />
                   </div>
                   <div>
-                    {item.name}{" "}
-                    {item.comingsoon && (
-                      <span className="text-xs text-gray-400">Тун удагүй</span>
-                    )}
+                    {item.name}{' '}
+                    {item.comingsoon && <span className="text-xs text-gray-400">Тун удагүй</span>}
                   </div>
                 </div>
-                {hideChild && (
-                  <div className="h-5">
-                    <Icons.chevronRight className="w-full h-full text-gray-400" />
-                  </div>
-                )}
+                <div className="md:hidden h-5">
+                  <Icons.chevronRight className="w-full h-full text-gray-400" />
+                </div>
               </div>
             </Fragment>
           );
@@ -171,5 +174,3 @@ const Menu: React.FC<Props> = ({ pathname, hideChild, customer }) => {
     </div>
   );
 };
-
-export default Menu;

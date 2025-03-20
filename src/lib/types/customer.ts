@@ -1,7 +1,7 @@
 export enum Gender {
-  Male = "Male",
-  Female = "Female",
-  Custom = "Custom",
+  Male = 'Male',
+  Female = 'Female',
+  Custom = 'Custom',
 }
 
 export interface Customer {
@@ -61,17 +61,8 @@ export interface IMemberCard {
   card: string;
   groups: [];
 }
-export interface SignUpInput {
-  session: string;
-  name: string;
-  phone: string;
-  password: string;
-  year: number;
-  gender: Gender;
-  email?: string;
-}
 
-export interface SignUpReturnValue {
+export interface SignupReturnValue {
   id: string;
   token: string;
 }

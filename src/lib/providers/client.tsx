@@ -1,28 +1,31 @@
-"use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+'use client';
+import React, { createContext, useContext, useState } from 'react';
 import {
   ApolloClient,
   InMemoryCache,
   ApolloLink,
   createHttpLink,
   ApolloProvider,
-} from "@apollo/client";
-import { getToken } from "./auth";
-import { AuthOptions, AUTH_TYPE, createAuthLink } from "aws-appsync-auth-link";
-import { createSubscriptionHandshakeLink } from "aws-appsync-subscription-link";
-import { onError } from "@apollo/client/link/error";
-import { toast } from "@/components/ui/use-toast";
-import { PAGE_HOME } from "../config/page";
+} from '@apollo/client';
+import { AuthOptions, AUTH_TYPE, createAuthLink } from 'aws-appsync-auth-link';
+import { createSubscriptionHandshakeLink } from 'aws-appsync-subscription-link';
+import { onError } from '@apollo/client/link/error';
+import { PAGE_HOME } from '../constant';
+import { Loader } from '@/components/shared';
+import { useAction } from '../hooks';
+import { GET_TOKEN } from '@/actions';
+import { redirectWithNProgress } from '../utils';
+import { showToast } from '../helpers';
 
-const region = process.env.APP_REGION ?? "ap-southeast-1";
-const url = process.env.NEXT_PUBLIC_APP_STAGE || "";
+const region = process.env.APP_REGION ?? 'ap-southeast-1';
+const url = process.env.NEXT_PUBLIC_APP_STAGE || '';
 
 const ApolloClientContext = createContext<ApolloClient<unknown> | null>(null);
 
-const initializeClient = () => {
+const initializeClient = (token: string) => {
   const auth: AuthOptions = {
     type: AUTH_TYPE.AWS_LAMBDA,
-    token: () => getToken(),
+    token: () => token,
   };
 
   const authLink = createAuthLink({ url, region, auth });
@@ -31,32 +34,20 @@ const initializeClient = () => {
     if (graphQLErrors) {
       graphQLErrors.forEach((err) => {
         console.log(`[GraphQL error]: Message:`, err.message);
-        if ("errorType" in err) {
+        if ('errorType' in err) {
           switch (err.errorType) {
-            case "UnauthorizedException":
-              localStorage?.removeItem("token");
-              // location.reload();
+            case 'UnauthorizedException':
+              location.reload();
               break;
-            case "CE0003":
-              localStorage?.removeItem("token");
-              const path = location.pathname.split("/").join("");
+            case 'CE0003':
+              const path = location.pathname.split('/').join('');
               if (path && path.length > 0) window.location.href = PAGE_HOME;
               break;
             default:
-              toast({
-                title: "Failed",
-                variant: "default",
-                description: err.message,
-              });
+              showToast(err.message);
               break;
           }
-        } else {
-          toast({
-            title: "GraphQL Error",
-            variant: "default",
-            description: err.message,
-          });
-        }
+        } else showToast(err.message);
       });
     }
     if (networkError) {
@@ -67,8 +58,6 @@ const initializeClient = () => {
   const httpLinkWithMiddleware = authLink.concat(errorLink);
   const httpLink = createHttpLink({ uri: url });
 
-  console.log("END URL", url);
-
   const newClient = new ApolloClient({
     link: ApolloLink.from([
       httpLinkWithMiddleware,
@@ -77,30 +66,31 @@ const initializeClient = () => {
     cache: new InMemoryCache(),
   });
 
-  console.log("client:token");
+  console.log('client: init');
   return newClient;
 };
 
 export const useApolloClient = () => useContext(ApolloClientContext);
 
-export const CustomApolloProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [client, setClient] = useState<ApolloClient<unknown>>(
-    initializeClient()
-  );
+export const CustomApolloProvider: React.FC<{
+  children: React.ReactNode;
+  loader?: React.JSX.Element;
+}> = ({ children, loader }) => {
+  const [client, setClient] = useState<ApolloClient<unknown>>();
 
-  useEffect(() => {
-    const tokenChangeListener = () => setClient(initializeClient());
+  const { loading } = useAction(GET_TOKEN, {
+    onSuccess(token) {
+      if (!token) {
+        redirectWithNProgress(PAGE_HOME);
+        return;
+      }
 
-    tokenChangeListener();
+      const newClient = initializeClient(token);
+      setClient(newClient);
+    },
+  });
 
-    window.addEventListener("tokenChanged", tokenChangeListener);
-
-    return () => {
-      window.removeEventListener("tokenChanged", tokenChangeListener);
-    };
-  }, []);
+  if (!client || loading) return loader ?? <Loader className="h-full" />;
 
   return (
     <ApolloClientContext.Provider value={client}>

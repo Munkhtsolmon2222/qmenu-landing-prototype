@@ -1,69 +1,34 @@
-"use client";
-import { Translator } from "@/components/translator";
-import React, { createContext, useContext } from "react";
-import { useTranslation } from "react-i18next";
+'use client';
+import { Translator } from '@/components/shared';
+import React, { createContext, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
-// export const cacheProvider = {
-//   get: (language: string, key: string) => {
-//     try {
-//       const translations = JSON.parse(
-//         localStorage.getItem("translations") || "{}"
-//       );
-//       return translations[key]?.[language] || null;
-//     } catch (error) {
-//       return null;
-//     }
-//   },
-//   set: (language: string, key: string, value: string) => {
-//     try {
-//       const translations = JSON.parse(
-//         localStorage.getItem("translations") || "{}"
-//       );
-//       const existing = translations[key] || {};
-//       existing[language] = value;
-//       translations[key] = existing;
-//       localStorage.setItem("translations", JSON.stringify(translations));
-//     } catch (error) {
-//       // Handle error if needed
-//     }
-//   },
-// };
-
-// example procider
 const cacheProvider = {
   get: (language: string, key: string) =>
-    ((JSON.parse(localStorage?.getItem("translations") || "{}") || {})[key] ||
-      {})[language],
+    ((JSON.parse(localStorage?.getItem('translations') || '{}') || {})[key] || {})[language],
   set: (language: string, key: string, value: string) => {
-    const existing = JSON.parse(
-      localStorage?.getItem("translations") || "{}"
-    ) || {
+    const existing = JSON.parse(localStorage?.getItem('translations') || '{}') || {
       [key]: {},
     };
     existing[key] = { ...existing[key], [language]: value };
-    localStorage?.setItem("translations", JSON.stringify(existing));
+    localStorage?.setItem('translations', JSON.stringify(existing));
   },
 };
 
 interface TranslateProviderProps extends React.PropsWithChildren {
-  googleApiKey?: string;
+  googleApiKey: string;
 }
 
 interface TranslateContextProps {
   translate: (text: string) => Promise<string>;
 }
 
-const TranslateContext = createContext<TranslateContextProps | undefined>(
-  undefined
-);
+const TranslateContext = createContext<TranslateContextProps | undefined>(undefined);
 
-export const TranslateProvider: React.FC<TranslateProviderProps> = ({
-  googleApiKey,
-  children,
-}) => {
+export const TranslateProvider: React.FC<TranslateProviderProps> = ({ googleApiKey, children }) => {
   const { i18n } = useTranslation();
 
-  const defaultLanguage = "mn";
+  const defaultLanguage = 'mn';
   const language = i18n.language;
 
   const translate = async (text: string): Promise<string> => {
@@ -73,43 +38,37 @@ export const TranslateProvider: React.FC<TranslateProviderProps> = ({
 
     const cachedTranslation = cacheProvider.get(language, text);
     if (cachedTranslation) {
-      console.log("Using cached translation:", cachedTranslation);
+      console.log('Using cached translation:', cachedTranslation);
       return cachedTranslation;
     }
     try {
       const response = await fetch(
         `https://translation.googleapis.com/language/translate/v2?key=${googleApiKey}&q=${encodeURIComponent(
-          text
-        )}&target=${language}&source=${defaultLanguage}&format=text`
+          text,
+        )}&target=${language}&source=${defaultLanguage}&format=text`,
       );
 
       if (!response.ok) {
-        console.error(
-          "API request failed with status:",
-          response.status,
-          response.statusText
-        );
+        console.error('API request failed with status:', response.status, response.statusText);
         return text; // Return the original text if API request fails
       }
 
       const data = await response.json();
-      console.log("API response data:", data);
+      console.log('API response data:', data);
 
       if (data.data?.translations[0]?.translatedText) {
         const translatedText = data.data.translations[0].translatedText;
         if (translatedText.trim()) {
-          console.log("Caching and returning translated text:", translatedText);
+          console.log('Caching and returning translated text:', translatedText);
           cacheProvider.set(language, text, translatedText);
           return translatedText;
         }
       }
     } catch (error) {
-      console.error("Error fetching translation:", error);
+      console.error('Error fetching translation:', error);
     }
 
-    console.log(
-      "Returning original text due to translation failure or empty translation"
-    );
+    console.log('Returning original text due to translation failure or empty translation');
     return text; // Return the original text if translation fails or is empty
   };
 
@@ -130,7 +89,7 @@ export const TranslateProvider: React.FC<TranslateProviderProps> = ({
 export const useTranslate = (): TranslateContextProps => {
   const context = useContext(TranslateContext);
   if (context === undefined) {
-    throw new Error("useTranslate must be used within a TranslateProvider");
+    throw new Error('useTranslate must be used within a TranslateProvider');
   }
   return context;
 };

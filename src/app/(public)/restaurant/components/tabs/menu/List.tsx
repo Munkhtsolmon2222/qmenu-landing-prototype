@@ -1,16 +1,15 @@
-"use client";
-
-import { getFilteredItems } from "@/lib/providers/restaurant";
-import { Branch, Category, Product as IProduct } from "@/lib/types";
-import { useEffect, useMemo, useState, useCallback } from "react";
-import { Product } from "./Product";
-import { ChildProps } from "./page";
-import useMediaQuery from "@/hooks/use-media-query";
-import { MenuDetail } from "./MenuDetail";
-import { Input } from "@/components/ui/input";
-import { Icons } from "@/components/shared/icons";
-import { useTranslation } from "react-i18next";
-import { Translate } from "@/components/translator";
+'use client';
+import { getFilteredItems } from '@/lib/providers/restaurant';
+import { Branch, Category, Product as IProduct } from '@/lib/types';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Product } from './Product';
+import { ChildProps } from '.';
+import { MenuDetail } from './MenuDetail';
+import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from '@/lib/hooks';
+import { Translate } from '@/components/shared';
+import { Icons, Input } from '@/components/general';
+import { cn } from '@/lib/utils';
 
 type ListCategory = Category & {
   child?: boolean;
@@ -23,42 +22,33 @@ export const List: React.FC<ChildProps> = ({
   hideImage = false,
   isList,
   menuCategories,
-  categoryId,
-  subCategoryId,
   participant,
-  setCategoryId,
-  setSubCategoryId,
   setVisibleDetail,
   setProduct,
 }) => {
   const [search, setSearch] = useState<string>();
-  const [isSticky, setIsSticky] = useState<boolean>(false);
-  const [delay, setDelay] = useState<boolean>(false);
-  const { width } = useMediaQuery();
+  const { t } = useTranslation();
+  const { width = window.innerWidth } = useMediaQuery();
+  const categoryWrapperRef = useRef<HTMLDivElement>(null);
+  const isHover = useRef(false);
+
+  const searchFilter = (e: IProduct): boolean => {
+    return !search || e.name.toLowerCase().includes(search.toLowerCase());
+  };
 
   const { categories, count } = useMemo(() => {
     let count = 0;
 
-    const searchFilter = (e: IProduct): boolean => {
-      return !search || e.name.toLowerCase().includes(search.toLowerCase());
-    };
-
     const categories = menuCategories.reduce((res: ListCategory[], curr) => {
       if (curr.products && curr.products.length > 0) {
-        const filteredProducts = getFilteredItems(
-          curr.products ?? [],
-          searchFilter
-        );
+        const filteredProducts = getFilteredItems(curr.products ?? [], searchFilter);
         count += filteredProducts.length;
         res = res.concat([{ ...curr, products: filteredProducts }]);
       } else if (curr.children && curr.children.length > 0) {
         res = res.concat(
           { ...curr, emptyParent: true },
           curr.children.map((item) => {
-            const filteredProducts = getFilteredItems(
-              item.products,
-              searchFilter
-            );
+            const filteredProducts = getFilteredItems(item.products, searchFilter);
             count += filteredProducts.length;
             return {
               ...item,
@@ -66,81 +56,89 @@ export const List: React.FC<ChildProps> = ({
               child: true,
               parentId: curr.id,
             };
-          })
+          }),
         );
       }
       return res;
     }, []);
 
     return { categories, count };
-  }, [menuCategories, search]);
+  }, [search]);
 
-  const handleScroll = useCallback(() => {
-    if (!delay) {
-      const headers = document.querySelectorAll(".category-header");
-      let currentStickyCategory: string | undefined;
+  const handleScroll = () => {
+    document.querySelectorAll('.list-category-item').forEach((e) => {
+      e.className = cn(e.className, 'font-normal text-primary bg-background');
+    });
 
-      headers.forEach((header) => {
-        const rect = header.getBoundingClientRect();
-        if (rect.top <= 80) {
-          currentStickyCategory = (header as HTMLElement).dataset.category;
-        }
-      });
+    document.querySelectorAll('.list-category-item-before').forEach((e) => {
+      e.className = cn(e.className, 'hidden');
+    });
 
-      const category = categories.find((e) => e.id === currentStickyCategory);
-      if (category?.child) {
-        setSubCategoryId(currentStickyCategory);
-        setCategoryId(category.parentId);
-      } else {
-        setCategoryId(currentStickyCategory ?? categories[0]?.id);
-        setSubCategoryId(undefined);
-      }
+    const headers = document.querySelectorAll('.category-header');
 
-      setIsSticky(Boolean(currentStickyCategory));
-    }
-  }, [delay, categories, setCategoryId, setSubCategoryId]);
+    const elements: HTMLElement[] = [];
+
+    headers.forEach((h) => {
+      const element = h as HTMLElement;
+      if (element.getBoundingClientRect().top <= 80) elements.push(element);
+      else element.className = cn(element.className, 'border-b-0');
+    });
+
+    let element = elements[elements.length - 1];
+    if (element) element.className = cn(element.className, 'border-b');
+
+    if (!element) element = headers[0] as HTMLElement;
+
+    const currentStickyCategory = (element as HTMLElement)?.dataset?.category;
+
+    if (!currentStickyCategory) return;
+
+    const categoryElement = document.querySelector(
+      `[data-active-category='${currentStickyCategory}']`,
+    );
+    const beforeElemet = document.querySelector(
+      `[data-category-before='${currentStickyCategory}']`,
+    );
+    if (!categoryElement || !beforeElemet) return;
+
+    categoryElement.className = cn(
+      categoryElement.className,
+      'font-bold text-current-2 bg-primary-foreground',
+    );
+    beforeElemet.className = cn(beforeElemet.className, 'block');
+
+    if (!categoryWrapperRef.current || isHover.current) return;
+
+    categoryWrapperRef.current.scrollTo({
+      top: (categoryElement as HTMLElement).offsetTop - 100,
+      behavior: 'smooth',
+    });
+  };
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window) {
-      window?.addEventListener("scroll", handleScroll);
-    }
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
 
     return () => {
-      if (typeof window !== "undefined" && window) {
-        window?.removeEventListener("scroll", handleScroll);
-      }
+      window.removeEventListener('scroll', handleScroll);
     };
-  }, [handleScroll]);
+  }, []);
 
-  const { t } = useTranslation();
   const onClickCategory = (e: ListCategory) => {
-    if (e.child) {
-      setCategoryId(e.parentId);
-      setSubCategoryId(e.id);
-    } else {
-      setCategoryId(e.id);
-      setSubCategoryId(undefined);
-    }
-
-    const element = document.querySelector(
-      `[data-category-relative='${e.id}']`
-    );
+    const element = document.querySelector(`[data-category-relative='${e.id}']`);
     if (element) {
-      setDelay(true);
-      const offset =
-        (width ?? (typeof window !== "undefined" ? window.innerWidth : 0)) < 640
-          ? 0
-          : -64;
+      const offset = (width ?? window.innerWidth) < 640 ? 0 : -64;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
       const offsetPosition = elementPosition + offset;
 
-      window?.scrollTo({
+      window.scrollTo({
         top: offsetPosition,
-        behavior: "instant",
+        // @ts-ignore
+        behavior: 'instant',
       });
-      setTimeout(() => setDelay(false), 100);
     }
   };
 
@@ -148,23 +146,25 @@ export const List: React.FC<ChildProps> = ({
     <div className="flex w-full mb-20 relative">
       <MenuDetail count={count} className="absolute w-full" />
       <nav className="w-1/4 xl:w-1/5 sticky mt-10 z-40 sm:top-[62px] top-16 self-start bg-background min-w-[6rem]">
-        <div className="overflow-y-auto px-0 sm:px-3 py-2 no-scrollbar gap-2 flex flex-col max-h-[100vh] overflow-x-hidden pb-8">
+        <div
+          onMouseEnter={() => (isHover.current = true)}
+          onMouseLeave={() => (isHover.current = false)}
+          onTouchStart={() => (isHover.current = true)}
+          ref={categoryWrapperRef}
+          className="overflow-y-auto px-0 sm:px-3 py-2 no-scrollbar gap-2 flex flex-col max-h-[calc(100vh-80px)] overflow-x-hidden pb-8"
+        >
           {categories.map((e, index) => {
-            const active = e.id === categoryId || e.id === subCategoryId;
             return (
               <div
                 key={index}
-                className={`flex flex-nowrap relative px-2 text-start py-1.5 rounded-none cursor-pointer xl:px-7 ${
-                  active
-                    ? "bg-background text-black font-bold dark:text-white"
-                    : "text-primary bg-background"
-                }
-                `}
+                data-active-category={e.id}
+                className="list-category-item flex flex-nowrap relative px-2 text-start py-1.5 cursor-pointer xl:px-7 text-primary bg-background rounded-md"
                 onClick={() => onClickCategory(e)}
               >
-                {active && (subCategoryId ? e.child : true) && (
-                  <div className="h-full absolute top-0 left-0 w-1 sm:w-1.5 bg-current-2" />
-                )}
+                <div
+                  data-category-before={e.id}
+                  className="hidden list-category-item-before h-full absolute top-0 left-0 w-1 sm:w-1.5 bg-current-2 rounded"
+                />
                 {e.child && (
                   <span className="mr-0 hidden sm:block sm:mr-1 text-primary opacity-40 truncate text-wrap">
                     -
@@ -179,12 +179,15 @@ export const List: React.FC<ChildProps> = ({
           })}
         </div>
       </nav>
-      <div className="p-1 mt-10 sm:px-4 pt-0 w-3/4 xl:w-4/5">
+      <div
+        className="p-1 mt-10 sm:px-4 pt-0 w-3/4 xl:w-4/5"
+        onTouchStart={() => (isHover.current = false)}
+      >
         <div className="relative mt-2">
           <Input
             onChange={(e) => setSearch(e.target.value)}
             className="rounded-xl px-11 sm:max-w-96"
-            placeholder={t("Search")}
+            placeholder={t('Search')}
           />
           <Icons.search className="text-current-2 absolute top-2 left-3" />
         </div>
@@ -192,23 +195,17 @@ export const List: React.FC<ChildProps> = ({
           <div key={index} className="flex flex-col gap-1">
             <div data-category-relative={category.id} />
             <div
-              className={`sticky z-40 sm:top-[62px] top-16 h-8 sm:h-12 flex items-center category-header bg-background font-medium text-base sm:text-xl ${
-                (categoryId === category.id || subCategoryId === category.id) &&
-                !category.emptyParent &&
-                isSticky
-                  ? "border-b"
-                  : ""
-              } ${category.child ? "font-normal text-md" : ""} ${
-                category.emptyParent ? "h-5 mt-2 sm:mt-5" : ""
-              }`}
+              className={cn(
+                'sticky z-40 sm:top-[62px] top-16 h-8 sm:h-12 flex items-center category-header bg-background font-medium text-base sm:text-xl',
+                category.child && 'font-normal text-md',
+                category.emptyParent && 'h-5 mt-2 sm:mt-5',
+              )}
               data-category={category.id}
             >
               <Translate>{category.name}</Translate>
             </div>
             <div
-              className={`${
-                width < 500 ? "grid-cols-1" : "grid-cols-2"
-              } grid xl:grid-cols-4 gap-4`}
+              className={`${width < 500 ? 'grid-cols-1' : 'grid-cols-2'} grid xl:grid-cols-4 gap-4`}
             >
               {category.products
                 .slice()

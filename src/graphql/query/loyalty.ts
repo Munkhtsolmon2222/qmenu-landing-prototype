@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
-import { LOYALTY_FIELDS } from "../fragment";
+import { gql } from '@apollo/client';
+import { LOYALTY_FIELDS } from '../fragment';
 
-export const GET_LOYALTIES = gql`
+const GET_LOYALTIES = gql`
   query getLoyalties {
     getLoyalties {
       ...LoyaltyFields
@@ -10,7 +10,7 @@ export const GET_LOYALTIES = gql`
   ${LOYALTY_FIELDS}
 `;
 
-export const GET_BALANCE_UPOINT = gql`
+const GET_BALANCE_UPOINT = gql`
   query getBalanceUpoint($input: BalanceInput!) {
     getBalanceUpoint(input: $input) {
       id
@@ -28,7 +28,7 @@ export const GET_BALANCE_UPOINT = gql`
   }
 `;
 
-export const GET_LOYALTIES_RECORDS = gql`
+const GET_LOYALTIES_RECORDS = gql`
   query getLoyaltyRecords {
     getLoyaltyRecords {
       id
@@ -49,7 +49,7 @@ export const GET_LOYALTIES_RECORDS = gql`
   ${LOYALTY_FIELDS}
 `;
 
-export const GET_LOYALTIES_RECORD = gql`
+const GET_LOYALTIES_RECORD = gql`
   query getLoyaltyRecord($loyaltyId: ID!) {
     getLoyaltyRecord(loyaltyId: $loyaltyId) {
       id
@@ -69,3 +69,10 @@ export const GET_LOYALTIES_RECORD = gql`
   }
   ${LOYALTY_FIELDS}
 `;
+
+export const LOYALTY_QUERY = {
+  GET_LOYALTIES,
+  GET_BALANCE_UPOINT,
+  GET_LOYALTIES_RECORDS,
+  GET_LOYALTIES_RECORD,
+};

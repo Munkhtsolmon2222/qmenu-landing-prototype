@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 import {
   ORDER_FIELDS,
   ORDER_ITEM_FIELDS,
@@ -6,12 +6,10 @@ import {
   STAFF_FIELDS,
   TABLE_FIELDS,
   TRANSACTION_FIELDS,
-} from "../fragment";
-import {
   CHARGES_FIELDS,
   DISCOUNTS_FIELDS,
   ORDER_LOYALTY_FIELDS,
-} from "../query";
+} from '../fragment';
 
 export const ON_UPDATED_ORDER = gql`
   subscription onUpdatedOrder($customer: ID!) {

@@ -1,8 +1,8 @@
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
-import { CardHeader, CardContent, Card } from "@/components/ui/card";
-import { ORDER_STATES } from "@/lib/config/constant";
-import { Order, OrderState } from "@/lib/types";
-import restaurant from "@/assets/images/restaurant.png";
+import { AvatarImage, AvatarFallback, Avatar } from '@/components/ui/avatar';
+import { CardHeader, CardContent, Card } from '@/components/ui/card';
+import { Order, OrderState } from '@/lib/types';
+import restaurant from '@/assets/images/restaurant.png';
+import { ORDER_STATES } from '@/lib/constant';
 
 interface Props {
   order: Order;
@@ -16,18 +16,8 @@ export default function OrderCard(props: Props) {
         <CardHeader className="flex flex-row items-end justify-between px-0 pb-3 pt-0">
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage
-                alt="AI Assistant"
-                src={
-                  typeof order?.branch.logo === "string"
-                    ? order?.branch.logo
-                    : restaurant.src
-                }
-              />
-
-              <AvatarFallback>
-                {order?.branch?.name.split("", 2)}
-              </AvatarFallback>
+              <AvatarImage alt="AI Assistant" src={order?.branch?.logo ?? restaurant} />
+              <AvatarFallback>{order?.branch?.name.split('', 2)}</AvatarFallback>
             </Avatar>
             <div>
               <h3 className="font-bold">{order?.branch?.name}</h3>
@@ -44,9 +34,7 @@ export default function OrderCard(props: Props) {
             <p className="text-gray-400 ">Захиалагын төлөв:</p>
             <div className="text-white text-center leading-0 h-max  flex items-center justify-center bg-gray-400 rounded-md pb-[0.1rem] ">
               <p className="leading-0">
-                {ORDER_STATES.get(
-                  (order?.state as OrderState) ?? OrderState.BOOKED
-                )}
+                {ORDER_STATES.get((order?.state as OrderState) ?? OrderState.BOOKED)}
               </p>
             </div>
           </div>
@@ -54,9 +42,7 @@ export default function OrderCard(props: Props) {
             <p className="text-gray-400 ">Нийт дүн:</p>
             <div className="flex items-end justify-end">
               {order?.grandTotal} MNT
-              <span className="ml-2 text-gray-400">
-                ({order?.items?.length})
-              </span>
+              <span className="ml-2 text-gray-400">({order?.items?.length})</span>
             </div>
           </div>
         </CardContent>
@@ -65,7 +51,7 @@ export default function OrderCard(props: Props) {
   );
 }
 
-export function ArrowRightIcon(props) {
+function ArrowRightIcon(props: any) {
   return (
     <svg
       {...props}
@@ -85,7 +71,7 @@ export function ArrowRightIcon(props) {
   );
 }
 
-export function BarChartIcon(props) {
+function BarChartIcon(props: any) {
   return (
     <svg
       {...props}
@@ -106,7 +92,7 @@ export function BarChartIcon(props) {
   );
 }
 
-export function BriefcaseIcon(props) {
+function BriefcaseIcon(props: any) {
   return (
     <svg
       {...props}
@@ -126,7 +112,7 @@ export function BriefcaseIcon(props) {
   );
 }
 
-export function ClockIcon(props) {
+function ClockIcon(props: any) {
   return (
     <svg
       {...props}
@@ -146,7 +132,7 @@ export function ClockIcon(props) {
   );
 }
 
-export function SettingsIcon(props) {
+function SettingsIcon(props: any) {
   return (
     <svg
       {...props}

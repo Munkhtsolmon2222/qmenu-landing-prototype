@@ -1,17 +1,15 @@
-import { gql } from "@apollo/client";
-import {
-  TABLE_FIELDS,
-  TRANSACTION_FIELDS,
-  ORDER_ITEM_FIELDS,
-  ORDER_FIELDS,
-} from "../fragment";
+import { gql } from '@apollo/client';
 import {
   CHARGES_FIELDS,
   DISCOUNTS_FIELDS,
   ORDER_LOYALTY_FIELDS,
-} from "../query";
+  TABLE_FIELDS,
+  TRANSACTION_FIELDS,
+  ORDER_ITEM_FIELDS,
+  ORDER_FIELDS,
+} from '../fragment';
 
-export const ADD_ORDER_LOYALTY = gql`
+const ADD_ORDER_LOYALTY = gql`
   mutation addOrderLoyalty($id: ID!, $type: LoyaltyType!) {
     addOrderLoyalty(id: $id, type: $type) {
       ...OrderFields
@@ -43,3 +41,7 @@ export const ADD_ORDER_LOYALTY = gql`
   ${TRANSACTION_FIELDS}
   ${ORDER_LOYALTY_FIELDS}
 `;
+
+export const LOYALTY_MUTATION = {
+  ADD_ORDER_LOYALTY,
+};

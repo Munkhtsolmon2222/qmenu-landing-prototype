@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client";
-import { ORDER_ITEM_OPTION_FIELDS } from "./option";
+import { gql } from '@apollo/client';
+import { ORDER_ITEM_OPTION_FIELDS } from './option';
 
 export const ORDER_FIELDS = gql`
   fragment OrderFields on Order {
@@ -15,6 +15,7 @@ export const ORDER_FIELDS = gql`
     address
     floor
     channelType
+    channelId
     contact
     guests
     comment

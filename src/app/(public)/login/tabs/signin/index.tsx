@@ -1,150 +1,124 @@
 'use client';
-import { z } from 'zod';
 import { ChildProps } from '../../page';
 import { ItemWrapper } from '../../components';
-import { useContext, useState } from 'react';
-import { AuthContext, getPayload } from '@/lib/providers/auth';
-import { useMutation } from '@apollo/client';
-import { LOGIN } from '@/graphql/mutation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Icons } from '@/components/shared/icons';
-import { LoadingButton } from '@/components/ui/loading-button';
 import { useTranslation } from 'react-i18next';
+import { SigninInput, SigninSchema } from '@/lib/validations';
+import { Button, Icons, Input } from '@/components/general';
+import { CUSTOMER, PAGE_FORGOT } from '@/lib/constant';
+import { useAction } from '@/lib/hooks';
+import { authenticate, GET_PAYLOAD, LOGIN } from '@/actions';
+import { showToast } from '@/lib/helpers';
+import { redirectWithNProgress as navigate } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-interface Props extends ChildProps {
-  additionalProp?: string;
-}
-const FormSchema = z.object({
-  phone: z
-    .string({
-      required_error: 'Утасны дугаараа оруулна уу',
-    })
-    .refine(
-      (phone) => {
-        return /^\d{8}$/.test(phone);
-      },
-      { message: 'Утасны дугаар буруу байна' }
-    ),
-  password: z.string().min(2, {
-    message: 'Нууц үгээ оруулна уу.',
-  }),
-});
+import nProgress from 'nprogress';
 
-const Signin: React.FC<Props> = ({ nextPath }) => {
+interface Props extends ChildProps {}
+
+const Index: React.FC<Props> = ({ nextPath, goBack }) => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { authenticate } = useContext(AuthContext);
+  const { data: payload } = useAction(GET_PAYLOAD);
 
-  const [login, { loading }] = useMutation(LOGIN, {
-    onCompleted: (data) => {
-      authenticate(data.signIn.token, () => {
-        router.push(nextPath ?? '/');
+  const { action: login, loading } = useAction(LOGIN, {
+    lazy: true,
+    onSuccess(data) {
+      if (!data?.token) return;
+      authenticate(data.token).then(() => {
+        if (goBack) {
+          nProgress.start();
+          router.back();
+        } else navigate(nextPath ?? '/');
       });
     },
+    onError: ({ message }) => showToast(message),
   });
 
   const {
     control,
     handleSubmit,
     formState: { isValid },
-  } = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  } = useForm<SigninInput>({
+    resolver: zodResolver(SigninSchema),
     defaultValues: {
       phone: '',
       password: '',
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (getPayload()?.role === 'customer') {
-      router.push(nextPath ?? '/');
-    } else {
-      login({ variables: { phone: data.phone, password: data.password } });
-    }
+  function onSubmit(data: SigninInput) {
+    if (payload?.role === CUSTOMER) navigate(nextPath ?? '/');
+    else login({ phone: data.phone, password: data.password, user: false });
   }
 
   return (
-    <div className='flex-col overflow-y-auto mb-20 flex items-center w-full max-w-96 '>
-      {/* <p className="w-full text-center text-xl font-semibold">Нэвтрэх</p> */}
-      <p className='w-full text-center text-md text-secondary-text'>
-        {t('Hello! Welcome')}
-      </p>
+    <div className="flex-col overflow-y-auto mb-20 flex items-center w-full max-w-96">
       <FormField
         control={control}
-        name='phone'
-        render={({
-          field: { value = '', ...field },
-          fieldState: { error },
-        }) => (
-          <ItemWrapper title={t('Phone')} error={error} className='mb-6'>
+        name="phone"
+        render={({ field: { value = '', ...field }, fieldState: { error } }) => (
+          <ItemWrapper title={t('Phone')} error={error} className="mb-6 w-full">
             <Input
               {...field}
               maxLength={8}
               value={value}
-              className='h-12 w-80 text-secondary-text opacity-90 bg-secondary-background '
-              placeholder='00000000'
+              className="h-12 text-secondary-text opacity-90 bg-secondary-background dark:bg-background w-full"
+              placeholder="00000000"
             />
           </ItemWrapper>
         )}
       />
       <FormField
         control={control}
-        name='password'
-        render={({
-          field: { value = '', ...field },
-          fieldState: { error },
-        }) => (
-          <ItemWrapper
-            error={error}
-            title={t('Password')}
-            titleClassName='text-sm'
-          >
-            <div className='relative w-full'>
+        name="password"
+        render={({ field: { value = '', ...field }, fieldState: { error } }) => (
+          <ItemWrapper error={error} title={t('Password')} titleClassName="text-sm">
+            <div className="relative w-full">
               <Input
                 {...field}
                 value={value}
                 type={hidePassword ? 'password' : 'text'}
                 placeholder={t('Please enter your password')}
-                className='pr-10 h-12  w-80  text-secondary-text opacity-90 bg-secondary-background'
+                className="h-12 pr-4 text-secondary-text opacity-90 bg-secondary-background dark:bg-background"
+                suffix={
+                  hidePassword ? (
+                    <Icons.eye onClick={() => setHidePassword(!hidePassword)} className="h-7 w-5" />
+                  ) : (
+                    <Icons.eyeOff
+                      onClick={() => setHidePassword(!hidePassword)}
+                      className="h-7 w-5"
+                    />
+                  )
+                }
               />
-              <div
-                className='absolute cursor-pointer bottom-2.5 right-16 opacity-40 hover:opacity-100'
-                onClick={() => setHidePassword(!hidePassword)}
-              >
-                {hidePassword ? (
-                  <Icons.eye className='h-7 w-5' />
-                ) : (
-                  <Icons.eyeOff className='h-7 w-5' />
-                )}
-              </div>
             </div>
             <div
-              className='text-sm hover:underline ml-auto mt-2 underline mr-12'
-              onClick={() => router.push('/forgot-password')}
+              className="text-sm hover:underline ml-auto mt-2 underline mr-2"
+              onClick={() => navigate(PAGE_FORGOT)}
             >
               {t('Forgot your password')}
             </div>
           </ItemWrapper>
         )}
       />
-      <div className='px-2 w-full'>
-        <LoadingButton
+      <div className="px-2 w-full">
+        <Button
           loading={loading}
           disabled={!isValid}
-          type='submit'
-          className={`w-80 mt-10 rounded-full bg-current `}
+          type="submit"
+          className="mt-10 rounded-md bg-current-2 w-full dark:text-primary h-12"
           onClick={handleSubmit(onSubmit)}
         >
           <span>{t('login')}</span>
-        </LoadingButton>
+        </Button>
       </div>
     </div>
   );
 };
 
-export default Signin;
+export default Index;

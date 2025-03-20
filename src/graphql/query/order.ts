@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 import {
   BRANCH_FIELDS1,
   CUSTOMER_FIELDS,
@@ -7,9 +7,9 @@ import {
   ORDER_TABLE_FIELDS,
   TABLE_FIELDS,
   TRANSACTION_FIELDS,
-} from "../fragment";
+} from '../fragment';
 
-export const ORDER_LOYALTY_FIELDS = gql`
+const ORDER_LOYALTY_FIELDS = gql`
   fragment OrderLoyaltyFields on OrderLoyalty {
     id
     type
@@ -22,7 +22,7 @@ export const ORDER_LOYALTY_FIELDS = gql`
   }
 `;
 
-export const DISCOUNTS_FIELDS = gql`
+const DISCOUNTS_FIELDS = gql`
   fragment DiscountsFields on OrderDiscount {
     amount
     calculation
@@ -37,7 +37,7 @@ export const DISCOUNTS_FIELDS = gql`
   }
 `;
 
-export const ORDER_VATS_FIELD = gql`
+const ORDER_VATS_FIELD = gql`
   fragment VatsFields on Vat {
     amount
     citytax
@@ -52,7 +52,7 @@ export const ORDER_VATS_FIELD = gql`
   }
 `;
 
-export const CHARGES_FIELDS = gql`
+const CHARGES_FIELDS = gql`
   fragment ChargesFields on OrderCharge {
     calculation
     amount
@@ -67,7 +67,7 @@ export const CHARGES_FIELDS = gql`
   }
 `;
 
-export const GET_ORDER_REVIEWS = gql`
+const GET_ORDER_REVIEWS = gql`
   query getOrderReviewsByLimit($offset: Int, $limit: Int) {
     getOrderReviewsByLimit(offset: $offset, limit: $limit) {
       id
@@ -92,7 +92,7 @@ export const GET_ORDER_REVIEWS = gql`
   ${ORDER_FIELDS}
 `;
 
-export const GET_ORDER = gql`
+const GET_ORDER = gql`
   query getOrder($id: ID!) {
     getOrder(id: $id) {
       ...OrderFields
@@ -129,8 +129,8 @@ export const GET_ORDER = gql`
   ${ORDER_TABLE_FIELDS}
 `;
 
-export const GET_ORDERS = gql`
-  {
+const GET_ORDERS = gql`
+  query getOrders {
     getOrders {
       ...OrderFields
       table {
@@ -161,8 +161,8 @@ export const GET_ORDERS = gql`
   ${TRANSACTION_FIELDS}
   ${ORDER_TABLE_FIELDS}
 `;
-export const GET_CUSTOMER_ORDERS = gql`
-  {
+const GET_CUSTOMER_ORDERS = gql`
+  query getCustomerOrders {
     getCustomerOrders {
       ...OrderFields
       table {
@@ -197,3 +197,10 @@ export const GET_CUSTOMER_ORDERS = gql`
   ${TRANSACTION_FIELDS}
   ${ORDER_TABLE_FIELDS}
 `;
+
+export const ORDER_QUERY = {
+  GET_ORDER,
+  GET_ORDERS,
+  GET_CUSTOMER_ORDERS,
+  GET_ORDER_REVIEWS,
+};

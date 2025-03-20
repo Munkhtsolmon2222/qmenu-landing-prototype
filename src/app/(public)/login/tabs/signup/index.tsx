@@ -1,27 +1,21 @@
 'use client';
 import { z } from 'zod';
 import { ChildProps } from '../../page';
-import { ItemWrapper } from '../../components';
-import { OTP } from '../../components';
-import { useContext, useEffect, useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_SESSION } from '@/graphql/mutation';
+import { ItemWrapper, OTP } from '../../components';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { LoadingButton } from '@/components/ui/loading-button';
-import { SessionType } from '@/lib/config/constant';
-import { toast } from '@/components/ui/use-toast';
 import { RegisterForm } from './components/RegisterForm';
-import { SignUpReturnValue } from '@/lib/types';
-import { AuthContext } from '@/lib/providers/auth';
-import { GET_CURRENT_CUSTOMER } from '@/graphql/query/customer';
 import { useTranslation } from 'react-i18next';
-import { useRouter } from 'next/navigation';
-interface Props extends ChildProps {
-  additionalProp?: string;
-}
+import { authenticate, GET_CURRENT_CUSTOMER, GET_SESSION } from '@/actions';
+import { useAction } from '@/lib/hooks';
+import { PAGE_HOME, SessionType } from '@/lib/constant';
+import { showToast } from '@/lib/helpers';
+import { redirectWithNProgress as navigate } from '@/lib/utils';
+import { Button, Input } from '@/components/general';
+
+interface Props extends ChildProps {}
 
 const FormSchema = z.object({
   phone: z
@@ -32,32 +26,34 @@ const FormSchema = z.object({
       (phone) => {
         return /^\d{8}$/.test(phone);
       },
-      { message: 'Утасны дугаар буруу байна' }
+      { message: 'Утасны дугаар буруу байна' },
     ),
 });
 
 type FormSchema = z.infer<typeof FormSchema>;
 
-const Signup: React.FC<Props> = ({ setTab, tab }) => {
+const Index: React.FC<Props> = ({ setTab, tab }) => {
   const [step, setStep] = useState<number>(0);
   const [sessionId, setSessionId] = useState<string>();
   const { t } = useTranslation();
   const [time, setTime] = useState(() => {
-    const sessionTime = localStorage?.getItem('sessionTime');
+    const sessionTime = localStorage.getItem('sessionTime');
     return sessionTime ? Number(sessionTime) : 0;
   });
 
-  const [getMe, { loading: userLoading }] = useLazyQuery(GET_CURRENT_CUSTOMER, {
-    onCompleted() {
-      setTab('signin');
-      router.push('/');
-      setSessionId(undefined);
-      setStep(0);
+  const { action: getMe, loading: userLoading } = useAction(GET_CURRENT_CUSTOMER, {
+    lazy: true,
+    onSuccess(me) {
+      if (me) {
+        setTab('signin');
+        navigate(PAGE_HOME);
+        setSessionId(undefined);
+        setStep(0);
+      }
     },
   });
-  const router = useRouter();
-  const { authenticate } = useContext(AuthContext);
-  const [getSession, { loading }] = useMutation(GET_SESSION);
+
+  const { action: getSession, loading } = useAction(GET_SESSION, { lazy: true });
 
   const {
     control,
@@ -66,20 +62,18 @@ const Signup: React.FC<Props> = ({ setTab, tab }) => {
     watch,
   } = useForm<FormSchema>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      phone: '',
-    },
+    defaultValues: { phone: '' },
   });
 
   const { phone } = watch();
 
   const tryCode = () => {
-    getSession({
-      variables: { phone, type: SessionType.R },
-      onCompleted: (data) => {
+    getSession(phone, SessionType.R, undefined, {
+      onSuccess: (data) => {
         setTime(59);
-        setSessionId(data.getSession);
+        setSessionId(data);
       },
+      onError: ({ message }) => showToast(message),
     });
   };
 
@@ -88,17 +82,17 @@ const Signup: React.FC<Props> = ({ setTab, tab }) => {
   }, [tab]);
 
   const onSubmit = ({ phone }: FormSchema) => {
-    const sessionPhone = localStorage?.getItem('sessionPhone');
+    const sessionPhone = localStorage.getItem('sessionPhone');
     if (step < Steps.length - 1) {
       if (phone !== sessionPhone) {
-        getSession({
-          variables: { phone, type: SessionType.R },
-          onCompleted: (data) => {
-            setSessionId(data.getSession);
+        getSession(phone, SessionType.R, undefined, {
+          onSuccess: (data) => {
+            setSessionId(data);
             setStep(step + 1);
             setTime(59);
-            localStorage?.setItem('sessionPhone', phone);
+            localStorage.setItem('sessionPhone', phone);
           },
+          onError: ({ message }) => showToast(message),
         });
       } else {
         setStep(step + 1);
@@ -107,13 +101,12 @@ const Signup: React.FC<Props> = ({ setTab, tab }) => {
   };
 
   useEffect(() => {
-    localStorage?.setItem('sessionTime', time.toString());
+    localStorage.setItem('sessionTime', time.toString());
 
     let interval: ReturnType<typeof setInterval> | undefined;
-    if (time > 0)
-      interval = setInterval(() => setTime((seconds) => seconds - 1), 1000);
+    if (time > 0) interval = setInterval(() => setTime((seconds) => seconds - 1), 1000);
     else if (time === 0) {
-      localStorage?.removeItem('sessionPhone');
+      localStorage.removeItem('sessionPhone');
       clearInterval(interval);
     }
 
@@ -121,17 +114,14 @@ const Signup: React.FC<Props> = ({ setTab, tab }) => {
   }, [time]);
 
   const onSuccessVerify = () => {
-    localStorage?.removeItem('sessionTime');
-    localStorage?.removeItem('sessionPhone');
+    localStorage.removeItem('sessionTime');
+    localStorage.removeItem('sessionPhone');
     setStep(step + 1);
   };
 
-  const onFinish = (e: SignUpReturnValue) => {
-    toast({
-      title: 'Амжилттай бүртгэгдлээ.',
-      variant: 'default',
-    });
-    authenticate(e.token, () => {
+  const onFinish = (e: { token: string }) => {
+    showToast('Амжилттай бүртгэгдлээ.');
+    authenticate(e.token).then(() => {
       getMe();
     });
   };
@@ -140,39 +130,33 @@ const Signup: React.FC<Props> = ({ setTab, tab }) => {
     <>
       <FormField
         control={control}
-        name='phone'
-        render={({
-          field: { value = '', ...field },
-          fieldState: { error },
-        }) => (
-          <ItemWrapper title={t('Phone')} error={error} className='mb-6'>
+        name="phone"
+        render={({ field: { value = '', ...field }, fieldState: { error } }) => (
+          <ItemWrapper title={t('Phone')} error={error} className="mb-6">
             <Input
               {...field}
               maxLength={8}
               value={value}
-              className='h-12 w-80'
-              placeholder='00000000'
+              className="h-12 bg-secondary-background dark:bg-background"
+              placeholder="00000000"
             />
           </ItemWrapper>
         )}
       />
-      <div className='opacity-70 px-2 w-[350px]'>
+      <div className="opacity-70 px-2 text-center">
         {t('You will receive a 4-digit verification code')}
       </div>
-      <div className='px-2 '>
-        <LoadingButton
-          loading={loading}
-          disabled={!isValid}
-          type='submit'
-          className={` mt-10 rounded-full bg-current w-80`}
-          onClick={handleSubmit(onSubmit)}
-        >
-          <span>{t('login')}</span>
-        </LoadingButton>
-      </div>
+      <Button
+        loading={loading}
+        disabled={!isValid}
+        type="submit"
+        className="mt-6 rounded-md bg-current-2 w-full h-12"
+        onClick={handleSubmit(onSubmit)}
+      >
+        <span>{t('Continue')}</span>
+      </Button>
     </>,
     <OTP
-      key='phone'
       phone={phone}
       tryCode={tryCode}
       time={time}
@@ -182,7 +166,6 @@ const Signup: React.FC<Props> = ({ setTab, tab }) => {
       goBack={() => setStep(step - 1)}
     />,
     <RegisterForm
-      key='register'
       onFinish={onFinish}
       setTab={setTab}
       tab={tab}
@@ -192,15 +175,7 @@ const Signup: React.FC<Props> = ({ setTab, tab }) => {
     />,
   ];
 
-  return (
-    <div
-      className={`relative py-4 mb-3 flex flex-col overflow-y-auto ${
-        step === 2 ? 'sm:h-[calc(75vh_-_100px)]' : 'sm:h-[calc(60vh_-_100px)]'
-      }`}
-    >
-      {Steps[step]}
-    </div>
-  );
+  return <div className="relative py-4 mb-3 flex flex-col h-full">{Steps[step]}</div>;
 };
 
-export default Signup;
+export default Index;

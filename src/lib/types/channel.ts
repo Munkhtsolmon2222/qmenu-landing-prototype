@@ -1,6 +1,6 @@
-import { ChannelType } from "../config/constant";
-import { Branch } from "./branch";
-import { ITimetable } from "./timetable";
+import { ChannelType } from '../constant';
+import { Branch } from './branch';
+import { ITimetable } from './timetable';
 
 export interface IChannel {
   id: string;

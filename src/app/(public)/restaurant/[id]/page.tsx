@@ -1,5 +1,7 @@
-const Id = () => {
-  return;
-  <></>;
+interface Props {}
+
+const Page: React.FC<Props> = ({}) => {
+  return <></>;
 };
-export default Id;
+
+export default Page;

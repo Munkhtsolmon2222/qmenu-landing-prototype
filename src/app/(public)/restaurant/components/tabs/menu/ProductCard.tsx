@@ -1,11 +1,10 @@
-"use client";
-import { Icons } from "@/components/shared/icons";
-import { Button } from "@/components/ui/button";
-import { getMainVariant, useRestaurantStore } from "@/lib/providers/restaurant";
-import { ProductChildProps } from "./Product";
-import { useTranslation } from "react-i18next";
-import { Translate } from "@/components/translator";
-import Image from "next/image";
+'use client';
+import { getMainVariant, useRestaurantStore } from '@/lib/providers/restaurant';
+import { ProductChildProps } from './Product';
+import { useTranslation } from 'react-i18next';
+import { Icons, MotionCard, Button } from '@/components/general';
+import { Translate } from '@/components/shared';
+
 export const ProductCard: React.FC<ProductChildProps> = ({
   product,
   basketItem,
@@ -19,18 +18,8 @@ export const ProductCard: React.FC<ProductChildProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-xl overflow-hidden border relative min-h-[17rem] flex flex-col">
-      <Image
-        width={100}
-        height={100}
-        alt="product.image"
-        className="w-full h-36 xl:h-48 object-cover"
-        src={
-          product.image === ""
-            ? participant?.logo
-            : product.image ?? participant?.logo
-        }
-      />
+    <MotionCard className="rounded-xl overflow-hidden border relative min-h-[17rem] flex flex-col cursor-pointer hover:shadow-md duration-200">
+      <img className="w-full h-36 xl:h-48 object-cover" src={product.image || participant?.logo} />
       <Icons.heart
         onClick={(e) => {
           e.stopPropagation();
@@ -39,15 +28,15 @@ export const ProductCard: React.FC<ProductChildProps> = ({
         className={`w-7 h-7 cursor-pointer ${
           liked
             ? loading
-              ? "opacity-45"
-              : "fill-current-2"
+              ? 'opacity-45'
+              : 'fill-current-2'
             : loading
-            ? "opacity-45"
-            : "opacity-90"
+            ? 'opacity-45'
+            : 'opacity-90'
         } stroke-current-2 absolute top-0 right-0 m-2 bg-secondary-background rounded-full p-1`}
       />
       <div className="relative p-2 flex flex-col flex-1 xl:gap-1">
-        <h3 className="xl:w-36 font-semibold line-clamp-2 break-words">
+        <h3 className="xl:w-36 font-semibold line-clamp-2 break-words text-sm sm:text-base">
           <Translate>{product.name}</Translate>
         </h3>
         <p className="text-sm italic dark:text-gray-400 text-gray-600 min-h-5 line-clamp-2">
@@ -64,8 +53,7 @@ export const ProductCard: React.FC<ProductChildProps> = ({
                   .sort((a, b) => b - a)[0]
                   .toLocaleString()}₮`
               : (
-                  product.variants?.[0]?.salePrice ??
-                  product.variants?.[0]?.price
+                  product.variants?.[0]?.salePrice ?? product.variants?.[0]?.price
                 )?.toLocaleString()}
           </span>
         </div>
@@ -76,15 +64,15 @@ export const ProductCard: React.FC<ProductChildProps> = ({
             <Button
               variant="outline"
               className="flex py-4 mt-auto items-center gap-2 w-full h-8 border-current-2"
-              onClick={() => onClick(product, "create")}
+              onClick={() => onClick(product, 'create')}
             >
               {product.variants?.length > 1 ||
               (getMainVariant(product)?.options ?? []).length > 0 ? (
-                <div className="text-current-2">{t("Order")}</div>
+                <div className="text-current-2">{t('Select')}</div>
               ) : (
                 <>
                   <Icons.shoppingCart className="text-current-2 w-5" />
-                  <div className="text-current-2">{t("Order")}</div>
+                  <div className="text-current-2">{t('Order')}</div>
                 </>
               )}
             </Button>
@@ -97,19 +85,17 @@ export const ProductCard: React.FC<ProductChildProps> = ({
               >
                 <Icons.minus className="text-current-2 w-4 h-4" />
               </Button>
-              <span className="text-current-2">
-                {basketItem.input.quantity}
-              </span>
+              <span className="text-current-2">{basketItem.input.quantity}</span>
               <Button
                 variant="outline"
                 className="w-8 h-8 text-current-2 border-current-2 p-0"
-                onClick={() => onClick(product, "add")}
+                onClick={() => onClick(product, 'add')}
               >
                 <Icons.add className="text-current-2 w-4 h-4" />
               </Button>
             </div>
           ))}
       </div>
-    </div>
+    </MotionCard>
   );
 };

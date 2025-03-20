@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
-import { NOTIFICATION_ACTION_FIELDS, NOTIFICATION_FIELDS } from "../fragment";
+import { gql } from '@apollo/client';
+import { NOTIFICATION_ACTION_FIELDS, NOTIFICATION_FIELDS } from '../fragment';
 
-export const GET_NOTIFICATIONS = gql`
+const GET_NOTIFICATIONS = gql`
   query getNotifications($limit: Int!, $nextToken: String) {
     getNotifications(limit: $limit, nextToken: $nextToken) {
       notifications {
@@ -16,3 +16,7 @@ export const GET_NOTIFICATIONS = gql`
   ${NOTIFICATION_ACTION_FIELDS}
   ${NOTIFICATION_FIELDS}
 `;
+
+export const NOTIFICATION_QUERY = {
+  GET_NOTIFICATIONS,
+};

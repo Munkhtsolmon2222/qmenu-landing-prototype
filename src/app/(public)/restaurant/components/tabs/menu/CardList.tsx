@@ -1,12 +1,11 @@
-"use client";
-import { getFilteredItems } from "@/lib/providers/restaurant";
-import { Category, Product as ProductType } from "@/lib/types";
-import { useMemo, useState } from "react";
-import { Product } from "./Product";
-import { ChildProps } from "./page";
-import { MenuDetail } from "./MenuDetail";
-import { Input } from "@/components/ui/input";
-import { Icons } from "@/components/shared/icons";
+'use client';
+import { getFilteredItems } from '@/lib/providers/restaurant';
+import { Category, Product as ProductType } from '@/lib/types';
+import { useMemo, useState } from 'react';
+import { Product } from './Product';
+import { ChildProps } from '.';
+import { MenuDetail } from './MenuDetail';
+import { Icons, Input } from '@/components/general';
 
 export const CardList: React.FC<ChildProps> = ({
   menuCategories,
@@ -20,48 +19,42 @@ export const CardList: React.FC<ChildProps> = ({
 }) => {
   const [search, setSearch] = useState<string>();
 
-  const { products, categories, subCategories, subCategory, count } =
-    useMemo(() => {
-      const categories = menuCategories ?? [];
+  const searchFilter = (e: ProductType): boolean => {
+    return !search || e.name.toLowerCase().includes(search.toLowerCase());
+  };
 
-      const searchFilter = (e: ProductType): boolean => {
-        return !search || e.name.toLowerCase().includes(search.toLowerCase());
-      };
+  const { products, categories, subCategories, subCategory, count } = useMemo(() => {
+    const categories = menuCategories ?? [];
 
-      const count = categories.reduce((res, curr) => {
-        const items = (curr.products ?? []).concat(
-          curr.children.flatMap((e) => e.products ?? [])
-        );
-        const filtered = getFilteredItems(items, searchFilter);
-        res += filtered.length;
-        return res;
-      }, 0);
+    const count = categories.reduce((res, curr) => {
+      let items = (curr.products ?? []).concat(curr.children.flatMap((e) => e.products ?? []));
+      const filtered = getFilteredItems(items, searchFilter);
+      res += filtered.length;
+      return res;
+    }, 0);
 
-      let subCategory: Category | undefined;
-      let subCategories: Category[] = [];
+    let subCategory: Category | undefined;
+    let subCategories: Category[] = [];
 
-      const products = categories.reduce((res: ProductType[], parent) => {
-        if (parent.id === categoryId) {
-          subCategories = parent.children ?? [];
-          subCategory =
-            subCategories.find((e) => e.id === subCategoryId) ??
-            subCategories[0];
-          if (subCategory)
-            res = getFilteredItems(subCategory.products, searchFilter);
-          else res = getFilteredItems(parent.products, searchFilter);
-        }
+    let products = categories.reduce((res: ProductType[], parent) => {
+      if (parent.id === categoryId) {
+        subCategories = parent.children ?? [];
+        subCategory = subCategories.find((e) => e.id === subCategoryId) ?? subCategories[0];
+        if (subCategory) res = getFilteredItems(subCategory.products, searchFilter);
+        else res = getFilteredItems(parent.products, searchFilter);
+      }
 
-        return res;
-      }, []);
+      return res;
+    }, []);
 
-      return {
-        products,
-        categories,
-        subCategories,
-        subCategory,
-        count,
-      };
-    }, [categoryId, subCategoryId, menuCategories, search]);
+    return {
+      products,
+      categories,
+      subCategories,
+      subCategory,
+      count,
+    };
+  }, [categoryId, subCategoryId, search]);
 
   return (
     <div className="flex flex-col mb-20">
@@ -70,7 +63,7 @@ export const CardList: React.FC<ChildProps> = ({
         <Input
           onChange={(e) => setSearch(e.target.value)}
           className="rounded-xl px-11 sm:max-w-96"
-          placeholder="Хайх"
+          placeholder="Ангиллаас хайх"
         />
         <Icons.search className="text-current-2 absolute top-2 left-3" />
       </div>
@@ -82,8 +75,8 @@ export const CardList: React.FC<ChildProps> = ({
               <div
                 key={index}
                 className={`px-2 border justify-center h-9 flex items-center rounded-2xl cursor-pointer text-sm sm:text-base ${
-                  active ? "border-current-2 text-current-2 font-medium" : ""
-                } ${e.name.length > 10 ? "w-max text-nowrap" : " min-w-28"}`}
+                  active ? 'border-current-2 text-current-2 font-medium' : ''
+                } ${e.name.length > 10 ? 'w-max text-nowrap' : ' min-w-28'}`}
                 onClick={() => {
                   setCategoryId(e.id);
                   setSubCategoryId(undefined);
@@ -102,8 +95,8 @@ export const CardList: React.FC<ChildProps> = ({
                 <div
                   key={index}
                   className={`px-2 border justify-center h-9 flex items-center rounded-2xl cursor-pointer text-sm sm:text-base ${
-                    active ? "border-current-2 text-current-2 font-medium" : ""
-                  } ${e.name.length > 10 ? "w-max text-nowrap" : " min-w-28"}`}
+                    active ? 'border-current-2 text-current-2 font-medium' : ''
+                  } ${e.name.length > 10 ? 'w-max text-nowrap' : ' min-w-28'}`}
                   onClick={() => setSubCategoryId(e.id)}
                 >
                   {e.name}

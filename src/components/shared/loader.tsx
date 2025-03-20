@@ -1,11 +1,15 @@
-import { LoaderIcon } from "lucide-react";
+import { cn } from '@/lib/utils';
+import { LoaderIcon } from 'lucide-react';
 
-function Loader() {
-  return (
-    <div className="w-full min-h-[80vh] flex justify-center items-center">
-      <LoaderIcon className="animate-spin text-current" />
-    </div>
-  );
+interface Props {
+  className?: string;
+  spinnerClassName?: string;
 }
 
-export default Loader;
+export const Loader: React.FC<Props> = ({ className, spinnerClassName }) => {
+  return (
+    <div className={cn('flex justify-center items-center', className)}>
+      <LoaderIcon className={cn('animate-spin text-current-3', spinnerClassName)} />
+    </div>
+  );
+};

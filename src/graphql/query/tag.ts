@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
-import { TAG_FIELDS } from "@/graphql/fragment";
+import { gql } from '@apollo/client';
+import { TAG_FIELDS } from '@/graphql/fragment';
 
-export const GET_TAGS_BY_TYPE = gql`
+const GET_TAGS_BY_TYPE = gql`
   query getTagsByType($type: String!) {
     getTagsByType(type: $type) {
       ...TagFields
@@ -9,3 +9,7 @@ export const GET_TAGS_BY_TYPE = gql`
   }
   ${TAG_FIELDS}
 `;
+
+export const TAG_QUERY = {
+  GET_TAGS_BY_TYPE,
+};

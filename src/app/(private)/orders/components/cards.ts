@@ -1,8 +1,8 @@
-import { OrderState } from "@/lib/types";
-import ActiveCard from "./active-card";
-import CompletedCard from "./completed-card";
-import CancelledCard from "./cancelled-card";
-import PendingCard from "./pending-card";
+import { OrderState } from '@/lib/types';
+import ActiveCard from './active-card';
+import CompletedCard from './completed-card';
+import CancelledCard from './cancelled-card';
+import PendingCard from './pending-card';
 
 type ComponentOrderStates =
   | OrderState.NEW
@@ -13,7 +13,7 @@ type ComponentOrderStates =
   | OrderState.COMPLETED;
 
 const ORDER_CARDS: {
-  [key in ComponentOrderStates]: React.ComponentType;
+  [key in ComponentOrderStates]: React.ComponentType<any>;
 } = {
   [OrderState.NEW]: PendingCard,
   [OrderState.BOOKED]: ActiveCard,
@@ -23,8 +23,6 @@ const ORDER_CARDS: {
   [OrderState.DECLINED]: CancelledCard,
 };
 
-export const getOrderCards = (
-  type: OrderState | string
-): React.ComponentType | null => {
+export const getOrderCards = (type: OrderState | string): React.ComponentType<any> | null => {
   return ORDER_CARDS[type as ComponentOrderStates] || null;
 };

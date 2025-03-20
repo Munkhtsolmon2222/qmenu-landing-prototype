@@ -1,29 +1,31 @@
-import { IEvent } from "./event";
-import { OrderType } from "./order";
+import { IEvent } from './event';
+import { Food } from './food';
+import { OrderType } from './order';
+import { Payment } from './transaction';
 
 export enum BranchType {
-  Restaurant = "Restaurant",
-  Canteen = "Canteen",
-  Pub = "Pub",
-  Caffee = "Caffee",
-  Club = "Club",
-  CoffeeShop = "CoffeeShop",
-  Karaoke = "Karaoke",
-  Hotel = "Hotel",
-  Resort = "Resort",
-  Supplier = "Supplier",
-  Toki = "Toki",
-  Group = "Group",
-  Other = "Other",
-  Delivery = "Delivery",
-  FastFood = "FastFood",
+  Restaurant = 'Restaurant',
+  Canteen = 'Canteen',
+  Pub = 'Pub',
+  Caffee = 'Caffee',
+  Club = 'Club',
+  CoffeeShop = 'CoffeeShop',
+  Karaoke = 'Karaoke',
+  Hotel = 'Hotel',
+  Resort = 'Resort',
+  Supplier = 'Supplier',
+  Toki = 'Toki',
+  Group = 'Group',
+  Other = 'Other',
+  Delivery = 'Delivery',
+  FastFood = 'FastFood',
 }
 
 export enum BranchRate {
-  Cheap = "$",
-  Moderate = "$$",
-  Expensive = "$$$",
-  VeryExpensive = "$$$$",
+  Cheap = '$',
+  Moderate = '$$',
+  Expensive = '$$$',
+  VeryExpensive = '$$$$',
 }
 
 export type BranchDetail = {
@@ -38,7 +40,7 @@ export type BranchDetail = {
   star: string;
   totalReviews: number;
   distance: number;
-  open;
+  open: boolean;
   description: string;
   tableInfo: TableInfo;
   latitude: number;
@@ -54,16 +56,18 @@ export type TableInfo = {
 };
 
 export enum BranchListType {
-  LIKED = "LIKED",
-  NEAR = "NEAR",
-  FEATURED = "FEATURED",
-  REVIEW = "REVIEW",
+  LIKED = 'LIKED',
+  NEAR = 'NEAR',
+  FEATURED = 'FEATURED',
+  REVIEW = 'REVIEW',
 }
 
 export type BranchList = {
+  name: string;
+  events: IEvent[];
   type: BranchListType;
   order: number;
-  branches: [BranchDetail];
+  branches: BranchDetail[];
 };
 
 interface Tag {
@@ -88,9 +92,9 @@ export interface Participant {
   waiter: boolean;
   orderable: boolean;
   branch: Branch;
-  payments: [];
+  payments: Payment[];
   menu: Menu;
-  token?: string;
+  token: string;
   configs: Config[];
   events?: IEvent[];
   __typename: string;
@@ -167,9 +171,9 @@ export interface Option {
 }
 
 export enum MenuItemState {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  SOLD_OUT = "SOLD_OUT",
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SOLD_OUT = 'SOLD_OUT',
 }
 
 export interface Branch {
@@ -259,7 +263,7 @@ export interface SectionInfoTime {
     {
       date: string;
       time: string;
-    }
+    },
   ];
   durations: number[];
   seatDuration: number;
@@ -273,7 +277,7 @@ export interface Table {
   min: number;
   max: number;
   shape: IShape;
-  action: "C" | "U" | "N" | "D";
+  action: 'C' | 'U' | 'N' | 'D';
   active: boolean;
   guests: number;
   remained: number;
@@ -290,6 +294,15 @@ export interface IShape {
 }
 
 export enum SHAPE_TYPES {
-  RECT = "rect",
-  CIRCLE = "circle",
+  RECT = 'rect',
+  CIRCLE = 'circle',
+}
+
+export interface SearchResult {
+  branches?: BranchDetail[];
+  branchTotal: number;
+  products?: Food[];
+  productTotal: number;
+  events?: IEvent[];
+  eventTotal: number;
 }

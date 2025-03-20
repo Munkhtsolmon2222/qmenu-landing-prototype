@@ -1,11 +1,7 @@
-import { gql } from "@apollo/client";
-import {
-  BRANCH_FIELDS,
-  LOCATION_FIELDS,
-  PRODUCDETAIL_FIELDS,
-} from "../fragment";
+import { gql } from '@apollo/client';
+import { BRANCH_FIELDS, LOCATION_FIELDS, PRODUCDETAIL_FIELDS } from '../fragment';
 
-export const GET_NEAR_BRANCHES = gql`
+const GET_NEAR_BRANCHES = gql`
   query getNearMeBranches($lat: Float!, $lon: Float!, $type: String) {
     getNearMeBranches(lat: $lat, lon: $lon, type: $type) {
       ...BranchDetailFields
@@ -21,7 +17,7 @@ export const GET_NEAR_BRANCHES = gql`
   ${BRANCH_FIELDS}
 `;
 
-export const FILTER_BRANCHES = gql`
+const FILTER_BRANCHES = gql`
   query filterBranches(
     $filters: [String!]
     $lat: Float!
@@ -52,7 +48,7 @@ export const FILTER_BRANCHES = gql`
   ${BRANCH_FIELDS}
 `;
 
-export const FILTER_PRODUCTS = gql`
+const FILTER_PRODUCTS = gql`
   query filterProducts($filters: [String!]) {
     filterProducts(filters: $filters) {
       ...ProductDetailFields
@@ -72,7 +68,7 @@ export const FILTER_PRODUCTS = gql`
   ${BRANCH_FIELDS}
 `;
 
-export const FILTER_RESULT = gql`
+const FILTER_RESULT = gql`
   query filterResult(
     $filters: [String!]
     $branchFilters: [String!]
@@ -120,7 +116,7 @@ export const FILTER_RESULT = gql`
   ${BRANCH_FIELDS}
 `;
 
-export const GET_NEAREST_LOCATIONS = gql`
+const GET_NEAREST_LOCATIONS = gql`
   query getNearestLocations($lat: Float!, $lon: Float!) {
     getNearestLocations(lat: $lat, lon: $lon) {
       ...LocationFields
@@ -128,3 +124,11 @@ export const GET_NEAREST_LOCATIONS = gql`
   }
   ${LOCATION_FIELDS}
 `;
+
+export const LOCATION_QUERY = {
+  GET_NEAR_BRANCHES,
+  FILTER_BRANCHES,
+  FILTER_PRODUCTS,
+  FILTER_RESULT,
+  GET_NEAREST_LOCATIONS,
+};

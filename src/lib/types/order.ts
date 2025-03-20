@@ -1,33 +1,35 @@
-import { Branch } from "./branch";
-import { Transaction } from "./transaction";
+import { Branch } from './branch';
+import { Transaction } from './transaction';
 
 export enum OrderType {
-  Dining = "Dining",
-  PreOrder = "PreOrder",
-  TakeAway = "TakeAway",
-  Delivery = "Delivery",
-  TableOrder = "TableOrder",
-  Lunch = "Lunch",
-  Event = "Event",
+  Dining = 'Dining',
+  PreOrder = 'PreOrder',
+  TakeAway = 'TakeAway',
+  Delivery = 'Delivery',
+  TableOrder = 'TableOrder',
+  Lunch = 'Lunch',
+  Event = 'Event',
 }
 
 export enum OrderState {
-  DRAFT = "DRAFT",
-  NEW = "NEW",
-  BOOKED = "BOOKED",
-  ACCEPTED = "ACCEPTED",
-  PREPARING = "PREPARING",
-  PREPARED = "PREPARED",
-  DELIVERING = "DELIVERING",
-  DELIVERED = "DELIVERED",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED",
-  RETURNED = "RETURNED",
-  MOVED = "MOVED",
-  REMOVED = "REMOVED",
-  MERGED = "MERGED",
-  CORRECTION = "CORRECTION",
-  DECLINED = "DECLINED",
+  DRAFT = 'DRAFT',
+  NEW = 'NEW',
+  BOOKED = 'BOOKED',
+  BOOKING = 'BOOKING',
+  ACCEPTED = 'ACCEPTED',
+  PREPARING = 'PREPARING',
+  PREPARED = 'PREPARED',
+  DELIVERING = 'DELIVERING',
+  DELIVERED = 'DELIVERED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  RETURNED = 'RETURNED',
+  MOVED = 'MOVED',
+  REMOVED = 'REMOVED',
+  MERGED = 'MERGED',
+  CORRECTION = 'CORRECTION',
+  DECLINED = 'DECLINED',
+  NOSHOW = 'NOSHOW',
 }
 
 export interface OrderInput {
@@ -61,7 +63,7 @@ export interface OrderItemOptionInput {
 }
 
 export interface Order {
-  id?: string;
+  id: string;
   number: string;
   branch: Branch;
   date: string;
@@ -74,6 +76,7 @@ export interface Order {
   isRead: boolean;
   name: string;
   channelType: string;
+  channelId: string;
   memberId: string;
   items: OrderItem[];
   charges: OrderCharge[];

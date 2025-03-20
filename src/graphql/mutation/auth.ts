@@ -1,17 +1,18 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-export const GET_APP_TOKEN = gql`
+const GET_APP_TOKEN = gql`
   mutation getAppToken($code: String!) {
     getAppToken(code: $code)
   }
 `;
 
-export const LOGIN_OAUTH = gql`
+const LOGIN_OAUTH = gql`
   mutation loginOAuth($input: CustomerAccountInput!) {
     loginOAuth(input: $input)
   }
 `;
-export const REGISTER = gql`
+
+const REGISTER = gql`
   mutation signUp($input: CreateCustomerInput!) {
     signUp(input: $input) {
       id
@@ -20,16 +21,24 @@ export const REGISTER = gql`
   }
 `;
 
-export const FORGOT_PASSWORD = gql`
+const FORGOT_PASSWORD = gql`
   mutation passwordReset($password: String!, $session: String!) {
     passwordReset(password: $password, session: $session)
   }
 `;
 
-export const LOGIN = gql`
+const LOGIN = gql`
   mutation signIn($password: String!, $phone: String!) {
     signIn(password: $password, phone: $phone) {
       token
     }
   }
 `;
+
+export const AUTH_MUTATION = {
+  GET_APP_TOKEN,
+  LOGIN_OAUTH,
+  REGISTER,
+  FORGOT_PASSWORD,
+  LOGIN,
+};

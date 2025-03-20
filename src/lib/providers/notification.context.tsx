@@ -1,10 +1,9 @@
-"use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { READ_NOTIFICATION } from "@/graphql/mutation/notification";
-import { GET_NOTIFICATIONS } from "@/graphql/query";
-import { INotification } from "../types";
-import { updateTitleWithUnreadCount } from "../utils";
+'use client';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { INotification } from '../types';
+import { updateTitleWithUnreadCount } from '../utils';
+import { useAction } from '../hooks';
+import { GET_NOTIFICATIONS, READ_NOTIFICATION } from '@/actions';
 
 interface NotificationsState {
   notifications: INotification[];
@@ -21,7 +20,7 @@ interface Unread {
 
 const initialState = {
   notifications: [],
-  nextToken: "",
+  nextToken: '',
   unread: {
     order: 0,
     notification: 0,
@@ -32,20 +31,18 @@ const initialState = {
 
 interface NotificationContextType {
   state: NotificationsState;
-  getNotifications: (options) => void;
+  getNotifications: (options: any) => void;
   refetch: () => void;
   markAsRead: (item: INotification) => void;
 }
 
-const NotificationContext = createContext<NotificationContextType>(
-  {} as NotificationContextType
-);
+const NotificationContext = createContext<NotificationContextType>({} as NotificationContextType);
 
 export const useNotificationContext = () => {
   return useContext(NotificationContext);
 };
 
-export const NotificationProvider = ({ children }) => {
+export const NotificationProvider = ({ children }: React.PropsWithChildren) => {
   const [state, setState] = useState<NotificationsState>(initialState);
 
   useEffect(() => {
@@ -53,35 +50,27 @@ export const NotificationProvider = ({ children }) => {
     updateTitleWithUnreadCount(state.unread.notification, originalTitle);
   }, [state.unread]);
 
-  const [getNotifications, { loading: loadingGetNotifications }] =
-    useLazyQuery<{
-      getNotifications: { notifications: INotification[]; nextToken: string };
-    }>(GET_NOTIFICATIONS, {
-      fetchPolicy: "network-only",
-      variables: {
-        limit: 10,
-        nextToken: state.nextToken,
-      },
-      onCompleted(data) {
-        if (state.hasMore) {
-          const noti = data?.getNotifications;
-          if (noti?.notifications?.length >= 10) {
+  const { action: getNotifications, loading: loadingGetNotifications } = useAction(
+    GET_NOTIFICATIONS,
+    10,
+    state.nextToken ?? '',
+    {
+      onSuccess(noti) {
+        if (state.hasMore && noti) {
+          if ((noti?.notifications ?? []).length >= 10) {
             setState((prevState) => ({
               ...prevState,
               nextToken: noti.nextToken,
               notifications: prevState.notifications.concat(
                 noti.notifications.filter(
-                  (item) =>
-                    !prevState.notifications.find((e) => e.sk === item.sk)
-                )
+                  (item) => !prevState.notifications.find((e) => e.sk === item.sk),
+                ),
               ),
               unread: {
                 order: prevState.unread.order,
-                notification: noti?.notifications?.filter((e) => !e.isRead)
-                  .length,
+                notification: noti?.notifications?.filter((e) => !e.isRead).length,
                 total:
-                  prevState.unread.order +
-                  noti?.notifications?.filter((e) => !e.isRead).length,
+                  prevState.unread.order + noti?.notifications?.filter((e) => !e.isRead).length,
               },
               hasMore: true,
             }));
@@ -90,44 +79,36 @@ export const NotificationProvider = ({ children }) => {
               ...prevState,
               notifications: prevState.notifications.concat(
                 noti.notifications.filter(
-                  (item) =>
-                    !prevState.notifications.find((e) => e.sk === item.sk)
-                )
+                  (item) => !prevState.notifications.find((e) => e.sk === item.sk),
+                ),
               ),
               unread: {
                 order: prevState.unread.order,
-                notification: noti?.notifications?.filter((e) => !e.isRead)
-                  .length,
+                notification: noti?.notifications?.filter((e) => !e.isRead).length,
                 total:
-                  prevState.unread.order +
-                  noti?.notifications?.filter((e) => !e.isRead).length,
+                  prevState.unread.order + noti?.notifications?.filter((e) => !e.isRead).length,
               },
               hasMore: false,
             }));
           }
         }
       },
-    });
+    },
+  );
 
-  const refetch = () =>
-    getNotifications({
-      variables: { limit: 10, nextToken: state.nextToken },
-    });
-
-  const [readNotification, { loading: loadingMarkAsRead }] =
-    useMutation(READ_NOTIFICATION);
+  const { action: readNotification, loading: loadingMarkAsRead } = useAction(READ_NOTIFICATION, {
+    lazy: true,
+  });
 
   const markAsRead = (item: INotification) => {
     const sk = item.sk;
     if (!item.isRead) {
-      readNotification({
-        variables: { sk },
-      });
+      readNotification(sk);
       const notification = state.notifications.find((e) => e.sk === sk);
       if (notification) {
         const updatedNotification = { ...notification, isRead: true };
         const updatedNotifications = state.notifications.map((e) =>
-          e.sk === sk ? updatedNotification : e
+          e.sk === sk ? updatedNotification : e,
         );
         setState((prevState) => ({
           ...prevState,
@@ -142,14 +123,12 @@ export const NotificationProvider = ({ children }) => {
     loadingGetNotifications,
     loadingMarkAsRead,
     getNotifications,
-    refetch,
+    refetch: getNotifications,
     markAsRead,
     setState,
   };
 
   return (
-    <NotificationContext.Provider value={contextValue}>
-      {children}
-    </NotificationContext.Provider>
+    <NotificationContext.Provider value={contextValue}>{children}</NotificationContext.Provider>
   );
 };

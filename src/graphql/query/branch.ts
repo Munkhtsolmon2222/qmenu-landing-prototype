@@ -1,12 +1,7 @@
-import { gql } from "@apollo/client";
-import {
-  BRANCH_FIELDS,
-  EVENT_FIELDS,
-  PRODUCDETAIL_FIELDS,
-  REVIEWS,
-} from "../fragment";
+import { gql } from '@apollo/client';
+import { BRANCH_FIELDS, EVENT_FIELDS, PRODUCDETAIL_FIELDS, REVIEWS } from '../fragment';
 
-export const GET_BRANCH_LIST = gql`
+const GET_BRANCH_LIST = gql`
   query getBranchList($lat: Float!, $lon: Float!) {
     getBranchList(lat: $lat, lon: $lon) {
       name
@@ -30,7 +25,7 @@ export const GET_BRANCH_LIST = gql`
   ${BRANCH_FIELDS}
 `;
 
-export const SEARCH = gql`
+const SEARCH = gql`
   query search($value: String!) {
     search(value: $value) {
       branches {
@@ -67,7 +62,7 @@ export const SEARCH = gql`
   ${EVENT_FIELDS}
 `;
 
-export const GET_REVIEWS = gql`
+const GET_REVIEWS = gql`
   query getReviews($id: ID!, $type: String!) {
     getReviews(id: $id, type: $type) {
       ...ReviewsFields
@@ -76,7 +71,7 @@ export const GET_REVIEWS = gql`
   ${REVIEWS}
 `;
 
-export const GET_MERCHANT_BYDOMAIN = gql`
+const GET_MERCHANT_BYDOMAIN = gql`
   query getMerchantByDomain($domain: String!) {
     getMerchantByDomain(domain: $domain) {
       id
@@ -93,3 +88,10 @@ export const GET_MERCHANT_BYDOMAIN = gql`
     }
   }
 `;
+
+export const BRANCH_QUERY = {
+  GET_BRANCH_LIST,
+  SEARCH,
+  GET_REVIEWS,
+  GET_MERCHANT_BYDOMAIN,
+};

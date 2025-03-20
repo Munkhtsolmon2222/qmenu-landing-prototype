@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
-import { BANNER_FIELDS } from "../fragment";
+import { gql } from '@apollo/client';
+import { BANNER_FIELDS } from '../fragment';
 
-export const GET_BANNERS = gql`
+const GET_BANNERS = gql`
   query getBanners {
     getBanners {
       ...BannerFields
@@ -9,3 +9,7 @@ export const GET_BANNERS = gql`
   }
   ${BANNER_FIELDS}
 `;
+
+export const BANNER_QUERY = {
+  GET_BANNERS,
+};

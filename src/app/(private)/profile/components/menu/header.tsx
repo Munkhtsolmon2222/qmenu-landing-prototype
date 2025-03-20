@@ -1,23 +1,17 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Customer } from "@/lib/types";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Customer } from '@/lib/types';
 
 type Props = {
-  hideChild: boolean;
   customer?: Customer;
 };
 
-export const MenuHeader: React.FC<Props> = ({ hideChild, customer }) => {
-  if (!hideChild)
-    return (
-      <div className="text-base font-semibold xl:text-lg">Хувийн мэдээлэл</div>
-    );
-
+export const MenuHeader: React.FC<Props> = ({ customer }) => {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-2 md:hidden">
       <Avatar className="h-20 w-20 text-white">
         <AvatarImage alt="AI Assistant" src="/placeholder-user.jpg" />
         <AvatarFallback className="text-3xl bg-current-3">
-          {(customer?.firstName ?? "Gu").slice(0, 2).toUpperCase()}
+          {(customer?.firstName ?? 'Gu').slice(0, 2).toUpperCase()}
         </AvatarFallback>
       </Avatar>
       <span className="font-medium text-xl mt-1">{customer?.firstName}</span>

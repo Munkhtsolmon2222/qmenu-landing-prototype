@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 import {
   CHARGES_FIELDS,
   DISCOUNTS_FIELDS,
@@ -8,9 +8,9 @@ import {
   ORDER_TABLE_FIELDS,
   TABLE_FIELDS,
   TRANSACTION_FIELDS,
-} from "../fragment";
+} from '../fragment';
 
-export const CREATE_ORDER = gql`
+const CREATE_ORDER = gql`
   mutation createOrder($id: ID, $input: OrderInput!, $participant: ID!) {
     createOrder(id: $id, input: $input, participant: $participant) {
       branch {
@@ -53,7 +53,7 @@ export const CREATE_ORDER = gql`
   ${ORDER_TABLE_FIELDS}
 `;
 
-export const CORRECTION_TRANSACTION = gql`
+const CORRECTION_TRANSACTION = gql`
   mutation returnTransaction($id: ID!, $reason: String) {
     returnTransaction(id: $id, reason: $reason) {
       order {
@@ -83,7 +83,7 @@ export const CORRECTION_TRANSACTION = gql`
   ${ORDER_LOYALTY_FIELDS}
 `;
 
-export const VALIDATE_TRANSACTION = gql`
+const VALIDATE_TRANSACTION = gql`
   mutation validateTransaction($id: ID!) {
     validateTransaction(id: $id) {
       ...OrderFields
@@ -108,11 +108,8 @@ export const VALIDATE_TRANSACTION = gql`
   ${ORDER_LOYALTY_FIELDS}
 `;
 
-export const PAY_ORDER_WITH_SUB_PAYMENTS = gql`
-  mutation payOrderWithSubPayments(
-    $input: TransactionInput!
-    $inputs: [TransactionInput!]
-  ) {
+const PAY_ORDER_WITH_SUB_PAYMENTS = gql`
+  mutation payOrderWithSubPayments($input: TransactionInput!, $inputs: [TransactionInput!]) {
     payOrderWithSubPayments(input: $input, inputs: $inputs) {
       order {
         ...OrderFields
@@ -141,7 +138,7 @@ export const PAY_ORDER_WITH_SUB_PAYMENTS = gql`
   ${TRANSACTION_FIELDS}
 `;
 
-export const GET_PAY_ORDER = gql`
+const GET_PAY_ORDER = gql`
   mutation payOrder($input: TransactionInput!) {
     payOrder(input: $input) {
       order {
@@ -170,3 +167,11 @@ export const GET_PAY_ORDER = gql`
   ${ORDER_LOYALTY_FIELDS}
   ${TRANSACTION_FIELDS}
 `;
+
+export const ORDER_MUTATION = {
+  CREATE_ORDER,
+  CORRECTION_TRANSACTION,
+  VALIDATE_TRANSACTION,
+  PAY_ORDER_WITH_SUB_PAYMENTS,
+  GET_PAY_ORDER,
+};

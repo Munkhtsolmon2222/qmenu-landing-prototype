@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
-import { BRANCH_FIELDS, PRODUCDETAIL_FIELDS } from "../fragment";
+import { gql } from '@apollo/client';
+import { BRANCH_FIELDS, PRODUCDETAIL_FIELDS } from '../fragment';
 
-export const GET_RECOMMENDED_PRODUCTS = gql`
+const GET_RECOMMENDED_PRODUCTS = gql`
   query getRecommendedProducts($lat: Float!, $lon: Float!) {
     getRecommendedProducts(lat: $lat, lon: $lon) {
       ...ProductDetailFields
@@ -18,3 +18,7 @@ export const GET_RECOMMENDED_PRODUCTS = gql`
   ${PRODUCDETAIL_FIELDS}
   ${BRANCH_FIELDS}
 `;
+
+export const PRODUCT_QUERY = {
+  GET_RECOMMENDED_PRODUCTS,
+};

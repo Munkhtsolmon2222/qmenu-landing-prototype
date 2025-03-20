@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { get, set, del } from "idb-keyval";
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { get, set, del } from 'idb-keyval';
 import {
   Variant,
   Participant,
@@ -10,10 +10,11 @@ import {
   OrderItemOptionInput,
   OrderInput,
   SectionInfo,
-} from "../types";
-import { v4 } from "uuid";
+} from '../types';
+import { v4 } from 'uuid';
+
 const storage = {
-  name: "restaurant-storage",
+  name: 'restaurant-storage',
   storage: createJSONStorage(() => ({
     getItem: async (name: string): Promise<string | null> => {
       return (await get(name)) || null;
@@ -41,7 +42,7 @@ export interface BasketItem {
   sort: number;
 }
 
-type CRUDType = "create" | "add" | "remove" | "clear" | "update";
+type CRUDType = 'create' | 'add' | 'remove' | 'clear' | 'update';
 
 interface CRUDInput {
   variant?: Variant;
@@ -56,7 +57,7 @@ type SetStore = (
     | RestaurantStore
     | Partial<RestaurantStore>
     | ((state: RestaurantStore) => Partial<RestaurantStore>),
-  replace?: boolean | undefined
+  // replace?: boolean,
 ) => void;
 
 export interface InputParticipant {
@@ -102,8 +103,7 @@ export const useRestaurantStore = create<RestaurantStore>()(
         return items.map((item) => item.input);
       },
 
-      loadParticipant: (current) =>
-        set(({ participants }) => load(participants, current)),
+      loadParticipant: (current) => set(({ participants }) => load(participants, current)),
 
       crudItem: (type, input) =>
         set(({ participants, current, items: old }) => {
@@ -111,19 +111,16 @@ export const useRestaurantStore = create<RestaurantStore>()(
           return summary(items, participants, current?.id);
         }),
     }),
-    storage
-  )
+    storage,
+  ),
 );
 
-const crudItems: Record<
-  CRUDType,
-  (items: BasketItem[], input: CRUDInput) => BasketItem[]
-> = {
+const crudItems: Record<CRUDType, (items: BasketItem[], input: CRUDInput) => BasketItem[]> = {
   create: (items, { product, variant, options = [], quantity = 1 }) => {
     if (!product || !variant) return items;
 
     const input: OrderItemInput = {
-      comment: "",
+      comment: '',
       id: variant.id,
       options,
       quantity,
@@ -178,7 +175,7 @@ const crudItems: Record<
 const summary = (
   items: BasketItem[] = [],
   participants: BasketParticipant[] = [],
-  id?: string
+  id?: string,
 ): Partial<RestaurantStore> => {
   const index = participants.findIndex((e) => e.id === id);
   if (index === -1) return {};
@@ -196,7 +193,7 @@ const summary = (
         res.totalPrice += curr.total;
         return res;
       },
-      { total: 0, totalPrice: 0 }
+      { total: 0, totalPrice: 0 },
     ),
   };
 };
@@ -216,20 +213,17 @@ const calculateItemTotal = (item: BasketItem) => {
 
 const load = (
   participants: BasketParticipant[] = [],
-  participant?: Participant
+  participant?: Participant,
 ): Partial<RestaurantStore> => {
   if (!participant?.menu?.categories) return {};
   const i = participants.findIndex((e) => e.id === participant.id);
 
-  const menuProducts = participant.menu.categories.reduce(
-    (res: Product[], curr) => {
-      let products = (curr.children ?? []).flatMap((e) => e.products ?? []);
-      products = products.concat(curr.products ?? []);
-      res = res.concat(getFilteredItems(products));
-      return res;
-    },
-    []
-  );
+  const menuProducts = participant.menu.categories.reduce((res: Product[], curr) => {
+    let products = (curr.children ?? []).flatMap((e) => e.products ?? []);
+    products = products.concat(curr.products ?? []);
+    res = res.concat(getFilteredItems(products));
+    return res;
+  }, []);
 
   let items: BasketItem[] = [];
 
@@ -240,7 +234,7 @@ const load = (
 
       if (variant) {
         const options = (curr.input.options ?? []).filter((e) =>
-          variant.options?.find((a) => a.id === e.id)
+          variant.options?.find((a) => a.id === e.id),
         );
 
         res = crudItems.create(res, {
@@ -264,35 +258,25 @@ const load = (
 };
 
 export const getMainVariant = (product: Product): Variant | undefined => {
-  const variants =
-    product.variants?.slice().sort((a, b) => a.salePrice - b.salePrice) ?? [];
+  const variants = product.variants?.slice().sort((a, b) => a.salePrice - b.salePrice) ?? [];
 
   return variants.find((e) => e.id === product.id) ?? variants[0];
 };
 
-export const getFilteredItems = (
-  items: Product[] = [],
-  filter?: (product: Product) => boolean
-) => {
+export const getFilteredItems = (items: Product[] = [], filter?: (product: Product) => boolean) => {
   return items.reduce((products: Product[], product) => {
     const main = getMainVariant(product)?.state;
 
     const f1 = !filter || filter(product);
 
-    if (
-      product.state === MenuItemState.ACTIVE &&
-      (!main || main === MenuItemState.ACTIVE) &&
-      f1
-    ) {
+    if (product.state === MenuItemState.ACTIVE && (!main || main === MenuItemState.ACTIVE) && f1) {
       products.push({
         ...product,
         variants: product.variants.reduce((variants: Variant[], variant) => {
           if (variant.state === MenuItemState.ACTIVE) {
             variants.push({
               ...variant,
-              options: variant.options?.filter(
-                (e) => e.state === MenuItemState.ACTIVE
-              ),
+              options: variant.options?.filter((e) => e.state === MenuItemState.ACTIVE),
             });
           }
           return variants;

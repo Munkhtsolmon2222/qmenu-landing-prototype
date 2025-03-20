@@ -1,0 +1,12 @@
+.active-select {
+    svg {
+        color: white;
+    }
+}
+
+.filter-select {
+    span {
+        width: 100%;
+        text-align: center;
+    }
+}

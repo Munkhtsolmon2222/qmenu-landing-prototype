@@ -1,8 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { ProductChildProps } from "./Product";
-import { Icons } from "@/components/shared/icons";
-import { getMainVariant } from "@/lib/providers/restaurant";
-import Image from "next/image";
+'use client';
+import { ProductChildProps } from './Product';
+import { getMainVariant } from '@/lib/providers/restaurant';
+import { Icons, Button } from '@/components/general';
+import { useTranslation } from 'react-i18next';
+
 export const ProductCardList: React.FC<ProductChildProps> = ({
   product,
   basketItem,
@@ -10,33 +11,26 @@ export const ProductCardList: React.FC<ProductChildProps> = ({
   hideImage,
   participant,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="grid grid-cols-8 min-h-24 max-h-28 rounded-lg overflow-hidden border bg-background">
       {!hideImage && (
         <div className="col-span-3">
-          <Image
-            width={100}
-            height={100}
-            alt="img"
-            className="object-cover h-full overflow-hidden rounded-lg w-full"
-            src={
-              product.image === ""
-                ? participant?.logo
-                : product.image ?? participant?.logo
-            }
+          <img
+            className="object-cover h-full overflow-hidden rounded-lg"
+            src={product.image === '' ? participant?.logo : product.image ?? participant?.logo}
           />
         </div>
       )}
 
       <div
         className={` ${
-          !hideImage ? "col-span-5" : "col-span-8"
+          !hideImage ? 'col-span-5' : 'col-span-8'
         } w-full h-full grid p-2 pl-1 content-between max-h-28`}
       >
         <div className="text-sm font-medium line-clamp-1">{product.name}</div>
-        <div className="italic line-clamp-1 text-sm opacity-70">
-          {product.description}
-        </div>
+        <div className="italic line-clamp-1 text-sm opacity-70">{product.description}</div>
         <div className="flex justify-between items-center w-full">
           <div className="text-xs font-medium text-current-2">
             {product.variants?.[0]?.salePrice ?? product.variants?.[0]?.price}₮
@@ -48,13 +42,13 @@ export const ProductCardList: React.FC<ProductChildProps> = ({
               <Button
                 variant="outline"
                 className="border-current-2 px-2.5 max-h-7 w-full max-w-[70px]"
-                onClick={() => onClick(product, "create")}
+                onClick={() => onClick(product, 'create')}
               >
                 {product.variants?.length > 1 ||
                 (getMainVariant(product)?.options ?? []).length > 0 ? (
-                  <div className="text-current-2 text-xs">Сонгох</div>
+                  <div className="text-current-2 text-xs">{t('Select')}</div>
                 ) : (
-                  <div className="text-current-2 text-xs">Захиалах</div>
+                  <div className="text-current-2 text-xs">{t('Order')}</div>
                 )}
               </Button>
             ) : (
@@ -66,13 +60,11 @@ export const ProductCardList: React.FC<ProductChildProps> = ({
                 >
                   <Icons.minus className="text-current-2 min-w-4 h-4" />
                 </Button>
-                <span className="text-current-2 text-sm">
-                  {basketItem?.input.quantity}
-                </span>
+                <span className="text-current-2 text-sm">{basketItem?.input.quantity}</span>
                 <Button
                   variant="outline"
                   className="border-current-2 px-2.5 h-7 w-7"
-                  onClick={() => onClick(product, "add")}
+                  onClick={() => onClick(product, 'add')}
                 >
                   <Icons.add className="text-current-2 min-w-4 h-4" />
                 </Button>

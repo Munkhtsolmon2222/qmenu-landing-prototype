@@ -15,7 +15,7 @@ export const ORDER_FIELDS = gql`
     address
     floor
     channelType
-    channelId
+    #channelId
     contact
     guests
     comment

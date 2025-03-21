@@ -1,6 +1,6 @@
 'use client';
 import { ThumbsUp, Share2 } from 'lucide-react';
-import { Food } from '@/lib/types';
+import { EsProduct } from '@/lib/types';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import { Badge, Card, CardFooter } from '@/components/ui';
 import { Icons } from '@/components/general';
 
 interface Props {
-  food: Food;
+  food: EsProduct;
 }
 
 export const FoodCard = (props: Props) => {

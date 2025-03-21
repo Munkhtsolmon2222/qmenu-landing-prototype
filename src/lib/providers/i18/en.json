@@ -137,6 +137,7 @@
       "DECLINED": "Declined",
       "NOSHOW": "No show"
     },
-    "EmptyOrders": "No orders found"
+    "EmptyOrders": "No orders found",
+    "Discount": "Discount"
   }
 }

@@ -24,6 +24,7 @@ export const PAGE_ORDER_OTP = 'otp';
 export const PAGE_ORDER_EVENT = 'event';
 export const PAGE_PAYMENT = 'payment';
 export const PAGE_ORDER = 'order';
+export const PAGE_DISCOUNT = '/discounts';
 
 // ---------- Private ----------
 export const PAGE_ORDERS = '/orders';

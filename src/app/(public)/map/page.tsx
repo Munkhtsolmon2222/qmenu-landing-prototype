@@ -1,11 +1,11 @@
-import { FILTER_BRANCHES, GET_TAGS_BY_TYPE } from '@/actions';
+import { GET_ES_CHANNELS, GET_TAGS_BY_TYPE } from '@/actions';
 import { DrawerFilter, FilterControl, Loader } from '@/components/shared';
 import { PAGE_MAP, POSITION } from '@/lib/constant';
 import { withSuspense } from '@/lib/helpers';
 import { ParamFilter, ParamFilterObjType, TagType } from '@/lib/types';
 import { cookies } from 'next/headers';
-import { ListBranches } from './components/ListBranches';
-import { CarouselBranches } from './components/CarouselBranches';
+import { ListChannels } from './components/ListChannels';
+import { CarouselChannels } from './components/CarouselChannels';
 import { MapFilterContent } from './components/MapFilterContent';
 import { getAsArray } from '@/lib/utils';
 
@@ -33,15 +33,15 @@ const Page: React.FC<Props> = async (props) => {
 
   let searchParams = await props.searchParams;
 
-  const filters = Object.entries(searchParams).reduce((res: string[], [_, value]) => {
+  const keywords = Object.entries(searchParams).reduce((res: string[], [_, value]) => {
     res = [...res, ...getAsArray(value)];
     return res;
   }, []);
 
-  const { data = [] } = await FILTER_BRANCHES({
+  const { data: { channels = [] } = {} } = await GET_ES_CHANNELS({
     lat,
     lon: lng,
-    filters,
+    keywords,
     limit: 1000,
     offset: 0,
     distance: '20km',
@@ -67,8 +67,8 @@ const Page: React.FC<Props> = async (props) => {
       />
       <div className="grid grid-cols-1 md:grid-cols-7 border">
         <MapFilterContent tags={tags} accept={acceptFilters} />
-        <ListBranches branches={data} lat={lat} lng={lng} />
-        <CarouselBranches branches={data} lat={lat} lng={lng} />
+        <ListChannels channels={channels} lat={lat} lng={lng} />
+        <CarouselChannels channels={channels} lat={lat} lng={lng} />
       </div>
     </>
   );

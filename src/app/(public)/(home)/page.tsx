@@ -1,5 +1,5 @@
 import { POSITION } from '@/lib/constant';
-import { Home, CategoryBranchList, FilterBranchList } from './components';
+import { Home, CategoryChannelList, FilterChannelList } from './components';
 import { HomeProps } from './types';
 import { cookies } from 'next/headers';
 import { ParamFilter } from '@/lib/types';
@@ -19,11 +19,11 @@ const Page: React.FC<Props> = async (props) => {
   }, []);
 
   if (searchParams[ParamFilter.CATEGORY]) {
-    return <CategoryBranchList {...props} filters={filters} positionStr={value} />;
+    return <CategoryChannelList {...props} filters={filters} positionStr={value} />;
   }
 
   if (filters.length) {
-    return <FilterBranchList {...props} filters={filters} positionStr={value} />;
+    return <FilterChannelList {...props} filters={filters} positionStr={value} />;
   }
 
   return <Home positionStr={value} searchParams={props.searchParams} />;

@@ -38,9 +38,14 @@ export async function query<T>(options: {
 
     const data = response.data.data;
 
-    if (!data) {
-      const error = response.data.errors?.find((e: any) => e.message);
-      return { error: { message: error?.message ?? 'Failed', code: error?.errorType } };
+    const error = response.data.errors?.find((e: any) => e.message);
+
+    if (!data || error) {
+      const message = error?.message ?? 'Failed';
+      const code = error?.errorType;
+
+      console.log('Request error: ', message, code);
+      return { error: { message, code } };
     }
 
     return { data: data[operationName as string] };

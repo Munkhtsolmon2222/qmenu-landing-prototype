@@ -1,12 +1,12 @@
 import defaultImage from '@/assets/images/restaurant.png';
 import { Icons } from '@/components/general';
 import { PAGE_RESTAURANT } from '@/lib/constant';
-import { BranchDetail, TableInfo } from '@/lib/types/branch';
+import { EsChannel, TableInfo } from '@/lib/types';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface Props {
-  place: BranchDetail;
+  place: EsChannel;
 }
 
 type AvailabilityStatus = {
@@ -33,7 +33,7 @@ function getAvailabilityStatus(tableInfo: TableInfo): AvailabilityStatus {
   return { percentage, color };
 }
 
-export function SearchBranch({ place }: Props) {
+export function SearchChannelCard({ place }: Props) {
   const { color } = getAvailabilityStatus(place?.tableInfo);
 
   return (

@@ -1,7 +1,7 @@
-import { BranchList, BranchListSkeleton } from '@/components/shared';
+import { ChannelList, BranchListSkeleton } from '@/components/shared';
 import { HomeProps } from '../types';
 import { withSuspense } from '@/lib/helpers';
-import { FILTER_BRANCHES } from '@/actions';
+import { GET_ES_CHANNELS } from '@/actions';
 
 interface Props extends HomeProps {}
 
@@ -13,16 +13,18 @@ const Component: React.FC<Props> = async ({ filters = [], positionStr }) => {
   const position = JSON.parse(positionStr);
   const { lat, lon } = position;
 
-  const { data = [] } = await FILTER_BRANCHES({
+  const { data: { channels = [] } = {} } = await GET_ES_CHANNELS({
     lat,
     lon,
-    filters,
+    keywords: filters,
     limit,
     offset: 0,
     distance: '10km',
   });
 
-  return <BranchList initialData={data} position={position} filters={filters} limit={limit} />;
+  return (
+    <ChannelList initialData={channels} position={position} keywords={filters} limit={limit} />
+  );
 };
 
-export const FilterBranchList = withSuspense(Component, <BranchListSkeleton />);
+export const FilterChannelList = withSuspense(Component, <BranchListSkeleton />);

@@ -14,3 +14,6 @@ export * from './event';
 export * from './menu';
 export * from './customer';
 export * from './participant';
+export * from './discount';
+export * from './channel';
+export * from './product';

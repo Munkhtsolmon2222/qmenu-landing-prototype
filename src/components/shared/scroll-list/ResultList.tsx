@@ -1,23 +1,23 @@
 'use client';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState } from 'react';
-import { BranchDetail } from '@/lib/types';
+import { EsChannel } from '@/lib/types';
 import { PositionStorage } from '@/lib/providers';
 import { FilteredCard } from '../cards';
 import { Loader } from '../loader';
-import { FILTER_RESULT } from '@/actions';
+import { GET_ES_CHANNELS_BY_PRODUCTS } from '@/actions';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
   filters: string[];
   position: PositionStorage;
-  initialData: BranchDetail[];
+  initialData: EsChannel[];
   limit?: number;
 }
 
 export const ResultList: React.FC<Props> = ({ initialData, filters, position, limit = 40 }) => {
   const { t } = useTranslation();
-  const [data, setData] = useState<BranchDetail[]>([]);
+  const [data, setData] = useState<EsChannel[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const { inView, ref } = useInView();
 
@@ -28,16 +28,17 @@ export const ResultList: React.FC<Props> = ({ initialData, filters, position, li
 
   useEffect(() => {
     if (inView) {
-      FILTER_RESULT({
-        filters,
+      GET_ES_CHANNELS_BY_PRODUCTS({
+        keywords: filters,
         lat: position.lat,
         lon: position.lon,
         limit,
         offset: data.length,
         distance: '10km',
-      }).then(({ data: { branches: res } = { branches: [] } }) => {
-        if (!res || res.length < limit) setHasMore(false);
-        setData([...data, ...res]);
+      }).then(({ data: res = {} }) => {
+        const { channels = [] } = res;
+        if (!channels || channels.length < limit) setHasMore(false);
+        setData([...data, ...channels]);
       });
     }
   }, [inView]);
@@ -55,8 +56,8 @@ export const ResultList: React.FC<Props> = ({ initialData, filters, position, li
   return (
     <>
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full">
-        {data.map((branch, index) => (
-          <FilteredCard key={index} place={branch} services />
+        {data.map((channel, index) => (
+          <FilteredCard key={index} channel={channel} services />
         ))}
       </section>
       {hasMore && (

@@ -1,19 +1,19 @@
 'use client';
-import { BranchDetail } from '@/lib/types';
+import { EsChannel } from '@/lib/types';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  place: BranchDetail;
+  channel: EsChannel;
   services: boolean;
 }
 
 export const AvailableTable = (props: Props) => {
-  const { place } = props;
+  const { channel } = props;
   const { t } = useTranslation();
   const getAvailable = () => {
-    if (!place?.tableInfo) return;
-    const seated = place.tableInfo.seated || 0;
-    const available = place.tableInfo.available || 0;
+    if (!channel?.tableInfo) return;
+    const seated = channel.tableInfo.seated || 0;
+    const available = channel.tableInfo.available || 0;
 
     if (seated === 0 && available === 0) return;
     return available;

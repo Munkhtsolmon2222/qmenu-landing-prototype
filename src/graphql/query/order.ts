@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import {
-  BRANCH_FIELDS1,
+  BRANCH_FIELDS,
   CUSTOMER_FIELDS,
   ORDER_FIELDS,
   ORDER_ITEM_FIELDS,
@@ -188,7 +188,7 @@ const GET_CUSTOMER_ORDERS = gql`
       }
     }
   }
-  ${BRANCH_FIELDS1}
+  ${BRANCH_FIELDS}
   ${TABLE_FIELDS}
   ${ORDER_FIELDS}
   ${DISCOUNTS_FIELDS}

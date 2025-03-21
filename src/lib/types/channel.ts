@@ -1,6 +1,28 @@
 import { ChannelType } from '../constant';
-import { Branch } from './branch';
+import { Branch, BranchType, TableInfo } from './branch';
+import { OrderType } from './order';
 import { ITimetable } from './timetable';
+
+export interface EsChannel {
+  id: string;
+  name: string;
+  type: BranchType;
+  logo: string;
+  branch: string;
+  image: string;
+  tags: [string];
+  services: [OrderType];
+  star: string;
+  totalReviews: number;
+  distance: number;
+  open: boolean;
+  description: string;
+  tableInfo: TableInfo;
+  latitude: number;
+  longitude: number;
+  address: string;
+  rate: string;
+}
 
 export interface IChannel {
   id: string;

@@ -15,3 +15,5 @@ export * from './timetable';
 export * from './tag';
 export * from './location';
 export * from './common';
+export * from './discount';
+export * from './channel';

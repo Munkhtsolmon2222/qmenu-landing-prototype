@@ -1,12 +1,12 @@
-import { SearchResult as SearchResultType } from '@/lib/types';
+import { EsQueryResult } from '@/lib/types';
 import { Skeleton } from '../ui';
-import { SearchBranch, SearchEventCard, SearchProduct } from './cards';
+import { SearchChannelCard, SearchEventCard, SearchProduct } from './cards';
 
 interface Props {
   noResult: string;
   loading: boolean;
   value?: string;
-  data?: SearchResultType;
+  data?: EsQueryResult;
   text: {
     restaurant: string;
     product: string;
@@ -20,23 +20,24 @@ export const SearchResult: React.FC<Props> = ({ loading, value, data, noResult, 
 
   if (!value) return <></>;
 
-  if (!data || data.branchTotal < 1 || data.productTotal < 1) return <NoResult text={noResult} />;
+  if (!data || (data.channelTotal ?? 0) < 1 || (data.productTotal ?? 0) < 1)
+    return <NoResult text={noResult} />;
 
   if (!data) return <></>;
 
   return (
     <>
-      <ResultItem name={text.restaurant} total={data.branchTotal} text={text.total}>
-        {data.branches?.map((branch, index) => (
-          <SearchBranch place={branch} key={index} />
+      <ResultItem name={text.restaurant} total={data.channelTotal ?? 0} text={text.total}>
+        {data.channels?.map((branch, index) => (
+          <SearchChannelCard place={branch} key={index} />
         ))}
       </ResultItem>
-      <ResultItem name={text.product} total={data.productTotal} text={text.total}>
+      <ResultItem name={text.product} total={data.productTotal ?? 0} text={text.total}>
         {data.products?.map((food, index) => (
           <SearchProduct food={food} key={index} />
         ))}
       </ResultItem>
-      <ResultItem name={text.event} total={data.eventTotal} text={text.total}>
+      <ResultItem name={text.event} total={data.eventTotal ?? 0} text={text.total}>
         {data.events?.map((event, index) => (
           <SearchEventCard key={index} event={event} />
         ))}

@@ -1,22 +1,22 @@
 'use client';
 import { RestaurantListCard } from '@/components/shared';
 import { useMediaQuery } from '@/lib/hooks';
-import { BranchDetail } from '@/lib/types';
+import { EsChannel } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { BranchMap } from './BranchMap';
+import { ChannelMap } from './ChannelMap';
 import { useRef } from 'react';
 import { GoogleMap } from '@react-google-maps/api';
 import { motion } from 'framer-motion';
 
 interface Props {
-  branches: BranchDetail[];
+  channels: EsChannel[];
   lat: number;
   lng: number;
 }
 
-export const ListBranches: React.FC<Props> = ({ branches, lat, lng }) => {
+export const ListChannels: React.FC<Props> = ({ channels, lat, lng }) => {
   const { width } = useMediaQuery();
   const searchParams = useSearchParams();
   const { t } = useTranslation();
@@ -24,10 +24,10 @@ export const ListBranches: React.FC<Props> = ({ branches, lat, lng }) => {
   const mapRef = useRef<GoogleMap>(null);
 
   const onClickMapItem = (e: string) => {
-    const index = branches.findIndex((branch) => branch.id === e);
+    const index = channels.findIndex((branch) => branch.id === e);
     if (index === -1) return;
 
-    // const { latitude, longitude } = branches[index];
+    // const { latitude, longitude } = channels[index];
     // if (!latitude || !longitude || latitude === 0 || longitude === 0) return;
     // if (!google.maps.LatLng) return;
     // const center = new google.maps.LatLng(latitude, longitude);
@@ -66,10 +66,10 @@ export const ListBranches: React.FC<Props> = ({ branches, lat, lng }) => {
         )}
       >
         <div className="sticky top-0 z-20 bg-background p-2 shadow font-semibold">
-          {t('Search result')}: {branches.length}
+          {t('Search result')}: {channels.length}
         </div>
         <div className="p-2">
-          {branches.map((branch, index) => (
+          {channels.map((branch, index) => (
             <motion.div key={index} ref={setRef(index)} className="rounded-md">
               <RestaurantListCard
                 key={index}
@@ -80,10 +80,10 @@ export const ListBranches: React.FC<Props> = ({ branches, lat, lng }) => {
           ))}
         </div>
       </div>
-      <BranchMap
+      <ChannelMap
         className="col-span-3 xl:col-span-4"
         ref={mapRef}
-        branches={branches}
+        channels={channels}
         center={{ lat, lng }}
         onClick={onClickMapItem}
       />

@@ -1,5 +1,5 @@
 'use client';
-import { BranchDetail, FavouriteItemType, TableInfo } from '@/lib/types';
+import { EsChannel, FavouriteItemType, TableInfo } from '@/lib/types';
 import defaultImage from '@/assets/images/restaurant.png';
 import { useRouter } from 'next/navigation';
 import { calculateDistance, cn } from '@/lib/utils';
@@ -11,7 +11,7 @@ import { Loader } from '../loader';
 
 interface Props {
   index?: number;
-  place: BranchDetail;
+  place: EsChannel;
   services: boolean;
   className?: string;
 }
@@ -86,7 +86,7 @@ export function RestaurantGridCard(props: Props) {
                 ? t("Available table") + ":" + getAvailable()
                 : t("BranchOpen")}
             </div> */}
-            <AvailableTable place={place} services={false} />
+            <AvailableTable channel={place} services={false} />
           </div>
         )}
 

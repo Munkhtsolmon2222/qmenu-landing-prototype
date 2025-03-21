@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-export const PRODUCDETAIL_FIELDS = gql`
-  fragment ProductDetailFields on ProductDetail {
+export const ES_PRODUCT_FIELDS = gql`
+  fragment EsProductFields on EsProduct {
     id
     channel
     name

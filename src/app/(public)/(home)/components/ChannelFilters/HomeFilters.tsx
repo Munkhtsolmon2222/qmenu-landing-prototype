@@ -63,7 +63,18 @@ export const HomeFilters: React.FC<Props> = ({ plain, tags }) => {
       )}
     >
       <div className="py-2 flex flex-row items-center gap-3">
-        <DrawerFilter backPath={PAGE_HOME} />
+        <DrawerFilter
+          backPath={PAGE_HOME}
+          accept={[
+            ParamFilter.CUISINE,
+            ParamFilter.TAG,
+            ParamFilter.PRICE,
+            ParamFilter.SERVICES,
+            ParamFilter.TYPE,
+            ParamFilter.CATEGORY,
+            ParamFilter.REVIEW,
+          ]}
+        />
 
         {filters.map((filter, index) => (
           <div key={index} className="relative">

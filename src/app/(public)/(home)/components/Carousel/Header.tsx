@@ -9,10 +9,11 @@ import Image from 'next/image';
 
 interface Props {
   name: string;
+  path?: string;
   icon?: string;
 }
 
-export const CarouselHeader: React.FC<Props> = ({ name, icon }) => {
+export const CarouselHeader: React.FC<Props> = ({ name, icon, path }) => {
   const { t } = useTranslation();
   const { show } = useNavbar();
 
@@ -47,7 +48,7 @@ export const CarouselHeader: React.FC<Props> = ({ name, icon }) => {
     >
       <div className="flex items-center justify-between max-w-[90rem]">
         <h1 className="font-medium text-lg xl:text-xl">{getListTitle()}</h1>
-        <Link href={`${PAGE_LIST}/${name}`} legacyBehavior>
+        <Link href={path ?? `${PAGE_LIST}/${name}`} legacyBehavior>
           <a className="text-current-2 text-sm text-end font-medium z-50">{t('All')}</a>
         </Link>
       </div>

@@ -8,6 +8,7 @@ export enum ParamFilter {
   CATEGORY = 'categories',
   REVIEW = 'review',
   SERVICES = 'services',
+  DISCOUNT = 'discount',
 }
 
 export interface ParamFilterObjType {

@@ -1,6 +1,5 @@
 export * from './auth-action';
 export * from './banner-action';
-export * from './branch-action';
 export * from './cookie-action';
 export * from './customer-action';
 export * from './location-action';
@@ -12,3 +11,6 @@ export * from './favourite-action';
 export * from './review-action';
 export * from './notification-action';
 export * from './vat-action';
+export * from './channel-action';
+export * from './product-action';
+export * from './discount-action';

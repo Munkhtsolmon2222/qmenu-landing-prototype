@@ -1,6 +1,6 @@
 'use client';
 import { GoogleMap, useJsApiLoader, OverlayViewF, OverlayView } from '@react-google-maps/api';
-import { BranchDetail } from '@/lib/types';
+import { EsChannel } from '@/lib/types';
 import { Icons } from '@/components/general';
 import defaultImage from '@/assets/images/restaurant.png';
 import Image from 'next/image';
@@ -12,7 +12,7 @@ interface Props
   extends Omit<React.ComponentProps<typeof GoogleMap>, 'center' | 'zoom' | 'onClick'> {
   onMapClick?: () => void;
   onClick?: (id: string) => void;
-  branches: BranchDetail[];
+  channels: EsChannel[];
   center: { lat: number; lng: number };
   ref?: React.RefObject<GoogleMap | null>;
   className?: string;
@@ -20,8 +20,8 @@ interface Props
 
 const defaultZoom = 16;
 
-export const BranchMap: React.FC<Props> = ({
-  branches: propBranches,
+export const ChannelMap: React.FC<Props> = ({
+  channels: propChannels,
   center,
   ref,
   onClick,
@@ -35,7 +35,7 @@ export const BranchMap: React.FC<Props> = ({
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [branches, setBranches] = useState<BranchDetail[]>([]);
+  const [channels, setChannels] = useState<EsChannel[]>([]);
 
   const onChangeBounds = useCallback(
     (propMap?: google.maps.Map) => {
@@ -48,7 +48,7 @@ export const BranchMap: React.FC<Props> = ({
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
 
-      const filteredBranches = propBranches.filter(({ latitude, longitude }) => {
+      const filteredChannels = propChannels.filter(({ latitude, longitude }) => {
         if (!latitude || !longitude) return false;
         return (
           latitude <= ne.lat() &&
@@ -58,9 +58,9 @@ export const BranchMap: React.FC<Props> = ({
         );
       });
 
-      setBranches(filteredBranches);
+      setChannels(filteredChannels);
     },
-    [map, propBranches],
+    [map, propChannels],
   );
 
   const onLoad = useCallback(
@@ -102,7 +102,7 @@ export const BranchMap: React.FC<Props> = ({
           <Icons.pin className="w-8 h-8 fill-current-2" />
         </div>
 
-        {branches.map(({ latitude: lat, longitude: lng, id, logo }, index) => (
+        {channels.map(({ latitude: lat, longitude: lng, id, logo }, index) => (
           <OverlayViewF
             key={index}
             position={{ lat, lng }}

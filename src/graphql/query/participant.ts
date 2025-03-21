@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import {
-  BRANCH_FIELDS1,
+  BRANCH_FIELDS,
   EVENT_FIELDS,
   MENU_CATEGORY_FIELDS,
   MENU_FIELDS,
@@ -64,7 +64,7 @@ const GET_PARTICIPANT = gql`
   ${MENU_PRODUCT_FIELDS}
   ${MENU_VARIANT_FIELDS}
   ${MENU_FIELDS}
-  ${BRANCH_FIELDS1}
+  ${BRANCH_FIELDS}
   ${EVENT_FIELDS}
 `;
 

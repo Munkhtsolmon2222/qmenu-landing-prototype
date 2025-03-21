@@ -107,6 +107,11 @@ export const updateParams = (searchParams: URLSearchParams, key: ParamFilter, va
 
   if (key === ParamFilter.CATEGORY) params.delete(ParamFilter.TYPE);
   if (key === ParamFilter.TYPE) params.delete(ParamFilter.CATEGORY);
+  if (key === ParamFilter.DISCOUNT) {
+    Object.entries(ParamFilter).map(([key]) => {
+      if (key !== ParamFilter.DISCOUNT) params.delete(key);
+    });
+  } else params.delete(ParamFilter.DISCOUNT);
 
   ParamFilters.forEach((filter) => {
     if (filter.key === key) {

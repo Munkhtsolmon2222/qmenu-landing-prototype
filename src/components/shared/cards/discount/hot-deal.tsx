@@ -9,7 +9,11 @@ export const HotDeal: React.FC<Props> = ({ discount }) => {
   return (
     <>
       <div className="absolute inset-0">
-        <img src={discount.image} alt={discount.name} className="w-full h-full object-cover" />
+        <img
+          src={discount.image ?? ''}
+          alt={discount.name}
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="relative z-10">
         <div className="flex items-center space-x-2 mb-24 px-2 py-4">

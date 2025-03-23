@@ -1,4 +1,5 @@
 import { TFunction } from 'i18next';
+import { TagType } from './tag';
 
 export enum ParamFilter {
   CUISINE = 'cuisines',
@@ -9,6 +10,7 @@ export enum ParamFilter {
   REVIEW = 'review',
   SERVICES = 'services',
   DISCOUNT = 'discount',
+  WEB = 'web',
 }
 
 export interface ParamFilterObjType {
@@ -19,6 +21,7 @@ export interface ParamFilterObjType {
   [ParamFilter.CATEGORY]?: string | string[];
   [ParamFilter.REVIEW]?: string | string[];
   [ParamFilter.SERVICES]?: string | string[];
+  [ParamFilter.WEB]?: string | string[];
 }
 
 export interface ParamFilterType {
@@ -35,3 +38,10 @@ export interface ParamFilterItem {
   value: string;
   active?: boolean;
 }
+
+export const ParamsTagType: Partial<Record<ParamFilter, TagType>> = {
+  [ParamFilter.CUISINE]: TagType.K,
+  [ParamFilter.TAG]: TagType.F,
+  [ParamFilter.CATEGORY]: TagType.C,
+  [ParamFilter.WEB]: TagType.W,
+};

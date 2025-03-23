@@ -1,43 +1,49 @@
 'use client';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState } from 'react';
-import { EsChannel } from '@/lib/types';
+import { EsChannel, ParamFilterObjType } from '@/lib/types';
 import { PositionStorage } from '@/lib/providers';
 import { FilteredCard } from '../cards';
 import { Loader } from '../loader';
-import { GET_ES_CHANNELS_BY_PRODUCTS } from '@/actions';
+import { GET_ES_CHANNELS_BY_CATEGORIES } from '@/actions';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  filters: string[];
   position: PositionStorage;
   initialData: EsChannel[];
-  limit?: number;
+  size: number;
+  searchParams?: ParamFilterObjType;
+  afterKey?: string;
 }
 
-export const ResultList: React.FC<Props> = ({ initialData, filters, position, limit = 40 }) => {
+export const ResultProductList: React.FC<Props> = ({
+  initialData,
+  searchParams,
+  position,
+  size,
+  afterKey: propAfterKey,
+}) => {
   const { t } = useTranslation();
   const [data, setData] = useState<EsChannel[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [afterKey, setAfterKey] = useState<string | undefined>(propAfterKey);
   const { inView, ref } = useInView();
 
   useEffect(() => {
     setData(initialData);
-    setHasMore(initialData.length >= limit);
   }, [initialData]);
 
   useEffect(() => {
     if (inView) {
-      GET_ES_CHANNELS_BY_PRODUCTS({
-        keywords: filters,
+      GET_ES_CHANNELS_BY_CATEGORIES({
+        params: searchParams,
         lat: position.lat,
         lon: position.lon,
-        limit,
-        offset: data.length,
+        size,
         distance: '10km',
+        afterKey,
       }).then(({ data: res = {} }) => {
-        const { channels = [] } = res;
-        if (!channels || channels.length < limit) setHasMore(false);
+        const { channels = [], afterKey: aftKey } = res;
+        setAfterKey(aftKey);
         setData([...data, ...channels]);
       });
     }
@@ -60,7 +66,7 @@ export const ResultList: React.FC<Props> = ({ initialData, filters, position, li
           <FilteredCard key={index} channel={channel} services />
         ))}
       </section>
-      {hasMore && (
+      {afterKey && (
         <section ref={ref}>
           <Loader className="mt-20" spinnerClassName="h-8 w-8" />
         </section>

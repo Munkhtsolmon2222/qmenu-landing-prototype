@@ -9,5 +9,7 @@ export const ES_PRODUCT_FIELDS = gql`
     image
     star
     totalReviews
+    description
+    specification
   }
 `;

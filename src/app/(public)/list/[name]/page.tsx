@@ -4,7 +4,6 @@ import { ChannelList, DrawerFilter, FilterControl } from '@/components/shared';
 import { PAGE_LIST, POSITION } from '@/lib/constant';
 import { ParamFilter, ParamFilterObjType } from '@/lib/types';
 import { cookies } from 'next/headers';
-import { getAsArray } from '@/lib/utils';
 import { GET_ES_CHANNELS } from '@/actions';
 
 interface Props {
@@ -29,17 +28,12 @@ const Page: React.FC<Props> = async ({ params, ...props }) => {
 
   let searchParams = await props.searchParams;
 
-  const keywords = Object.entries(searchParams)
-    .reduce((res: string[], [_, value]) => {
-      res = [...res, ...getAsArray(value)];
-      return res;
-    }, [])
-    .concat([name]);
+  const awaitedSearchParams = { ...(searchParams ?? {}), [ParamFilter.WEB]: [name] };
 
   const { data: { channels = [] } = {} } = await GET_ES_CHANNELS({
     lat,
     lon,
-    keywords,
+    params: awaitedSearchParams,
     limit,
     offset: 0,
     distance: '10km',
@@ -67,7 +61,7 @@ const Page: React.FC<Props> = async ({ params, ...props }) => {
         loaderClassName="my-20"
         initialData={channels}
         position={position}
-        keywords={keywords}
+        searchParams={awaitedSearchParams}
         limit={limit}
       />
       <br />

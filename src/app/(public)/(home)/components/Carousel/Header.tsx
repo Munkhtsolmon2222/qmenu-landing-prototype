@@ -11,9 +11,10 @@ interface Props {
   name: string;
   path?: string;
   icon?: string;
+  hideAll?: boolean;
 }
 
-export const CarouselHeader: React.FC<Props> = ({ name, icon, path }) => {
+export const CarouselHeader: React.FC<Props> = ({ name, icon, path, hideAll }) => {
   const { t } = useTranslation();
   const { show } = useNavbar();
 
@@ -48,9 +49,11 @@ export const CarouselHeader: React.FC<Props> = ({ name, icon, path }) => {
     >
       <div className="flex items-center justify-between max-w-[90rem]">
         <h1 className="font-medium text-lg xl:text-xl">{getListTitle()}</h1>
-        <Link href={path ?? `${PAGE_LIST}/${name}`} legacyBehavior>
-          <a className="text-current-2 text-sm text-end font-medium z-50">{t('All')}</a>
-        </Link>
+        {!hideAll && (
+          <Link href={path ?? `${PAGE_LIST}/${encodeURIComponent(name)}`} legacyBehavior>
+            <a className="text-current-2 text-sm text-end font-medium z-50">{t('All')}</a>
+          </Link>
+        )}
       </div>
     </div>
   );

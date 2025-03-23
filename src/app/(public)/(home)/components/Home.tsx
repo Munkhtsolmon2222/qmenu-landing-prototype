@@ -36,7 +36,11 @@ const Component: React.FC<Props> = async ({ positionStr }) => {
       {index === 2 && <SmartBanner banners={banners} types={[BannerType.M]} dot />}
 
       {index === 4 && (
-        <DiscountsCarousel discounts={flashdeals} name="Flash Deals 🍔" type={DiscountType.FLD} />
+        <DiscountsCarousel
+          discounts={flashdeals}
+          name="Хөнглөлттэй бүтээгдэхүүн 🍟"
+          type={DiscountType.FLD}
+        />
       )}
 
       <HomeCarousel key={index} item={item} tags={webTags} />

@@ -5,47 +5,45 @@ import { EsChannel, ParamFilterObjType } from '@/lib/types';
 import { PositionStorage } from '@/lib/providers';
 import { FilteredCard } from '../cards';
 import { Loader } from '../loader';
-import { GET_ES_CHANNELS } from '@/actions';
+import { GET_ES_CHANNELS_BY_CATEGORIES } from '@/actions';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
 
 interface Props {
-  searchParams?: ParamFilterObjType;
   position: PositionStorage;
   initialData: EsChannel[];
-  limit?: number;
-  loaderClassName?: string;
+  size: number;
+  searchParams?: ParamFilterObjType;
+  afterKey?: string;
 }
 
-export const ChannelList: React.FC<Props> = ({
+export const ResultChannelList: React.FC<Props> = ({
   initialData,
   searchParams,
   position,
-  limit = 40,
-  loaderClassName,
+  size,
+  afterKey: propAfterKey,
 }) => {
   const { t } = useTranslation();
   const [data, setData] = useState<EsChannel[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [afterKey, setAfterKey] = useState<string | undefined>(propAfterKey);
   const { inView, ref } = useInView();
 
   useEffect(() => {
     setData(initialData);
-    setHasMore(initialData.length >= limit);
   }, [initialData]);
 
   useEffect(() => {
     if (inView) {
-      GET_ES_CHANNELS({
+      GET_ES_CHANNELS_BY_CATEGORIES({
         params: searchParams,
         lat: position.lat,
         lon: position.lon,
-        limit,
-        offset: data.length,
+        size,
         distance: '10km',
+        afterKey,
       }).then(({ data: res = {} }) => {
-        const { channels = [] } = res;
-        if (channels.length < limit) setHasMore(false);
+        const { channels = [], afterKey: aftKey } = res;
+        setAfterKey(aftKey);
         setData([...data, ...channels]);
       });
     }
@@ -68,9 +66,9 @@ export const ChannelList: React.FC<Props> = ({
           <FilteredCard key={index} channel={channel} services />
         ))}
       </section>
-      {hasMore && (
+      {afterKey && (
         <section ref={ref}>
-          <Loader className={cn('mt-20', loaderClassName)} spinnerClassName="h-8 w-8" />
+          <Loader className="mt-20" spinnerClassName="h-8 w-8" />
         </section>
       )}
     </>

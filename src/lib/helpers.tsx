@@ -1,9 +1,14 @@
 import { Suspense } from 'react';
 import {
   ActionResponseType,
+  EsQueryInput,
+  EsQueryInputWithParams,
+  EsTagType,
   ParamFilter,
   ParamFilterItem,
+  ParamFilterObjType,
   ParamFilterType,
+  ParamsTagType,
   Payload,
   Tag,
 } from './types';
@@ -11,6 +16,7 @@ import { jwtDecode } from 'jwt-decode';
 import { TFunction } from 'i18next';
 import { CUSTOMER, ParamFilters } from './constant';
 import { toast } from 'sonner';
+import { omit } from 'lodash';
 
 export const withSuspense = <T extends React.ComponentType<any>>(
   Component: T,
@@ -186,4 +192,31 @@ export const showToast = (...params: Parameters<typeof toast>) => {
   const message = params[0] ?? '';
 
   return toast(message, { position: 'top-right', ...options });
+};
+
+export const getEsInput = (input: EsQueryInputWithParams = {}): EsQueryInput => {
+  const params = input.params;
+
+  if (params && Object.keys(params).length) {
+    let keywords: string[] = [];
+    let tags: EsTagType[] = [];
+
+    Object.entries(params).forEach(([key, values]) => {
+      if (!values) return;
+      if (!Array.isArray(values)) values = [values];
+
+      const type = ParamsTagType[key];
+
+      if (!type) {
+        keywords = keywords.concat(values);
+        return;
+      }
+
+      values.forEach((value: string) => tags.push({ type, value }));
+    });
+
+    input = { ...input, keywords, tags };
+  }
+
+  return omit(input, 'params');
 };

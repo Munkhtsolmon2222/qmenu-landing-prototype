@@ -7,7 +7,6 @@ import { cookies } from 'next/headers';
 import { ListChannels } from './components/ListChannels';
 import { CarouselChannels } from './components/CarouselChannels';
 import { MapFilterContent } from './components/MapFilterContent';
-import { getAsArray } from '@/lib/utils';
 
 const acceptFilters = [
   ParamFilter.CUISINE,
@@ -33,15 +32,10 @@ const Page: React.FC<Props> = async (props) => {
 
   let searchParams = await props.searchParams;
 
-  const keywords = Object.entries(searchParams).reduce((res: string[], [_, value]) => {
-    res = [...res, ...getAsArray(value)];
-    return res;
-  }, []);
-
   const { data: { channels = [] } = {} } = await GET_ES_CHANNELS({
     lat,
     lon: lng,
-    keywords,
+    params: searchParams,
     limit: 1000,
     offset: 0,
     distance: '20km',

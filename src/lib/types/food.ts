@@ -5,11 +5,12 @@ export interface EsProduct {
   name: string;
   price: string;
   channel: string;
-  description: string;
-  star: number;
-  totalReviews: number;
   branch: EsChannel;
-  image: string;
+  description?: string;
+  star?: number;
+  totalReviews?: number;
+  image?: string;
+  specification?: string;
 }
 
 export interface Rating {

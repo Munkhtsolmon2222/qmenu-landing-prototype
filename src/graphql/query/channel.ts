@@ -51,9 +51,9 @@ const GET_ES_CHANNELS = gql`
   ${ES_CHANNEL_FIELDS}
 `;
 
-const GET_ES_CHANNELS_BY_PRODUCTS = gql`
-  query getEsChannelsByProducts($input: EsQueryInput!) {
-    getEsChannelsByProducts(input: $input) {
+const GET_ES_CHANNELS_BY_CATEGORIES = gql`
+  query getEsChannelsByCategories($input: EsQueryInput!) {
+    getEsChannelsByCategories(input: $input) {
       ...EsQueryResultFields
       channels {
         ...EsChannelFields
@@ -110,7 +110,7 @@ const SEARCH = gql`
 
 export const CHANNEL_QUERY = {
   SEARCH,
-  GET_ES_CHANNELS_BY_PRODUCTS,
+  GET_ES_CHANNELS_BY_CATEGORIES,
   GET_ES_CHANNEL_LIST,
   GET_ES_CHANNELS,
 };

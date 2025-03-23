@@ -1,6 +1,9 @@
 import { EsChannel } from './channel';
 import { EsDiscount } from './discount';
 import { IEvent } from './event';
+import { ParamFilterObjType } from './filter';
+import { EsProduct } from './food';
+import { TagType } from './tag';
 
 export class QueryError {
   message?: string;
@@ -12,8 +15,17 @@ export interface ActionResponseType<T> {
   error?: QueryError;
 }
 
+export interface EsTagType {
+  value: string;
+  type: TagType;
+}
+
 export interface EsQueryInput {
+  tags?: EsTagType[];
+
+  query?: string;
   keywords?: string[];
+  productKeywords?: string[];
   lat?: number;
   lon?: number;
   distance?: string;
@@ -27,24 +39,27 @@ export interface EsQueryInput {
   afterKey?: string;
 
   types?: string[];
-  services?: string[];
-  categories?: string[];
 
   prices?: [number, number];
   ratings?: [number, number];
 }
 
 export interface EsQueryResult {
+  tagId?: string;
   name?: string;
   rank?: number;
   tagType?: string;
   afterKey?: string;
-  channels?: EsChannel[]; // EsChannelType
+  channels?: EsChannel[];
   channelTotal?: number;
-  products?: any[]; // EsProductType
+  products?: EsProduct[];
   productTotal?: number;
-  events?: IEvent[]; // EsEventType
+  events?: IEvent[];
   eventTotal?: number;
-  discounts?: EsDiscount[]; // EsDiscountType
+  discounts?: EsDiscount[];
   discountTotal?: number;
+}
+
+export interface EsQueryInputWithParams extends Partial<EsQueryInput> {
+  params?: ParamFilterObjType;
 }

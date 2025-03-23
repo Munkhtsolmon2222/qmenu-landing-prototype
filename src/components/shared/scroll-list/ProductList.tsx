@@ -1,27 +1,26 @@
 'use client';
 import { useInView } from 'react-intersection-observer';
 import { useCallback, useEffect, useState } from 'react';
-import { DiscountType, EsDiscount } from '@/lib/types';
+import { EsProduct, ParamFilterObjType } from '@/lib/types';
 import { Loader } from '../loader';
-import { GET_ES_DISCOUNTS } from '@/actions';
+import { GET_ES_PRODUCTS } from '@/actions';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
-import DiscountCard from '../cards/discount';
+import { CarouselProductCard } from '../cards';
 
 interface Props {
-  types?: DiscountType[];
   size: number;
   itemSize: number;
   itemOffset: number;
   total: number;
   hasMore: boolean;
-  initialData: EsDiscount[];
+  initialData: EsProduct[];
   loaderClassName?: string;
   afterKey?: string;
+  searchParams?: ParamFilterObjType;
 }
 
-export const DiscountList: React.FC<Props> = ({
-  types,
+export const ProductList: React.FC<Props> = ({
   size,
   itemSize,
   itemOffset: propItemOffset,
@@ -30,27 +29,34 @@ export const DiscountList: React.FC<Props> = ({
   initialData,
   loaderClassName,
   afterKey: propAfterKey,
+  searchParams,
 }) => {
   const { t } = useTranslation();
   const [afterKey, setAfterKey] = useState(propAfterKey);
   const [itemOffset, setItemOffset] = useState(propItemOffset);
   const [hasMore, setHasMore] = useState(propHasMore);
-  const [data, setData] = useState<EsDiscount[]>([]);
+  const [data, setData] = useState<EsProduct[]>([]);
   const { inView, ref } = useInView();
 
   useEffect(() => {
     setData(initialData);
   }, [initialData]);
 
+  useEffect(() => {
+    setAfterKey(propAfterKey);
+    setItemOffset(propItemOffset);
+    setHasMore(propHasMore);
+  }, [propAfterKey, propHasMore, propItemOffset]);
+
   const fetchData = useCallback(async () => {
-    let result: EsDiscount[] = [];
+    let result: EsProduct[] = [];
     let offset = itemOffset;
     let more = hasMore;
     let key = afterKey;
 
     while (result.length < total) {
-      const { data: { discounts = [], afterKey: aftkey } = {} } = await GET_ES_DISCOUNTS({
-        types,
+      const { data: { products = [], afterKey: aftkey } = {} } = await GET_ES_PRODUCTS({
+        params: searchParams,
         itemSize,
         size,
         itemOffset: offset,
@@ -58,15 +64,15 @@ export const DiscountList: React.FC<Props> = ({
       });
 
       key = aftkey;
-      result = result.concat(discounts);
+      result = result.concat(products);
 
-      if (!key && discounts.length < 1) more = false;
+      if (!key && products.length < 1) more = false;
       if (!key) offset += itemSize;
-      if (discounts.length < 1) break;
+      if (products.length < 1) break;
     }
 
     return { result, key, offset, more };
-  }, [types, size, itemSize, total, itemOffset, hasMore, afterKey]);
+  }, [size, itemSize, total, itemOffset, hasMore, afterKey]);
 
   useEffect(() => {
     if (inView)
@@ -91,8 +97,8 @@ export const DiscountList: React.FC<Props> = ({
   return (
     <>
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full">
-        {data.map((discount, index) => (
-          <DiscountCard key={index} discount={discount} />
+        {data.map((product, index) => (
+          <CarouselProductCard key={index} product={product} className="max-w-full" />
         ))}
       </section>
       {hasMore && (

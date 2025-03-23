@@ -3,5 +3,5 @@ import { ParamFilterObjType } from '@/lib/types';
 export interface HomeProps {
   positionStr?: string;
   searchParams: Promise<ParamFilterObjType>;
-  filters?: string[];
+  awaitedSearchParams?: ParamFilterObjType;
 }

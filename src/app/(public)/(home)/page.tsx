@@ -11,19 +11,16 @@ const Page: React.FC<Props> = async (props) => {
   const cookie = await cookies();
   const value = cookie.get(POSITION)?.value;
 
-  let searchParams = await props.searchParams;
-
-  const filters = Object.entries(searchParams).reduce((res: string[], [_, value]) => {
-    res = [...res, ...getAsArray(value)];
-    return res;
-  }, []);
+  let searchParams = (await props.searchParams) || {};
 
   if (searchParams[ParamFilter.CATEGORY]) {
-    return <CategoryChannelList {...props} filters={filters} positionStr={value} />;
+    return (
+      <CategoryChannelList {...props} awaitedSearchParams={searchParams} positionStr={value} />
+    );
   }
 
-  if (filters.length) {
-    return <FilterChannelList {...props} filters={filters} positionStr={value} />;
+  if (Object.keys(searchParams).length) {
+    return <FilterChannelList {...props} awaitedSearchParams={searchParams} positionStr={value} />;
   }
 
   return <Home positionStr={value} searchParams={props.searchParams} />;

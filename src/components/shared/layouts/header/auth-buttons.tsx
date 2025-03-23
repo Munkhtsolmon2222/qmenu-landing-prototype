@@ -39,7 +39,7 @@ export const AuthButtons = ({ height: paramHeight = 400 }: { height?: number }) 
 
   return (
     <div className="flex items-center gap-2">
-      <SelectLanguage />
+      <SelectLanguage className="min-w-max" />
       <div className="flex-row gap-2 hidden sm:flex">
         <Button
           variant="ghost"

@@ -16,7 +16,7 @@ export const CategoryCard: React.FC<Props> = ({ icon = '', name }) => {
       <div className="rounded-lg flex justify-center secondary-text items-center">
         <Image width={40} height={40} className="object-contain w-10 h-10" alt={icon} src={Icon} />
       </div>
-      <div className="text-nowrap text-[13px] gap-3 flex text-center">
+      <div className="text-nowrap text-[13px] gap-3 justify-center flex text-center">
         <Translate>{name}</Translate>
       </div>
     </div>

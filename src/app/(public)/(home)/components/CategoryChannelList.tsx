@@ -40,7 +40,7 @@ const Component: React.FC<Props> = async ({ positionStr, awaitedSearchParams }) 
     <>
       {products.length > 0 && (
         <>
-          <CarouselHeader name="Бүтээгдэхүүн" path={PAGE_PRODUCTS} />
+          <CarouselHeader name="Бүтээгдэхүүн" path={PAGE_PRODUCTS} withParams />
           <ProductCarousel products={section1} />
           <ProductCarousel products={section2} />
         </>

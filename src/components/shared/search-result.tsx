@@ -20,7 +20,7 @@ export const SearchResult: React.FC<Props> = ({ loading, value, data, noResult, 
 
   if (!value) return <></>;
 
-  if (!data || (data.channelTotal ?? 0) < 1 || (data.productTotal ?? 0) < 1)
+  if (!data || (((data.channelTotal ?? 0) < 1 && data.productTotal) ?? 0 < 1))
     return <NoResult text={noResult} />;
 
   if (!data) return <></>;

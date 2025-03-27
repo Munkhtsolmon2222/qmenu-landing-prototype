@@ -44,13 +44,13 @@ export async function query<T>(options: {
       const message = error?.message ?? 'Failed';
       const code = error?.errorType;
 
-      console.log('Request error: ', message, code);
+      console.log(`Request error: ${operationName}`, message, code);
       return { error: { message, code } };
     }
 
     return { data: data[operationName as string] };
   } catch (err: any) {
-    console.log('Request error: ', err);
+    console.log(`Request error: ${operationName}`, err);
     return { error: { message: err.message } };
   }
 }

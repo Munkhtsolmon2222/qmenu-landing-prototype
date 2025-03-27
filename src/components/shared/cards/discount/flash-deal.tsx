@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui';
 import { CardProps } from '.';
 import { Icons } from '@/components/general';
 import { calculateDistance } from '@/lib/utils';
+import defaultImage from '@/assets/images/restaurant.png';
 
 interface Props extends CardProps {}
 
@@ -9,7 +10,11 @@ export const Flashdeal: React.FC<Props> = ({ discount }) => {
   return (
     <>
       <div className="absolute inset-0">
-        <img src={discount.image} alt={discount.name} className="w-full h-full object-cover" />
+        <img
+          src={discount.image || defaultImage.src}
+          alt={discount.name}
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="relative z-10">
         <div className="flex items-center space-x-2 mb-24 px-2 py-4">

@@ -1,15 +1,16 @@
-import { BranchDetail } from "./branch";
+import { EsChannel } from './channel';
 
-export interface Food {
+export interface EsProduct {
   id: string;
   name: string;
   price: string;
   channel: string;
-  description: string;
-  star: number;
-  totalReviews: number;
-  branch: BranchDetail;
-  image: string;
+  branch: EsChannel;
+  description?: string;
+  star?: number;
+  totalReviews?: number;
+  image?: string;
+  specification?: string;
 }
 
 export interface Rating {

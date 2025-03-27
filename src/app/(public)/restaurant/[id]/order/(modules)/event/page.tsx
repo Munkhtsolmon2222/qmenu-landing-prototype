@@ -46,7 +46,7 @@ const Event = () => {
 
   const {
     action: getOpenTimes,
-    data: { times } = { times: [] },
+    data: { times = [] } = {},
     loading: loadOpenTimes,
   } = useAction(GET_OPEN_TIMES, {
     lazy: true,

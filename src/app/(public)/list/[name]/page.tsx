@@ -1,11 +1,10 @@
 import { withSuspense } from '@/lib/helpers';
 import { ListSkeleton } from '../components';
-import { BranchList, DrawerFilter, FilterControl } from '@/components/shared';
+import { ChannelList, DrawerFilter, FilterControl } from '@/components/shared';
 import { PAGE_LIST, POSITION } from '@/lib/constant';
 import { ParamFilter, ParamFilterObjType } from '@/lib/types';
 import { cookies } from 'next/headers';
-import { getAsArray } from '@/lib/utils';
-import { FILTER_BRANCHES } from '@/actions';
+import { GET_ES_CHANNELS } from '@/actions';
 
 interface Props {
   params: Promise<{ name: string }>;
@@ -29,17 +28,12 @@ const Page: React.FC<Props> = async ({ params, ...props }) => {
 
   let searchParams = await props.searchParams;
 
-  const filters = Object.entries(searchParams)
-    .reduce((res: string[], [_, value]) => {
-      res = [...res, ...getAsArray(value)];
-      return res;
-    }, [])
-    .concat([name]);
+  const awaitedSearchParams = { ...(searchParams ?? {}), [ParamFilter.WEB]: [name] };
 
-  const { data = [] } = await FILTER_BRANCHES({
+  const { data: { channels = [] } = {} } = await GET_ES_CHANNELS({
     lat,
     lon,
-    filters,
+    params: awaitedSearchParams,
     limit,
     offset: 0,
     distance: '10km',
@@ -63,11 +57,11 @@ const Page: React.FC<Props> = async ({ params, ...props }) => {
         <FilterControl className="mb-0" backPath={backPath} />
       </div>
 
-      <BranchList
+      <ChannelList
         loaderClassName="my-20"
-        initialData={data}
+        initialData={channels}
         position={position}
-        filters={filters}
+        searchParams={awaitedSearchParams}
         limit={limit}
       />
       <br />

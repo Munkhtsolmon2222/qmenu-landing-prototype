@@ -1,6 +1,7 @@
 import {
   BranchRate,
   BranchType,
+  DiscountType,
   OrderType,
   ParamFilter,
   ParamFilterItem,
@@ -36,6 +37,12 @@ export const ParamReviews: ParamFilterItem[] = [
   { name: '4.0 - 4.5', value: '4' },
   { name: '3.0 - 4.0', value: '3' },
   { name: '2.0 - 3.0', value: '2' },
+];
+
+export const ParamDiscounts: ParamFilterItem[] = [
+  { name: 'Hot Deals', value: DiscountType.HOT },
+  { name: 'Flash Deals', value: DiscountType.FLD },
+  { name: 'Buy 1 Get 1', value: DiscountType.BOGO },
 ];
 
 export const ParamFilters: ParamFilterType[] = [
@@ -81,5 +88,11 @@ export const ParamFilters: ParamFilterType[] = [
     single: true,
     items: ParamReviews,
     valueTranslate: (val, t) => '⭐ ' + t(val),
+  },
+  {
+    key: ParamFilter.DISCOUNT,
+    items: ParamDiscounts,
+    name: 'Discount',
+    valueTranslate: (val, t) => t(val),
   },
 ];

@@ -1,6 +1,4 @@
 import { IEvent } from './event';
-import { Food } from './food';
-import { OrderType } from './order';
 import { Payment } from './transaction';
 
 export enum BranchType {
@@ -28,46 +26,10 @@ export enum BranchRate {
   VeryExpensive = '$$$$',
 }
 
-export type BranchDetail = {
-  id: string;
-  name: string;
-  type: BranchType;
-  logo: string;
-  branch: string;
-  image: string;
-  tags: [string];
-  services: [OrderType];
-  star: string;
-  totalReviews: number;
-  distance: number;
-  open: boolean;
-  description: string;
-  tableInfo: TableInfo;
-  latitude: number;
-  longitude: number;
-  address: string;
-  rate: string;
-};
-
 export type TableInfo = {
   available: number;
   seated: number;
   total: number;
-};
-
-export enum BranchListType {
-  LIKED = 'LIKED',
-  NEAR = 'NEAR',
-  FEATURED = 'FEATURED',
-  REVIEW = 'REVIEW',
-}
-
-export type BranchList = {
-  name: string;
-  events: IEvent[];
-  type: BranchListType;
-  order: number;
-  branches: BranchDetail[];
 };
 
 interface Tag {
@@ -296,13 +258,4 @@ export interface IShape {
 export enum SHAPE_TYPES {
   RECT = 'rect',
   CIRCLE = 'circle',
-}
-
-export interface SearchResult {
-  branches?: BranchDetail[];
-  branchTotal: number;
-  products?: Food[];
-  productTotal: number;
-  events?: IEvent[];
-  eventTotal: number;
 }

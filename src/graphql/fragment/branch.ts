@@ -1,26 +1,7 @@
-import { gql } from "@apollo/client";
-import { TIMETABLE_FIELDS } from "./timetable";
+import { gql } from '@apollo/client';
+import { TIMETABLE_FIELDS } from './timetable';
 
 export const BRANCH_FIELDS = gql`
-  fragment BranchDetailFields on BranchDetail {
-    id
-    name
-    branch
-    tags
-    services
-    star
-    totalReviews
-    image
-    logo
-    distance
-    open
-    type
-    description
-    rate
-  }
-`;
-
-export const BRANCH_FIELDS1 = gql`
   fragment BranchFields on Branch {
     id
     type

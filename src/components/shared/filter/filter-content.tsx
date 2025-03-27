@@ -30,6 +30,7 @@ export const FilterContent: React.FC<Props> = ({ allTags, accept, className }) =
 
   const array = selectFilters(
     [
+      ParamFilter.DISCOUNT,
       {
         key: ParamFilter.CUISINE,
         tags: allTags.cuisineTags,

@@ -1,6 +1,6 @@
 import { FilterControl, Navigationlayout, NavigationlayoutContent } from '@/components/shared';
 import { Separator } from '@/components/ui';
-import { BranchFilters, Categories, HomeHeader } from './components';
+import { ChannelFilters, Categories, HomeHeader } from './components';
 import { isUserAuthenticated } from '@/actions';
 
 interface Props extends React.PropsWithChildren {}
@@ -15,7 +15,7 @@ const Layout: React.FC<Props> = async ({ children }) => {
         <Categories />
         <Separator className="mt-2" />
         <div className="flex flex-col h-max w-full justify-between px-3 z-0">
-          <BranchFilters />
+          <ChannelFilters />
           <FilterControl />
           {children}
         </div>

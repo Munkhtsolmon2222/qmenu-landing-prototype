@@ -18,14 +18,14 @@ export const FavouriteContext = createContext({} as FavouriteContextType);
 
 export const FavouriteProvider = ({ children }: React.PropsWithChildren) => {
   const { payload } = usePayload();
-  const [likedBranches, setLikedBranches] = useState<string[]>([]);
+  const [likedChannels, setLikedChannels] = useState<string[]>([]);
   const [likedProducts, setLikedProducts] = useState<string[]>([]);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const { loading: branchLoading } = useAction(GET_FAVOURITES, FavouriteItemType.BRANCH, {
     onSuccess(data) {
       if (!data) return;
-      setLikedBranches(data.map((e) => e.branch.id));
+      setLikedChannels(data.map((e) => e.branch.id));
     },
   });
 
@@ -49,8 +49,8 @@ export const FavouriteProvider = ({ children }: React.PropsWithChildren) => {
       action(id, type, {
         onSuccess: (editFavourite) => {
           if (type === FavouriteItemType.BRANCH) {
-            if (editFavourite) setLikedBranches((prev) => [...prev, id]);
-            else setLikedBranches((prev) => prev.filter((e) => e !== id));
+            if (editFavourite) setLikedChannels((prev) => [...prev, id]);
+            else setLikedChannels((prev) => prev.filter((e) => e !== id));
           } else {
             if (editFavourite) setLikedProducts((prev) => [...prev, id]);
             else setLikedProducts((prev) => prev.filter((e) => e !== id));
@@ -60,16 +60,16 @@ export const FavouriteProvider = ({ children }: React.PropsWithChildren) => {
         },
       });
     },
-    [payload?.role, action, showToast, setLikedBranches, setLikedProducts, setLoadingId, loadingId],
+    [payload?.role, action, showToast, setLikedChannels, setLikedProducts, setLoadingId, loadingId],
   );
 
   const isFavourite = useCallback(
     (type: FavouriteItemType, id: string) => {
       return type === FavouriteItemType.BRANCH
-        ? likedBranches.includes(id)
+        ? likedChannels.includes(id)
         : likedProducts.includes(id);
     },
-    [likedBranches, likedProducts],
+    [likedChannels, likedProducts],
   );
 
   const context = useMemo(

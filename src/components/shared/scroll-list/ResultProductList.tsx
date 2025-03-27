@@ -1,43 +1,50 @@
 'use client';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState } from 'react';
-import { BranchDetail } from '@/lib/types';
+import { EsChannel, ParamFilterObjType } from '@/lib/types';
 import { PositionStorage } from '@/lib/providers';
 import { FilteredCard } from '../cards';
 import { Loader } from '../loader';
-import { FILTER_RESULT } from '@/actions';
+import { GET_ES_CHANNELS_BY_CATEGORIES } from '@/actions';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  filters: string[];
   position: PositionStorage;
-  initialData: BranchDetail[];
-  limit?: number;
+  initialData: EsChannel[];
+  size: number;
+  searchParams?: ParamFilterObjType;
+  afterKey?: string;
 }
 
-export const ResultList: React.FC<Props> = ({ initialData, filters, position, limit = 40 }) => {
+export const ResultProductList: React.FC<Props> = ({
+  initialData,
+  searchParams,
+  position,
+  size,
+  afterKey: propAfterKey,
+}) => {
   const { t } = useTranslation();
-  const [data, setData] = useState<BranchDetail[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [data, setData] = useState<EsChannel[]>([]);
+  const [afterKey, setAfterKey] = useState<string | undefined>(propAfterKey);
   const { inView, ref } = useInView();
 
   useEffect(() => {
     setData(initialData);
-    setHasMore(initialData.length >= limit);
   }, [initialData]);
 
   useEffect(() => {
     if (inView) {
-      FILTER_RESULT({
-        filters,
+      GET_ES_CHANNELS_BY_CATEGORIES({
+        params: searchParams,
         lat: position.lat,
         lon: position.lon,
-        limit,
-        offset: data.length,
+        size,
         distance: '10km',
-      }).then(({ data: { branches: res } = { branches: [] } }) => {
-        if (!res || res.length < limit) setHasMore(false);
-        setData([...data, ...res]);
+        afterKey,
+      }).then(({ data: res = {} }) => {
+        const { channels = [], afterKey: aftKey } = res;
+        setAfterKey(aftKey);
+        setData([...data, ...channels]);
       });
     }
   }, [inView]);
@@ -55,11 +62,11 @@ export const ResultList: React.FC<Props> = ({ initialData, filters, position, li
   return (
     <>
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full">
-        {data.map((branch, index) => (
-          <FilteredCard key={index} place={branch} services />
+        {data.map((channel, index) => (
+          <FilteredCard key={index} channel={channel} services />
         ))}
       </section>
-      {hasMore && (
+      {afterKey && (
         <section ref={ref}>
           <Loader className="mt-20" spinnerClassName="h-8 w-8" />
         </section>

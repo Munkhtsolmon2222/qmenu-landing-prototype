@@ -1,7 +1,7 @@
 'use client';
 import { RestaurantListCard } from '@/components/shared';
 import { Badge } from '@/components/ui';
-import { BranchDetail, Order, OrderState } from '@/lib/types';
+import { EsChannel, Order, OrderState } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -47,7 +47,7 @@ export default function BaseCard({ order, border }: Props) {
         <Badge className={cn('bg-primary-foreground text-primary', classNames[order.state])}>
           {t('OrderState.' + order.state)}
         </Badge>
-        <RestaurantListCard place={order.branch as unknown as BranchDetail} />
+        <RestaurantListCard place={order.branch as unknown as EsChannel} />
       </div>
     </div>
   );

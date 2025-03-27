@@ -1,24 +1,30 @@
 import { gql } from '@apollo/client';
-import { BRANCH_FIELDS, PRODUCDETAIL_FIELDS } from '../fragment';
+import { ES_CHANNEL_FIELDS, ES_QUERY_RESULT_FIELDS, ES_PRODUCT_FIELDS } from '../fragment';
 
-const GET_RECOMMENDED_PRODUCTS = gql`
-  query getRecommendedProducts($lat: Float!, $lon: Float!) {
-    getRecommendedProducts(lat: $lat, lon: $lon) {
-      ...ProductDetailFields
-      branch {
-        ...BranchDetailFields
-        tableInfo {
-          total
-          seated
-          available
+const GET_ES_PRODUCTS = gql`
+  query getEsProducts($input: EsQueryInput!) {
+    getEsProducts(input: $input) {
+      ...EsQueryResultFields
+      products {
+        ...EsProductFields
+        branch {
+          ...EsChannelFields
+          tableInfo {
+            total
+            seated
+            available
+          }
+          latitude
+          longitude
         }
       }
     }
   }
-  ${PRODUCDETAIL_FIELDS}
-  ${BRANCH_FIELDS}
+  ${ES_QUERY_RESULT_FIELDS}
+  ${ES_PRODUCT_FIELDS}
+  ${ES_CHANNEL_FIELDS}
 `;
 
 export const PRODUCT_QUERY = {
-  GET_RECOMMENDED_PRODUCTS,
+  GET_ES_PRODUCTS,
 };

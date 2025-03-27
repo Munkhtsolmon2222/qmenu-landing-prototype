@@ -1,13 +1,13 @@
 import defaultImage from '@/assets/images/restaurant.png';
 import { formatTugrug } from '@/lib/utils';
-import { Food } from '@/lib/types/food';
+import { EsProduct } from '@/lib/types/food';
 import Image from 'next/image';
 import { Icons } from '@/components/general';
 import Link from 'next/link';
 import { PAGE_RESTAURANT } from '@/lib/constant';
 
 interface Props {
-  food: Food;
+  food: EsProduct;
 }
 
 export function SearchProduct({ food }: Props) {

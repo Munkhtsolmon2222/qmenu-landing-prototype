@@ -12,4 +12,4 @@ const Component: React.FC<Props> = async ({}) => {
   return <HomeFilters tags={tags} />;
 };
 
-export const BranchFilters = withSuspense(Component, <FiltersSkeleton />);
+export const ChannelFilters = withSuspense(Component, <FiltersSkeleton />);

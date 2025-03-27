@@ -4,7 +4,6 @@ export * from './use-media-query';
 export * from './use-mounted';
 export * from './use-resize';
 export * from './use-signin-modal';
-export * from './useMapList';
 export * from './useTags';
 export * from './useTopup';
 export * from './use-mobile';

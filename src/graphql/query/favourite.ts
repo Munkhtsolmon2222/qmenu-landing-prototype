@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { BRANCH_FIELDS1, CUSTOMER_FIELDS, PRODUCT_FIELDS } from '../fragment';
+import { BRANCH_FIELDS, CUSTOMER_FIELDS, PRODUCT_FIELDS } from '../fragment';
 
 const GET_FAVOURITES = gql`
   query getFavourites($type: String!) {
@@ -16,7 +16,7 @@ const GET_FAVOURITES = gql`
       type
     }
   }
-  ${BRANCH_FIELDS1}
+  ${BRANCH_FIELDS}
   ${PRODUCT_FIELDS}
   ${CUSTOMER_FIELDS}
 `;

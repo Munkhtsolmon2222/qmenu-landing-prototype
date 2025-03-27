@@ -6,15 +6,20 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 interface Props {
   name: string;
+  path?: string;
   icon?: string;
+  hideAll?: boolean;
+  withParams?: boolean;
 }
 
-export const CarouselHeader: React.FC<Props> = ({ name, icon }) => {
+export const CarouselHeader: React.FC<Props> = ({ name, icon, path, hideAll, withParams }) => {
   const { t } = useTranslation();
   const { show } = useNavbar();
+  const searchParams = useSearchParams();
 
   const getListTitle = () => {
     if (!icon) return <Translate>{name}</Translate>;
@@ -38,6 +43,8 @@ export const CarouselHeader: React.FC<Props> = ({ name, icon }) => {
     );
   };
 
+  const search = withParams && searchParams.size > 0 ? `?${searchParams.toString()}` : '';
+
   return (
     <div
       className={cn(
@@ -47,9 +54,11 @@ export const CarouselHeader: React.FC<Props> = ({ name, icon }) => {
     >
       <div className="flex items-center justify-between max-w-[90rem]">
         <h1 className="font-medium text-lg xl:text-xl">{getListTitle()}</h1>
-        <Link href={`${PAGE_LIST}/${name}`} legacyBehavior>
-          <a className="text-current-2 text-sm text-end font-medium z-50">{t('All')}</a>
-        </Link>
+        {!hideAll && (
+          <Link href={(path ?? `${PAGE_LIST}/${encodeURIComponent(name)}`) + search} legacyBehavior>
+            <a className="text-current-2 text-sm text-end font-medium z-50">{t('All')}</a>
+          </Link>
+        )}
       </div>
     </div>
   );

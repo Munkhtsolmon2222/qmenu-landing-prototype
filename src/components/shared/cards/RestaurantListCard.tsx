@@ -1,6 +1,6 @@
 'use client';
 import defaultImage from '@/assets/images/restaurant.png';
-import { BranchDetail, FavouriteItemType } from '@/lib/types';
+import { EsChannel, FavouriteItemType } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { calculateDistance, cn } from '@/lib/utils';
@@ -10,7 +10,7 @@ import nProgress from 'nprogress';
 import { Loader } from '../loader';
 
 interface Props {
-  place: BranchDetail;
+  place: EsChannel;
   services?: boolean;
   className?: string;
   ref?: React.RefObject<HTMLDivElement | null>;

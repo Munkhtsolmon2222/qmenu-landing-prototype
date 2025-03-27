@@ -20,7 +20,7 @@ export const Plan: React.FC<ItemProps> = ({ inputGuest, section, tables, onClick
     >
       {(section.tables ?? []).map((table, index) => (
         <TableShape
-          hideGuests
+          // hideGuests
           key={index}
           inputGuest={inputGuest}
           selected={tables.some((e) => e.tableId === table.id)}

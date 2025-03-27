@@ -221,13 +221,13 @@ export interface SectionInfo {
 }
 
 export interface SectionInfoTime {
-  times: [
-    {
-      date: string;
-      time: string;
-    },
-  ];
+  date: string;
+  time: string;
   durations: number[];
+}
+
+export interface SectionInfoTimes {
+  times: SectionInfoTime[];
   seatDuration: number;
 }
 

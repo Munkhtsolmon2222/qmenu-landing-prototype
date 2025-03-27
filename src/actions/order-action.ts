@@ -10,7 +10,7 @@ import {
   OrderInput,
   OrderType,
   SectionInfo,
-  SectionInfoTime,
+  SectionInfoTimes,
   Transaction,
   TransactionInput,
 } from '@/lib/types';
@@ -24,7 +24,7 @@ export const GET_ORDER = async (id: string) => {
 };
 
 export const GET_OPEN_TIMES = async (deliveryDate: string, type: OrderType) => {
-  return query<SectionInfoTime>({
+  return query<SectionInfoTimes>({
     query: SECTION_QUERY.GET_OPEN_TIMES,
     variables: { input: { deliveryDate, type } },
   });

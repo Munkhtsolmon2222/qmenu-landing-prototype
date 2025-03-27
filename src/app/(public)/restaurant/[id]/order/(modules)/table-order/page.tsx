@@ -10,7 +10,7 @@ import {
   PAGE_ORDER_TYPE,
 } from '@/lib/constant';
 import { InputParticipant, useRestaurantStore } from '@/lib/providers';
-import { OrderInput, OrderType } from '@/lib/types';
+import { OrderInput, OrderType, SectionInfoTime } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderIcon, AlertCircle } from 'lucide-react';
 import { useParams } from 'next/navigation';
@@ -24,8 +24,8 @@ import { omit } from 'lodash';
 import { redirectWithNProgress as navigate } from '@/lib/utils';
 import { TableOrderInput, TableOrderSchema } from '@/lib/validations';
 import { useAction } from '@/lib/hooks';
-import { showToast as toast } from '@/lib/helpers';
-import { GET_CURRENT_CUSTOMER, GET_OPEN_TIMES, GET_SECTION_INFO } from '@/actions';
+import { GET_CURRENT_CUSTOMER, GET_OPEN_TIMES } from '@/actions';
+import { showToast } from '@/lib/helpers';
 
 const getDefaultValues = (
   input?: OrderInput,
@@ -53,7 +53,7 @@ const Index = () => {
     defaultValues: getDefaultValues(input, inputParticipants),
   });
 
-  const { participants, guests = 1, duration, date, deliveryDate } = watch();
+  const { participants, guests = 1, duration, durations = [], date, deliveryDate } = watch();
 
   const { data: customer, loading: meLoading } = useAction(GET_CURRENT_CUSTOMER, {
     onSuccess(me) {
@@ -66,60 +66,26 @@ const Index = () => {
   const {
     action: getOpenTimes,
     loading,
-    data: { times, durations, seatDuration } = {
-      times: [],
-      durations: [],
-      seatDuration: SEAT_DURATION,
-    },
+    data: { times } = { times: [] },
   } = useAction(GET_OPEN_TIMES, {
     lazy: true,
     onSuccess(data) {
-      if ((data?.times ?? []).length > 0 && !duration)
-        setValue('duration', data?.durations[0].toString());
-    },
-  });
+      if (!data?.times || data.times.length < 1) return;
+      const time = data.times.find((e) => e.date === date) ?? data.times[0];
 
-  const {
-    action: getSectionInfo,
-    loading: loadSection,
-    data: sections = [],
-  } = useAction(GET_SECTION_INFO, {
-    lazy: true,
-    onSuccess(data) {
-      if (data && data.length > 0) {
-        setStore((set) => set(() => ({ sections: data })));
+      const durationValue = time.durations.find((e) => e === +(duration || 0)) ?? time.durations[0];
 
-        const section = data.find((e) => e.available >= guests);
-
-        if (section) {
-          setValue('sectionId', section.id);
-        } else {
-          toast(`Тухайн цагт ${guests} суудал байхгүй байна`);
-        }
-      }
+      setValue('durations', time.durations);
+      setValue('duration', durationValue ? durationValue.toString() : undefined);
     },
   });
 
   useEffect(() => {
-    if (date) return;
-    const dates = getDates(current?.branch?.timetable) ?? [];
-    if (current?.branch?.timetable) setValue('date', dates[0].date);
-  }, [current, date]);
+    if (!input?.deliveryDate) return;
 
-  useEffect(() => {
-    if (date) getOpenTimes(date, OrderType.TableOrder);
-  }, [date]);
-
-  useEffect(() => {
-    if (guests && duration && date && deliveryDate) {
-      getSectionInfo({
-        type: OrderType.TableOrder,
-        deliveryDate,
-        duration: +duration,
-        guests: +guests,
-      });
-    }
-  }, [guests, duration, date, deliveryDate]);
+    const date = input.deliveryDate.split(' ')[0];
+    getOpenTimes(date, OrderType.TableOrder);
+  }, []);
 
   const onFinish = (values: TableOrderInput) => {
     const participants = values.participants.reduce(
@@ -133,7 +99,7 @@ const Index = () => {
     setStore((set) => set(() => ({ inputParticipants: participants })));
 
     const input: Partial<OrderInput> = {
-      ...omit(values, ['date', 'time']),
+      ...omit(values, ['date', 'time', 'durations']),
       deliveryDate: values.deliveryDate,
       duration: +(duration ?? SEAT_DURATION),
       contact: customer?.phone ?? '',
@@ -169,8 +135,8 @@ const Index = () => {
                 name="guests"
                 render={({ field: { onChange, ref }, fieldState: { error } }) => {
                   const onChangeGuests = (count: number) => {
-                    setValue('sectionId', undefined);
                     setValue('deliveryDate', undefined);
+                    setValue('date', undefined);
                     onChange(count);
                   };
 
@@ -229,9 +195,9 @@ const Index = () => {
                             desc={item.title}
                             title={item.day}
                             onClick={() => {
-                              setValue('sectionId', undefined);
                               setValue('deliveryDate', undefined);
                               onChange(item.date);
+                              getOpenTimes(item.date, OrderType.TableOrder);
                             }}
                           />
                         ))}
@@ -271,7 +237,7 @@ const Index = () => {
                               active={e.toString() === duration}
                               title={convertToHoursAndMinutes(e).mn}
                               onClick={() => {
-                                setValue('sectionId', undefined);
+                                setValue('deliveryDate', undefined);
                                 onChange(e.toString());
                               }}
                             />
@@ -288,23 +254,29 @@ const Index = () => {
                       render={({ field: { onChange }, fieldState: { error } }) => (
                         <>
                           <div className="grid gap-2 grid-cols-4">
-                            {times.map((e, index) => {
-                              const eDate = +new Date(e.date);
-                              const eDate2 = deliveryDate ? +new Date(deliveryDate) : 0;
-
-                              let active = eDate === eDate2;
+                            {times.map((time: SectionInfoTime, index: number) => {
+                              const timeValue = new Date(time.date);
+                              const active = time.date === deliveryDate;
                               let subActive = false;
+                              let disabled = false;
+
+                              let prevItem = times[index - 1] ?? time;
+
+                              if (duration && index > 0) {
+                                const timeLastValue = new Date(times[times.length - 1].date);
+
+                                const timeEndValue = new Date(prevItem.date);
+                                timeEndValue.setMinutes(timeEndValue.getMinutes() + +duration);
+
+                                disabled = timeEndValue > timeLastValue;
+                              }
 
                               if (deliveryDate && duration) {
-                                const count = Math.round(+duration / seatDuration);
-                                const activeIndex = times.findIndex(
-                                  (e) => +new Date(e.date) === eDate2,
-                                );
-                                active =
-                                  eDate === eDate2 ||
-                                  (index > activeIndex && index <= activeIndex + count);
+                                const startDate = new Date(deliveryDate);
+                                const endDate = new Date(deliveryDate);
+                                endDate.setMinutes(endDate.getMinutes() + +duration);
 
-                                subActive = active && eDate !== eDate2;
+                                subActive = timeValue > startDate && timeValue <= endDate;
                               }
 
                               return (
@@ -313,10 +285,16 @@ const Index = () => {
                                   className="min-w-16 h-9 text-sm rounded-full"
                                   active={active}
                                   subActive={subActive}
-                                  title={e.time}
+                                  title={time.time}
+                                  disabled={disabled}
                                   onClick={() => {
-                                    setValue('sectionId', undefined);
-                                    onChange(e.date);
+                                    if (disabled) {
+                                      showToast(
+                                        'Нийт суух хугацаа хаах цагаас хэтэрч байгаа тул сонгох боломжгүй',
+                                      );
+                                      return;
+                                    }
+                                    onChange(time.date);
                                   }}
                                 />
                               );
@@ -329,16 +307,6 @@ const Index = () => {
                   </ItemWrapper>
                 </>
               ))}
-
-            {!loadSection && guests && date && deliveryDate && duration && sections.length < 1 && (
-              <ItemWrapper>
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Уучлаарай</AlertTitle>
-                  <AlertDescription>Тухайн цагт сул заал байхгүй байна</AlertDescription>
-                </Alert>
-              </ItemWrapper>
-            )}
 
             <ItemWrapper title={t('Guests')} titleClassName="mb-2">
               <FormField
@@ -435,7 +403,7 @@ const Index = () => {
           </>
         )}
       </OrderDialog.Container>
-      <OrderDialog.Footer buttonProps={{ loading: loadSection, onClick: handleSubmit(onFinish) }}>
+      <OrderDialog.Footer buttonProps={{ onClick: handleSubmit(onFinish) }}>
         <div className="text-center w-full">{t('Continue')}</div>
       </OrderDialog.Footer>
     </>

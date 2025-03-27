@@ -5,16 +5,16 @@ const baseTableOrderSchema = z.object({
   guests: z.number().optional(),
   date: z.string().optional(),
   deliveryDate: z.string().optional(),
-  sectionId: z.string().optional(),
   duration: z.string().optional(),
   participants: z.array(
     z.object({ id: z.string().optional(), name: z.string(), phone: z.string() }),
   ),
   comment: z.string().optional(),
+  durations: z.array(z.number()).optional(),
 });
 
 export const TableOrderSchema = baseTableOrderSchema.superRefine(
-  ({ date, deliveryDate, sectionId, guests }, ctx) => {
+  ({ date, deliveryDate, guests }, ctx) => {
     if (!guests || guests < 1)
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -34,13 +34,6 @@ export const TableOrderSchema = baseTableOrderSchema.superRefine(
         code: z.ZodIssueCode.custom,
         message: 'Цагаа сонгоно уу',
         path: ['time'],
-      });
-
-    if (!sectionId)
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Үйлчлэх заалаа сонгоно уу',
-        path: ['sectionId'],
       });
 
     return z.NEVER;

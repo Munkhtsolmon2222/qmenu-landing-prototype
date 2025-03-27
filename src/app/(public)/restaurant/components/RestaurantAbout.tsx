@@ -9,9 +9,11 @@ import { TableOrderButton } from './TableOrderButton';
 import { RestaurantProps } from '../types';
 import { PAGE_RESTAURANT, QMENU_URL } from '@/lib/constant';
 
-interface Props extends RestaurantProps {}
+interface Props extends RestaurantProps {
+  distance: number;
+}
 
-export const RestaurantAbout: React.FC<Props> = ({ participant, isAuthenticated }) => {
+export const RestaurantAbout: React.FC<Props> = ({ participant, isAuthenticated, distance }) => {
   const branch = participant.branch;
   const restaurantUrl = `${QMENU_URL}${PAGE_RESTAURANT}/${participant.id}`;
 
@@ -115,7 +117,7 @@ export const RestaurantAbout: React.FC<Props> = ({ participant, isAuthenticated 
           <div className="flex gap-1 items-center">
             <Icons.navigation className="h-5 text-current-2" />
             <div className="font-medium text-secondary-text opacity-75">
-              {calculateDistance(+(branch?.distance || 0)?.toFixed(2) || 0)}
+              {calculateDistance(+distance?.toFixed(2) || 0)}
             </div>
 
             <div className="rounded-full w-1.5 h-1.5 min-w-1.5 min-h-1.5 dark:bg-gray-300 bg-black ml-3 mr-2" />

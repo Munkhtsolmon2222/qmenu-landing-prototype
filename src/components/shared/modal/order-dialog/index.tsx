@@ -33,9 +33,11 @@ const Wrapper: React.FC<Props> = ({ children, visible, onClose }) => {
   }
 
   return (
-    <Sheet open={visible} onOpenChange={onClose}>
-      <SheetContent className="p-0 h-full flex flex-col">{children}</SheetContent>
-    </Sheet>
+    <Dialog open={visible} onOpenChange={onClose}>
+      <DialogContent className="p-0 h-[calc(100%_-_50px)] overflow-hidden flex flex-col">
+        {children}
+      </DialogContent>
+    </Dialog>
   );
 };
 

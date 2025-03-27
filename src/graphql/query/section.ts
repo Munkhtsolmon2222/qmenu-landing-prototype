@@ -16,8 +16,8 @@ const GET_OPEN_TIMES = gql`
       times {
         time
         date
+        #durations
       }
-      durations
       seatDuration
     }
   }

@@ -65,7 +65,6 @@ const Page: React.FC<Props> = async ({ ...props }) => {
         loaderClassName="my-20"
         initialData={discounts}
         afterKey={afterKey}
-        keywords={keywords}
         size={size}
         itemSize={itemSize}
         itemOffset={itemOffset}

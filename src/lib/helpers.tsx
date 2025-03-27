@@ -6,7 +6,6 @@ import {
   EsTagType,
   ParamFilter,
   ParamFilterItem,
-  ParamFilterObjType,
   ParamFilterType,
   ParamsTagType,
   Payload,
@@ -16,7 +15,6 @@ import { jwtDecode } from 'jwt-decode';
 import { TFunction } from 'i18next';
 import { CUSTOMER, ParamFilters } from './constant';
 import { toast } from 'sonner';
-import { omit } from 'lodash';
 
 export const withSuspense = <T extends React.ComponentType<any>>(
   Component: T,
@@ -218,5 +216,6 @@ export const getEsInput = (input: EsQueryInputWithParams = {}): EsQueryInput => 
     input = { ...input, keywords, tags };
   }
 
-  return omit(input, 'params');
+  delete input.params;
+  return input;
 };

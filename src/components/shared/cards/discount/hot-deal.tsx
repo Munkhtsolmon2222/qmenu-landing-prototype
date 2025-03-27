@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui';
 import { CardProps } from '.';
 import { Icons } from '@/components/general';
 import { calculateDistance } from '@/lib/utils';
+import defaultImage from '@/assets/images/restaurant.png';
 
 interface Props extends CardProps {}
 
@@ -10,7 +11,7 @@ export const HotDeal: React.FC<Props> = ({ discount }) => {
     <>
       <div className="absolute inset-0">
         <img
-          src={discount.image ?? ''}
+          src={discount.image || defaultImage.src}
           alt={discount.name}
           className="w-full h-full object-cover"
         />

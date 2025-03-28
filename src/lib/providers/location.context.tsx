@@ -21,6 +21,7 @@ export interface LocationContextType {
     cb?: () => void,
   ) => void;
   handleError: () => void;
+  getLocation: () => PositionStorage;
 }
 
 export const LocationContext = createContext({} as LocationContextType);
@@ -82,6 +83,24 @@ export const LocationProvider = ({ children }: React.PropsWithChildren) => {
     refresh();
   };
 
+  const getLocation = () => {
+    const cookieStore = getCookieStore();
+    let storedPosition: PositionStorage | undefined;
+
+    try {
+      storedPosition = JSON.parse(cookieStore[POSITION] || '{}');
+    } catch (error) {}
+
+    if (!storedPosition)
+      storedPosition = {
+        lat: CENTER.lat,
+        lon: CENTER.long,
+        timestamp: new Date().getTime(),
+      };
+
+    return storedPosition;
+  };
+
   const processLocation = () => {
     const cookieStore = getCookieStore();
     let storedPosition: PositionStorage | undefined;
@@ -120,8 +139,12 @@ export const LocationProvider = ({ children }: React.PropsWithChildren) => {
   }, []);
 
   const context = useMemo(
-    () => ({ handleSuccess: handleGeolocationSuccess, handleError: handleGeolocationError }),
-    [handleGeolocationSuccess, handleGeolocationError],
+    () => ({
+      handleSuccess: handleGeolocationSuccess,
+      handleError: handleGeolocationError,
+      getLocation,
+    }),
+    [handleGeolocationSuccess, handleGeolocationError, getLocation],
   );
 
   if (!position) return <Welcome className="w-full h-screen flex items-center justify-center" />;

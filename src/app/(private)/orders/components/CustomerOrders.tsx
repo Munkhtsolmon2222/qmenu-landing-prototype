@@ -3,8 +3,8 @@ import { GET_CUSTOMER_ORDERS } from '@/actions';
 import { Loader } from '@/components/shared';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui';
 import { useAction } from '@/lib/hooks';
-import { OrderState, Payload } from '@/lib/types';
-import { useSearchParams } from 'next/navigation';
+import { Order, OrderState, Payload } from '@/lib/types';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavbar } from '@/lib/providers';
@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils';
 import { useSubscription } from '@apollo/client';
 import { ON_UPDATED_ORDER } from '@/graphql/subscription';
 import { getOrderCards } from './cards';
+import nProgress from 'nprogress';
+import { PAGE_ORDERS } from '@/lib/constant';
 
 interface Props {
   payload: Payload;
@@ -21,9 +23,10 @@ export const CustomerOrders: React.FC<Props> = ({ payload }) => {
   const searchParams = useSearchParams();
   const { t } = useTranslation();
   const { show } = useNavbar();
+  const router = useRouter();
 
   const tabs = [
-    { key: '1', name: t('OrdersTab.Waiting'), value: [OrderState.NEW] },
+    { key: '1', name: t('OrdersTab.Waiting'), value: [OrderState.NEW, OrderState.BOOKING] },
     {
       key: '2',
       name: t('OrdersTab.Active'),
@@ -85,6 +88,11 @@ export const CustomerOrders: React.FC<Props> = ({ payload }) => {
     },
   });
 
+  const onClickOrder = (order: Order) => {
+    nProgress.start();
+    router.push(`${PAGE_ORDERS}/${order.id}?channelId=${order.channelId}`);
+  };
+
   if (loading) return <Loader className="h-screen" />;
 
   return (
@@ -128,7 +136,9 @@ export const CustomerOrders: React.FC<Props> = ({ payload }) => {
         <div className="px-5 py-4 flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3">
           {orders.map((item, index: number) => {
             const OrderCard = getOrderCards(item.state);
-            return OrderCard ? <OrderCard key={index} order={item} /> : null;
+            if (!OrderCard) return;
+
+            return <OrderCard key={index} onClick={() => onClickOrder(item)} order={item} />;
           })}
         </div>
       </Tabs>

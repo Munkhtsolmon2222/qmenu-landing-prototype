@@ -7,6 +7,7 @@ import PendingCard from './pending-card';
 type ComponentOrderStates =
   | OrderState.NEW
   | OrderState.BOOKED
+  | OrderState.BOOKING
   | OrderState.ACCEPTED
   | OrderState.CANCELLED
   | OrderState.DECLINED
@@ -16,6 +17,7 @@ const ORDER_CARDS: {
   [key in ComponentOrderStates]: React.ComponentType<any>;
 } = {
   [OrderState.NEW]: PendingCard,
+  [OrderState.BOOKING]: PendingCard,
   [OrderState.BOOKED]: ActiveCard,
   [OrderState.ACCEPTED]: ActiveCard,
   [OrderState.COMPLETED]: CompletedCard,

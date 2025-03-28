@@ -18,10 +18,10 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ItemWrapper, ButtonItem, ParticipantsModal } from '../../components';
-import { getDates, convertToHoursAndMinutes } from '../../utils';
+import { getDates } from '../../utils';
 import { TimesSkeleton } from './components';
 import { omit } from 'lodash';
-import { redirectWithNProgress as navigate } from '@/lib/utils';
+import { convertToHoursAndMinutes, redirectWithNProgress as navigate } from '@/lib/utils';
 import { TableOrderInput, TableOrderSchema } from '@/lib/validations';
 import { useAction } from '@/lib/hooks';
 import { GET_CURRENT_CUSTOMER, GET_OPEN_TIMES } from '@/actions';
@@ -44,7 +44,7 @@ const getDefaultValues = (
 
 const Index = () => {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [visible, setVisible] = useState(false);
   const { current, setInput, input, inputParticipants, setStore } = useRestaurantStore();
   const { control, watch, setValue, handleSubmit } = useForm<TableOrderInput>({
@@ -235,7 +235,10 @@ const Index = () => {
                               key={index}
                               className="min-w-max h-9 text-sm rounded-full px-3"
                               active={e.toString() === duration}
-                              title={convertToHoursAndMinutes(e).mn}
+                              title={
+                                convertToHoursAndMinutes(e)[i18n.language] ??
+                                convertToHoursAndMinutes(e).mn
+                              }
                               onClick={() => {
                                 setValue('deliveryDate', undefined);
                                 onChange(e.toString());

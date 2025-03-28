@@ -1,17 +1,13 @@
-import { Order } from '@/lib/types';
-import BaseCard from './base-card';
+import BaseCard, { OrderBaseCardProps } from './base-card';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/general';
 
-interface Props {
-  order: Order;
-}
-function CancelledCard(props: Props) {
-  const { order } = props;
+interface Props extends OrderBaseCardProps {}
 
+const CancelledCard: React.FC<Props> = ({ order, onClick }) => {
   return (
     <Card className="px-3 py-2">
-      <BaseCard order={order} />
+      <BaseCard order={order} onClick={onClick} />
       <div className="w-full flex justify-between gap-2 py-1">
         <Button
           size="sm"
@@ -22,6 +18,6 @@ function CancelledCard(props: Props) {
       </div>
     </Card>
   );
-}
+};
 
 export default CancelledCard;

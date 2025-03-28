@@ -1,6 +1,23 @@
 import { Branch } from './branch';
 import { Transaction } from './transaction';
 
+export enum OrderItemState {
+  DRAFT = 'DRAFT',
+  NEW = 'NEW',
+  ACCEPTED = 'ACCEPTED',
+  PREPARING = 'PREPARING',
+  PREPARED = 'PREPARED',
+  DELIVERING = 'DELIVERING',
+  DELIVERED = 'DELIVERED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  RETURN = 'RETURN',
+  MOVED = 'MOVED',
+  MERGED = 'MERGED',
+  REMOVED = 'REMOVED',
+  TRANSFERED = 'TRANSFERED',
+}
+
 export enum OrderType {
   Dining = 'Dining',
   PreOrder = 'PreOrder',
@@ -66,8 +83,9 @@ export interface Order {
   id: string;
   number: string;
   branch: Branch;
+  duration: number;
   date: string;
-  type: string;
+  type: OrderType;
   contact: string;
   comment: string;
   deliveryDate: Date;
@@ -111,6 +129,7 @@ export interface Order {
   vatExcludeAmount: number;
   vats?: Vats[];
   tables?: OrderTable[];
+  startAt?: string;
 }
 
 export interface OrderTable {

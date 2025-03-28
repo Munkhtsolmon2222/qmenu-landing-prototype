@@ -10,8 +10,8 @@ export interface EsChannel {
   logo: string;
   branch: string;
   image: string;
-  tags: [string];
-  services: [OrderType];
+  tags: string[];
+  services: OrderType[];
   star: string;
   totalReviews: number;
   distance: number;

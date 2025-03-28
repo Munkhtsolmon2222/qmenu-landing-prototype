@@ -3,9 +3,9 @@ import defaultImage from '@/assets/images/restaurant.png';
 import { EsChannel, FavouriteItemType } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { calculateDistance, cn } from '@/lib/utils';
+import { calculateDistance, cn, getDistance } from '@/lib/utils';
 import { Icons } from '@/components/general';
-import { useFavourite } from '@/lib/providers';
+import { useFavourite, useLocation } from '@/lib/providers';
 import nProgress from 'nprogress';
 import { Loader } from '../loader';
 
@@ -14,13 +14,26 @@ interface Props {
   services?: boolean;
   className?: string;
   ref?: React.RefObject<HTMLDivElement | null>;
+  onClick?: () => void;
 }
 
-export function RestaurantListCard(props: Props) {
-  const { place, className, ref } = props;
+export const RestaurantListCard: React.FC<Props> = ({ place, className, ref, onClick }) => {
   const router = useRouter();
   const { editFavourite, isFavourite, editing: loading, loadingId } = useFavourite();
-  const like = isFavourite(FavouriteItemType.BRANCH, place.branch);
+  const liked = isFavourite(FavouriteItemType.BRANCH, place.branch);
+  const { getLocation } = useLocation();
+
+  const getBranchDistance = () => {
+    let distance = place?.distance;
+
+    if (!distance) {
+      const location = getLocation();
+      if (location)
+        distance = getDistance(location.lat, location.lon, place?.latitude, place?.longitude);
+    }
+
+    return distance;
+  };
 
   const navigate = (e: string) => {
     nProgress.start();
@@ -31,7 +44,7 @@ export function RestaurantListCard(props: Props) {
     <div
       ref={ref}
       key={place?.id}
-      onClick={() => navigate(`/restaurant/${place.id}`)}
+      onClick={() => (onClick ? onClick() : navigate(`/restaurant/${place.id}`))}
       className={cn('relative w-full h-max overflow-hidden border rounded-lg py-2 px-2', className)}
     >
       <div className="rounded-lg  duration-300 ease-in-out cursor-pointer ">
@@ -56,7 +69,7 @@ export function RestaurantListCard(props: Props) {
                   editFavourite(FavouriteItemType.BRANCH, place.branch);
                 }}
                 className={`w-6 h-6 ${
-                  like && 'fill-current-2'
+                  liked && 'fill-current-2'
                 } stroke-white absolute top-0 left-0 m-2 bg-secondary-background pt-[0.2rem] pb-[0.1rem]  rounded-full`}
               />
             )}
@@ -79,7 +92,7 @@ export function RestaurantListCard(props: Props) {
                   <Icons.navigation className="text-current-2 h-4 w-4" />
                 </div>
                 <p className="text-sm  xl:text-base text-ellipsis truncate  text-secondary-text opacity-80">
-                  {calculateDistance(place?.distance)}
+                  {calculateDistance(getBranchDistance())}
                 </p>
               </div>
               <div className="w-[4px] h-[4px] rounded-full bg-secondary-text mx-0.5"></div>
@@ -96,7 +109,7 @@ export function RestaurantListCard(props: Props) {
               <div>
                 <Icons.pinCard className="fill-white h-5 w-5 text-current-2" />
               </div>
-              <p className=" text-sm  xl:text-base text-ellipsis truncate  text-secondary-text opacity-80">
+              <p className="text-sm xl:text-base text-ellipsis truncate text-secondary-text opacity-80">
                 {place?.address}
               </p>
             </div>
@@ -105,4 +118,4 @@ export function RestaurantListCard(props: Props) {
       </div>
     </div>
   );
-}
+};

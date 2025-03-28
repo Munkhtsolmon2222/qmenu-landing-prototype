@@ -10,7 +10,7 @@ const Layout: React.FC<Props> = async ({ children }) => {
     <Navigationlayout hideFooter className="flex-1">
       <OrdersHeader />
 
-      <NavigationlayoutContent>
+      <NavigationlayoutContent className="pb-14">
         <CustomApolloProvider loader={<Loader className="h-screen" />}>
           {children}
         </CustomApolloProvider>

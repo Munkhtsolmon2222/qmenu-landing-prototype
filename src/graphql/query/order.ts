@@ -96,6 +96,9 @@ const GET_ORDER = gql`
   query getOrder($id: ID!) {
     getOrder(id: $id) {
       ...OrderFields
+      branch {
+        ...BranchFields
+      }
       table {
         ...TableFields
       }
@@ -119,6 +122,7 @@ const GET_ORDER = gql`
       }
     }
   }
+  ${BRANCH_FIELDS}
   ${TABLE_FIELDS}
   ${ORDER_FIELDS}
   ${DISCOUNTS_FIELDS}

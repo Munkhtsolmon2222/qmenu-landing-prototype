@@ -168,10 +168,17 @@ const GET_PAY_ORDER = gql`
   ${TRANSACTION_FIELDS}
 `;
 
+const CANCEL_ORDER = gql`
+  mutation cancelOrder($id: ID!, $reason: String) {
+    cancelOrder(id: $id, reason: $reason)
+  }
+`;
+
 export const ORDER_MUTATION = {
   CREATE_ORDER,
   CORRECTION_TRANSACTION,
   VALIDATE_TRANSACTION,
   PAY_ORDER_WITH_SUB_PAYMENTS,
   GET_PAY_ORDER,
+  CANCEL_ORDER,
 };

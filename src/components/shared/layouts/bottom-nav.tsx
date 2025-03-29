@@ -1,4 +1,3 @@
-import React from 'react';
 import { isUserAuthenticated } from '@/actions';
 import { Icons } from '@/components/general';
 import { PAGE_HOME, PAGE_LOGIN, PAGE_MAP, PAGE_ORDERS, PAGE_PROFILE } from '@/lib/constant';

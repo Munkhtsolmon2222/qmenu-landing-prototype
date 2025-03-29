@@ -84,7 +84,7 @@ const Index = () => {
     if (!input?.deliveryDate) return;
 
     const date = input.deliveryDate.split(' ')[0];
-    getOpenTimes(date, OrderType.TableOrder);
+    getOpenTimes(date, guests, OrderType.TableOrder);
   }, []);
 
   const onFinish = (values: TableOrderInput) => {
@@ -197,7 +197,7 @@ const Index = () => {
                             onClick={() => {
                               setValue('deliveryDate', undefined);
                               onChange(item.date);
-                              getOpenTimes(item.date, OrderType.TableOrder);
+                              getOpenTimes(item.date, guests, OrderType.TableOrder);
                             }}
                           />
                         ))}

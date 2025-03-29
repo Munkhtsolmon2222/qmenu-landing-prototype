@@ -138,6 +138,7 @@
       "NOSHOW": "No show"
     },
     "EmptyOrders": "No orders found",
-    "Discount": "Discount"
+    "Discount": "Discount",
+    "IOrder": "Order"
   }
 }

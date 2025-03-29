@@ -86,22 +86,6 @@ export const getDates = (timetable?: Timetable) => {
   }, []);
 };
 
-export function convertToHoursAndMinutes(minutes: number) {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hours > 1) {
-    return {
-      mn: mins > 0 ? `${hours} цаг ${mins} мин` : `${hours} цаг`,
-      en: mins > 0 ? `${hours} hr ${mins} min` : `${hours} hr`,
-    };
-  } else {
-    return {
-      mn: `${minutes} мин`,
-      en: `${minutes} min`,
-    };
-  }
-}
-
 const timesArray = Array.from({ length: 60 / SEAT_DURATION }, (_, i) => i * SEAT_DURATION);
 
 const getTimetable = (dateValue: Date, timetable?: Timetable) => {

@@ -1,6 +1,6 @@
 import { StepProps } from '../page';
 import { ButtonItem, ItemWrapper } from '../../../components';
-import { OrderType, SectionInfoTime, Table } from '@/lib/types';
+import { OrderType, SectionInfoTimes, Table } from '@/lib/types';
 import { getDates } from '../../../utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { OrderDialog } from '@/components/shared';
@@ -12,7 +12,7 @@ interface Props extends StepProps {
   setDeliveryDate: React.Dispatch<React.SetStateAction<string>>;
   table?: Table;
   loading: boolean;
-  times: SectionInfoTime['times'];
+  times: SectionInfoTimes['times'];
   getOpenTimes: (options: any) => void;
 }
 

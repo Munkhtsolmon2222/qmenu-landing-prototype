@@ -1,4 +1,5 @@
 import { IEvent } from './event';
+import { OrderType } from './order';
 import { Payment } from './transaction';
 
 export enum BranchType {
@@ -140,10 +141,10 @@ export enum MenuItemState {
 
 export interface Branch {
   id: string;
-  type: string;
+  type: BranchType;
   name: string;
   description: string;
-  services: string[];
+  services: OrderType[];
   tags: Tag[];
   logo: string;
   banner: null;
@@ -221,13 +222,13 @@ export interface SectionInfo {
 }
 
 export interface SectionInfoTime {
-  times: [
-    {
-      date: string;
-      time: string;
-    },
-  ];
+  date: string;
+  time: string;
   durations: number[];
+}
+
+export interface SectionInfoTimes {
+  times: SectionInfoTime[];
   seatDuration: number;
 }
 

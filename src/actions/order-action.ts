@@ -10,7 +10,7 @@ import {
   OrderInput,
   OrderType,
   SectionInfo,
-  SectionInfoTime,
+  SectionInfoTimes,
   Transaction,
   TransactionInput,
 } from '@/lib/types';
@@ -23,10 +23,10 @@ export const GET_ORDER = async (id: string) => {
   return query<Order>({ query: ORDER_QUERY.GET_ORDER, variables: { id } });
 };
 
-export const GET_OPEN_TIMES = async (deliveryDate: string, type: OrderType) => {
-  return query<SectionInfoTime>({
+export const GET_OPEN_TIMES = async (deliveryDate: string, guests: number, type: OrderType) => {
+  return query<SectionInfoTimes>({
     query: SECTION_QUERY.GET_OPEN_TIMES,
-    variables: { input: { deliveryDate, type } },
+    variables: { input: { deliveryDate, type, guests } },
   });
 };
 
@@ -87,4 +87,8 @@ export const ADD_ORDER_LOYALTY = async (id: string, type: LoyaltyType) => {
 
 export const GET_CUSTOMER_ORDERS = async () => {
   return query<Order[]>({ query: ORDER_QUERY.GET_CUSTOMER_ORDERS });
+};
+
+export const CANCEL_ORDER = async (id: string, reason?: string) => {
+  return query<boolean>({ query: ORDER_MUTATION.CANCEL_ORDER, variables: { id, reason } });
 };

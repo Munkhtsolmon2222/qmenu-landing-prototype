@@ -277,3 +277,19 @@ export function getDistance(lat1?: number, lon1?: number, lat2?: number, lon2?: 
 
   return dist;
 }
+
+export function convertToHoursAndMinutes(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours > 1) {
+    return {
+      mn: mins > 0 ? `${hours} цаг ${mins} мин` : `${hours} цаг`,
+      en: mins > 0 ? `${hours} hr ${mins} min` : `${hours} hr`,
+    };
+  } else {
+    return {
+      mn: `${minutes} мин`,
+      en: `${minutes} min`,
+    };
+  }
+}

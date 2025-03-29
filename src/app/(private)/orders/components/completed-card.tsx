@@ -1,18 +1,15 @@
 'use client';
-import { Order } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
-import BaseCard from './base-card';
+import BaseCard, { OrderBaseCardProps } from './base-card';
 import { Button } from '@/components/general';
 import { PAGE_RESTAURANT } from '@/lib/constant';
 import { useRouter } from 'next/navigation';
 import nProgress from 'nprogress';
 
-interface Props {
-  order: Order;
-}
-function CompletedCard(props: Props) {
-  const { order } = props;
+interface Props extends OrderBaseCardProps {}
+
+const CompletedCard: React.FC<Props> = ({ order, onClick }) => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -24,7 +21,7 @@ function CompletedCard(props: Props) {
 
   return (
     <Card className="px-3 py-2">
-      <BaseCard order={order} />
+      <BaseCard order={order} onClick={onClick} />
       <div className="w-full flex justify-between gap-2 py-1">
         <Button
           variant="outline"
@@ -43,6 +40,6 @@ function CompletedCard(props: Props) {
       </div>
     </Card>
   );
-}
+};
 
 export default CompletedCard;

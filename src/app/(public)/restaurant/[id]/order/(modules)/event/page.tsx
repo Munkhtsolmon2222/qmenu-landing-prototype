@@ -1,6 +1,6 @@
 'use client';
 import { useRestaurantStore } from '@/lib/providers/restaurant';
-import { IEvent, OrderInput, OrderType, SectionInfoTime, Table } from '@/lib/types';
+import { IEvent, OrderInput, OrderType, SectionInfoTimes, Table } from '@/lib/types';
 import { useState } from 'react';
 import { StepInfo, StepDate, StepTable } from './components';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -126,7 +126,7 @@ const Event = () => {
     ),
     date: (
       <StepDate
-        times={times as SectionInfoTime['times']}
+        times={times as SectionInfoTimes['times']}
         getOpenTimes={getOpenTimes}
         loading={loadOpenTimes}
         deliveryDate={deliveryDate}

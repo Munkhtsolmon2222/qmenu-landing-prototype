@@ -138,6 +138,102 @@
       "NOSHOW": "Ирээгүй"
     },
     "EmptyOrders": "Захиалга байхгүй байна",
-    "Discount": "Хөнгөлөлт"
+    "Discount": "Хөнгөлөлт",
+    "IOrder": "Захиалга",
+    "Time": "Цаг",
+    "Date": "Огноо",
+    "Order number": "Захиалгын дугаар",
+    "Payment": "Төлбөр",
+    "orderType": {
+      "PreOrder": "Урьдчилсан захиалга",
+      "TableOrder": "Ширээ захиалга",
+      "TakeAway": "Очиж авах",
+      "Delivery": "Хүргэлт"
+    },
+    "Payment State": "Төлбөрийн төлөв",
+    "State": "Төлөв",
+    "Subtotal": "Дэд дүн",
+    "Amount": "Дүн",
+    "NUAT": "НӨАТ",
+    "NHAT": "НХАТ",
+    "TotalAmount": "Нийт дүн",
+    "PaymentState": {
+      "UNPAID": "Төлөгдөөгүй",
+      "PAID": "Төлсөн",
+      "PARTIAL": "Хэсэгт төлсөн"
+    },
+    "OrderTypeItemStates": {
+      "PreOrder": {
+        "DRAFT": "Баталгаажаагүй",
+        "NEW": "Шинэ",
+        "ACCEPTED": "Баталгаажсан",
+        "PREPARING": "Бэлтгэж байгаа",
+        "PREPARED": "Бэлэн болсон",
+        "DELIVERING": "Хүргэлтэнд гарсан",
+        "DELIVERED": "Хүргэгдсэн",
+        "COMPLETED": "Дууссан",
+        "CANCELLED": "Цуцлагдсан",
+        "RETURN": "Буцаасан",
+        "MOVED": "Шилжүүлсэн",
+        "MERGED": "Нэгтгэсэн",
+        "REMOVED": "Устгасан",
+        "TRANSFERED": "Зөөгдсөн"
+      },
+      "TableOrder": {
+        "DRAFT": "Баталгаажаагүй",
+        "NEW": "Шинэ",
+        "ACCEPTED": "Баталгаажсан",
+        "PREPARING": "Бэлтгэж байгаа",
+        "PREPARED": "Бэлэн болсон",
+        "DELIVERING": "Хүргэлтэнд гарсан",
+        "DELIVERED": "Хүргэгдсэн",
+        "COMPLETED": "Дууссан",
+        "CANCELLED": "Цуцлагдсан",
+        "RETURN": "Буцаасан",
+        "MOVED": "Шилжүүлсэн",
+        "MERGED": "Нэгтгэсэн",
+        "REMOVED": "Устгасан",
+        "TRANSFERED": "Зөөгдсөн"
+      },
+      "TakeAway": {
+        "DRAFT": "Баталгаажаагүй",
+        "NEW": "Шинэ",
+        "ACCEPTED": "Баталгаажсан",
+        "PREPARING": "Бэлтгэж байгаа",
+        "PREPARED": "Бэлэн болсон",
+        "DELIVERING": "Ирж байгаа",
+        "DELIVERED": "Ирж авсан",
+        "COMPLETED": "Дууссан",
+        "CANCELLED": "Цуцлагдсан",
+        "RETURN": "Буцаасан",
+        "MOVED": "Шилжүүлсэн",
+        "MERGED": "Нэгтгэсэн",
+        "REMOVED": "Устгасан",
+        "TRANSFERED": "Зөөгдсөн"
+      },
+      "Delivery": {
+        "DRAFT": "Баталгаажаагүй",
+        "NEW": "Шинэ",
+        "ACCEPTED": "Баталгаажсан",
+        "PREPARING": "Бэлтгэж байгаа",
+        "PREPARED": "Бэлэн болсон",
+        "DELIVERING": "Хүргэлтэнд гарсан",
+        "DELIVERED": "Хүргэгдсэн",
+        "COMPLETED": "Дууссан",
+        "CANCELLED": "Цуцлагдсан",
+        "RETURN": "Буцаасан",
+        "MOVED": "Шилжүүлсэн",
+        "MERGED": "Нэгтгэсэн",
+        "REMOVED": "Устгасан",
+        "TRANSFERED": "Зөөгдсөн"
+      }
+    },
+    "Product Name": "Бүтээгдэхүүний нэр",
+    "Quantity": "Тоо",
+    "Map": "Газрын зураг",
+    "CancelOrderConfirm": "Та захиалгыг цуцлахдаа итгэлтэй байна уу?",
+    "CancelOrder": "Захиалга цуцлах",
+    "Back": "Буцах",
+    "Reason": "Шалтгаан"
   }
 }

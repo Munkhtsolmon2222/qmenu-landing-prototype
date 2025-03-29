@@ -1,7 +1,7 @@
 'use client';
 import { useRestaurantStore } from '@/lib/providers';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { OrderInput, OrderType, Table } from '@/lib/types';
@@ -13,7 +13,7 @@ import {
   PAGE_RESTAURANT,
   PAGE_TABLE_ORDER,
 } from '@/lib/constant';
-import { OrderDialog } from '@/components/shared';
+import { Loader, OrderDialog } from '@/components/shared';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui';
 import { Info, ItemWrapper, List, Plan } from '../../components';
 import { cn } from '@/lib/utils';
@@ -22,16 +22,36 @@ import { redirectWithNProgress as navigate } from '@/lib/utils';
 import { TableInput, TableInputSchema } from '@/lib/validations';
 import { useAction } from '@/lib/hooks';
 import { showToast as toast } from '@/lib/helpers';
-import { CREATE_ORDER } from '@/actions';
+import { CREATE_ORDER, GET_SECTION_INFO } from '@/actions';
 
 const Index: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [isList, setIsList] = useState<boolean>(true);
-  const { sections, input, setInput, getOrderItemsInput, crudItem, setStore } =
-    useRestaurantStore();
+  const { input, setInput, getOrderItemsInput, crudItem, setStore } = useRestaurantStore();
 
-  const { guests = 1, type, sectionId } = input ?? { type: OrderType.TableOrder };
+  const {
+    deliveryDate = '',
+    guests = 1,
+    type,
+    sectionId,
+  } = input ?? { type: OrderType.TableOrder };
+
+  const { data: sections = [], loading } = useAction(
+    GET_SECTION_INFO,
+    {
+      type: OrderType.TableOrder,
+      deliveryDate,
+      guests,
+    },
+    {
+      onSuccess(data) {
+        if (data?.[0]?.id) setInput((input) => ({ ...input, sectionId: data[0]?.id }));
+      },
+    },
+  );
+
+  useEffect(() => {}, [input]);
 
   const { watch, setValue, handleSubmit } = useForm<TableInput>({
     mode: 'onSubmit',
@@ -144,6 +164,8 @@ const Index: React.FC = () => {
     navigate(path);
   };
 
+  if (loading) return <Loader className="h-full flex-1" />;
+
   return (
     <>
       <OrderDialog.Header
@@ -167,7 +189,7 @@ const Index: React.FC = () => {
                       setValue('tables', []);
                     }}
                     value={e.id}
-                    className="relative rounded-none border-b border-b-transparent text-base sm:text-lg bg-transparent w-full font-semibold text-muted-foreground transition-none focus-visible:ring-0 !shadow-none"
+                    className="relative rounded-none border-b border-b-transparent text-base sm:text-lg bg-transparent w-full font-semibold text-muted-foreground transition-none focus-visible:ring-0 !shadow-none cursor-pointer"
                   >
                     <p className={`${active ? 'text-current-2' : ''} font-medium`}>{e.name}</p>
                     {active && (

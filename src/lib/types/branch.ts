@@ -50,7 +50,7 @@ export interface BranchMenu {
 export interface Participant {
   id: string;
   advancePayment: boolean;
-  services: string[];
+  services: OrderType[];
   vat: boolean;
   waiter: boolean;
   orderable: boolean;
@@ -120,6 +120,7 @@ export interface Variant {
   discount: number;
   unitType: string;
   unitValue: number;
+  bonus?: string;
   __typename: string;
   options?: Option[];
 }

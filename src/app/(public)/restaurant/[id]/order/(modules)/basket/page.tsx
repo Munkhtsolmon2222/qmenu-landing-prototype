@@ -2,8 +2,16 @@
 import { Icons, Modal, Button } from '@/components/general';
 import { OrderDialog } from '@/components/shared';
 import { Textarea } from '@/components/ui/textarea';
-import { PAGE_ORDER, PAGE_ORDER_TYPE, PAGE_RESTAURANT } from '@/lib/constant';
-import { useMediaQuery } from '@/lib/hooks';
+import {
+  CUSTOMER,
+  PAGE_ORDER,
+  PAGE_ORDER_TYPE,
+  PAGE_ORDER_USER,
+  PAGE_RESTAURANT,
+  PAGE_TABLE_ORDER,
+  PAGE_TAKE_AWAY,
+} from '@/lib/constant';
+import { useAction, useMediaQuery } from '@/lib/hooks';
 import { BasketItem, useRestaurantStore } from '@/lib/providers/restaurant';
 import { OrderType } from '@/lib/types';
 import { cn, redirectWithNProgress } from '@/lib/utils';
@@ -11,6 +19,8 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
+import { showToast } from '@/lib/helpers';
+import { GET_PAYLOAD } from '@/actions';
 
 interface Props {}
 
@@ -23,13 +33,45 @@ const Basket: React.FC<Props> = ({}) => {
   const [comment, setComment] = useState<string>('');
   const { t } = useTranslation();
 
+  const { data: payload } = useAction(GET_PAYLOAD);
+
   const showAddComment = (item: BasketItem) => {
     setItem(item);
     setVisibleComment(true);
   };
 
   const onOrder = () => {
-    if (!input?.type) setInput((e) => ({ ...e, type: OrderType.PreOrder }));
+    if (!current) return;
+    const types = current.services.filter((e) =>
+      [OrderType.TakeAway, OrderType.PreOrder].includes(e),
+    );
+
+    if (types.length === 0 || !types.includes(OrderType.PreOrder)) {
+      showToast('Уучлаарай, салбар урьдчилсан захиалга авахгүй');
+      return;
+    }
+
+    const type = types.find((e) => e === OrderType.PreOrder) ?? OrderType.TakeAway;
+    setInput((e) => ({ ...e, type }));
+
+    if (types.length === 1) {
+      if (payload?.role !== CUSTOMER) {
+        redirectWithNProgress(`${PAGE_RESTAURANT}/${current?.id}/${PAGE_ORDER}/${PAGE_ORDER_USER}`);
+        return;
+      }
+
+      switch (type) {
+        case OrderType.PreOrder:
+          redirectWithNProgress(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TABLE_ORDER}`);
+          return;
+        case OrderType.TakeAway:
+          redirectWithNProgress(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_TAKE_AWAY}`);
+          return;
+        default:
+          break;
+      }
+    }
+
     redirectWithNProgress(`${PAGE_RESTAURANT}/${id}/${PAGE_ORDER}/${PAGE_ORDER_TYPE}`);
   };
 

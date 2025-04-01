@@ -4,7 +4,7 @@ import { getMainVariant } from '@/lib/providers/restaurant';
 import { Icons, Button } from '@/components/general';
 import { useTranslation } from 'react-i18next';
 
-export const ProductCardList: React.FC<ProductChildProps> = ({
+export const ProductListCard: React.FC<ProductChildProps> = ({
   product,
   basketItem,
   onClick,

@@ -3,7 +3,7 @@ import { BasketItem, getMainVariant, useRestaurantStore } from '@/lib/providers/
 import { Branch, FavouriteItemType, Product as ProductType } from '@/lib/types';
 import { useMemo } from 'react';
 import { ProductCard } from './ProductCard';
-import { ProductCardList } from './ProductCardList';
+import { ProductListCard } from './ProductListCard';
 import { useMediaQuery } from '@/lib/hooks';
 import { useFavourite } from '@/lib/providers';
 
@@ -54,7 +54,7 @@ export const Product = ({ product, onClick: cb, list, hideImage, participant }: 
 
   if (list && (width || window.innerWidth) < 500)
     return (
-      <ProductCardList
+      <ProductListCard
         participant={participant}
         loading={loading || (editing && loadingId === product.productId)}
         liked={liked}

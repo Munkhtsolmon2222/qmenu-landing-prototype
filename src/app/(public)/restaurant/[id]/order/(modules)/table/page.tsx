@@ -122,7 +122,7 @@ const Index: React.FC = () => {
 
     if (!input) return;
 
-    const items = getOrderItemsInput();
+    const items = input.type === OrderType.TableOrder ? [] : getOrderItemsInput();
 
     const orderInput: OrderInput = {
       ...input,

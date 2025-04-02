@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const MENU_FIELDS = gql`
   fragment MenuFields on Menu {
@@ -71,6 +71,7 @@ export const VARIANT_FIELDS = gql`
     unitType
     unitValue
     updatedAt
+    bonus
   }
 `;
 

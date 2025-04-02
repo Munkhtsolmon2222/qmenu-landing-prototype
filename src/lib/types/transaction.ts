@@ -2,7 +2,7 @@ import { PaymentType } from '../constant';
 
 export interface Transaction {
   id?: string;
-  type: string;
+  type: PaymentType;
   token: string;
   amount: number;
   currency: string;

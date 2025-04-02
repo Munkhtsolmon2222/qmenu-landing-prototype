@@ -124,7 +124,7 @@ export enum PaymentType {
   MBK = 'MBK', //M-Bank
   UNP = 'UNP', //UnionPay
   UBE = 'UBE', //UBEats
-
+  PTK = 'PTK', //Partner Toki
   //
   Kart = 'Kart', //Card ???
 }
@@ -216,3 +216,17 @@ export const ORDER_STATES = new Map<OrderState, string>([
   [OrderState.NEW, 'Идэвхтэй'],
   [OrderState.COMPLETED, 'Дууссан'],
 ]);
+
+export const QR_TRANSACTION_TYPE = [
+  PaymentType.QP2,
+  PaymentType.QP2,
+  PaymentType.QPay,
+  PaymentType.QPay2,
+  PaymentType.SocialPay,
+  PaymentType.MonPay,
+  PaymentType.MNQ,
+  PaymentType.Toki,
+  PaymentType.PTK,
+  PaymentType.UNP,
+  PaymentType.MBK,
+];

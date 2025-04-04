@@ -3,7 +3,7 @@ import defaultImage from '@/assets/images/restaurant.png';
 import { EsChannel, FavouriteItemType } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { calculateDistance, cn, getDistance } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Icons } from '@/components/general';
 import { useFavourite, useLocation } from '@/lib/providers';
 import nProgress from 'nprogress';
@@ -21,19 +21,7 @@ export const RestaurantListCard: React.FC<Props> = ({ place, className, ref, onC
   const router = useRouter();
   const { editFavourite, isFavourite, editing: loading, loadingId } = useFavourite();
   const liked = isFavourite(FavouriteItemType.BRANCH, place.branch);
-  const { getLocation } = useLocation();
-
-  const getBranchDistance = () => {
-    let distance = place?.distance;
-
-    if (!distance) {
-      const location = getLocation();
-      if (location)
-        distance = getDistance(location.lat, location.lon, place?.latitude, place?.longitude);
-    }
-
-    return distance;
-  };
+  const { getDistance } = useLocation();
 
   const navigate = (e: string) => {
     nProgress.start();
@@ -92,7 +80,7 @@ export const RestaurantListCard: React.FC<Props> = ({ place, className, ref, onC
                   <Icons.navigation className="text-current-2 h-4 w-4" />
                 </div>
                 <p className="text-sm  xl:text-base text-ellipsis truncate  text-secondary-text opacity-80">
-                  {calculateDistance(getBranchDistance())}
+                  {getDistance(place?.distance, place?.latitude, place?.longitude)}
                 </p>
               </div>
               <div className="w-[4px] h-[4px] rounded-full bg-secondary-text mx-0.5"></div>

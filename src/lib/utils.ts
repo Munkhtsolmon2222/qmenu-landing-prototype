@@ -240,8 +240,8 @@ export const setDateTime = (
 };
 
 export function calculateDistance(value: number) {
-  const meters = value * 1000;
-  const kilometers = value?.toFixed(1);
+  const meters = parseFloat((value * 1000).toFixed(3) || '0');
+  const kilometers = parseFloat(value?.toFixed(1) || '0');
 
   if (meters < 1000) {
     return `${meters}m`;

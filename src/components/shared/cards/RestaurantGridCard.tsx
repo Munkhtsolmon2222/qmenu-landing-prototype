@@ -2,11 +2,11 @@
 import { EsChannel, FavouriteItemType, TableInfo } from '@/lib/types';
 import defaultImage from '@/assets/images/restaurant.png';
 import { useRouter } from 'next/navigation';
-import { calculateDistance, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Icons, MotionCard } from '@/components/general';
 import { AvailableTable } from '../available-table';
 import nProgress from 'nprogress';
-import { useFavourite } from '@/lib/providers';
+import { useFavourite, useLocation } from '@/lib/providers';
 import { Loader } from '../loader';
 
 interface Props {
@@ -38,6 +38,7 @@ function getAvailabilityStatus(tableInfo: TableInfo): string {
 export function RestaurantGridCard(props: Props) {
   const { place, className } = props;
   const router = useRouter();
+  const { getDistance } = useLocation();
 
   const { editFavourite, loadingId, isFavourite, editing: loading } = useFavourite();
 
@@ -131,7 +132,7 @@ export function RestaurantGridCard(props: Props) {
               <Icons.navigation className="text-primary h-4 w-4" />
             </div>
             <p className="text-xs  xl:text-base text-ellipsis truncate  text-primary font-medium opacity-75">
-              {calculateDistance(place.distance)}
+              {getDistance(place.distance, place.latitude, place.longitude)}
             </p>
           </div>
           <div className="w-[4px] h-[4px] rounded-full bg-secondary-text mx-0.5"></div>

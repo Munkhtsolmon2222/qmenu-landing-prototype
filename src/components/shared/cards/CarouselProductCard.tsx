@@ -3,10 +3,10 @@ import { EsProduct, FavouriteItemType } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Icons, MotionCard } from '@/components/general';
-import { calculateDistance, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import nProgress from 'nprogress';
 import defaultImage from '@/assets/images/restaurant.png';
-import { useFavourite } from '@/lib/providers';
+import { useFavourite, useLocation } from '@/lib/providers';
 import { Loader } from '../loader';
 
 interface Props {
@@ -19,6 +19,7 @@ export const CarouselProductCard: React.FC<Props> = ({ product, className, index
   const router = useRouter();
   const { editFavourite, isFavourite, editing: loading, loadingId } = useFavourite();
   const liked = isFavourite(FavouriteItemType.PRODUCT, product.id);
+  const { getDistance } = useLocation();
 
   const onNavigate = () => {
     nProgress.start();
@@ -96,9 +97,11 @@ export const CarouselProductCard: React.FC<Props> = ({ product, className, index
                     <Icons.navigation className="fill-white h-4 w-4 text-current-2" />
                   </div>
                   <p className="text-sm text-ellipsis truncate text-secondary-text">
-                    {product.branch?.distance
-                      ? calculateDistance(+(product.branch.distance || 0) || 0)
-                      : ''}
+                    {getDistance(
+                      product.branch?.distance,
+                      product.branch?.latitude,
+                      product.branch?.longitude,
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center gap-0.5">

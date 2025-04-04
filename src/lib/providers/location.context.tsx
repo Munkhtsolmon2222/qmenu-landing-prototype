@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { CENTER, POSITION } from '../constant';
 import { useRouter } from 'next/navigation';
 import { Welcome } from '@/components/shared';
+import { getDistance as getUtilsDistance, calculateDistance } from '../utils';
 
 export interface Position {
   lat: number;
@@ -22,6 +23,7 @@ export interface LocationContextType {
   ) => void;
   handleError: () => void;
   getLocation: () => PositionStorage;
+  getDistance: (distance?: number, lat?: number, lon?: number) => string;
 }
 
 export const LocationContext = createContext({} as LocationContextType);
@@ -101,6 +103,15 @@ export const LocationProvider = ({ children }: React.PropsWithChildren) => {
     return storedPosition;
   };
 
+  const getDistance = (distance?: number, lat?: number, lon?: number) => {
+    if (!distance) {
+      const location = getLocation();
+      if (location) distance = getUtilsDistance(location.lat, location.lon, lat, lon);
+    }
+
+    return calculateDistance(distance || 0);
+  };
+
   const processLocation = () => {
     const cookieStore = getCookieStore();
     let storedPosition: PositionStorage | undefined;
@@ -143,8 +154,9 @@ export const LocationProvider = ({ children }: React.PropsWithChildren) => {
       handleSuccess: handleGeolocationSuccess,
       handleError: handleGeolocationError,
       getLocation,
+      getDistance,
     }),
-    [handleGeolocationSuccess, handleGeolocationError, getLocation],
+    [handleGeolocationSuccess, handleGeolocationError, getLocation, getDistance],
   );
 
   if (!position) return <Welcome className="w-full h-screen flex items-center justify-center" />;

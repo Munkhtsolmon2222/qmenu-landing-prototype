@@ -1,12 +1,15 @@
+'use client';
 import { Badge } from '@/components/ui';
 import { CardProps } from '.';
 import { Icons } from '@/components/general';
-import { calculateDistance } from '@/lib/utils';
 import defaultImage from '@/assets/images/restaurant.png';
+import { useLocation } from '@/lib/providers';
 
 interface Props extends CardProps {}
 
 export const Flashdeal: React.FC<Props> = ({ discount }) => {
+  const { getDistance } = useLocation();
+
   return (
     <>
       <div className="absolute inset-0">
@@ -30,7 +33,7 @@ export const Flashdeal: React.FC<Props> = ({ discount }) => {
           </div>
         </div>
         <div className="bg-gradient-to-b from-transparent via-white/90 to-white w-full">
-          <div className="gap-2 flex flex-col w-full justify-between items-start py-2  px-2 bg-white bg-opacity-80 shadow-md">
+          <div className="gap-2 flex flex-col w-full justify-between items-start py-2  px-2 bg-white/60 shadow-md">
             <div className="flex w-full justify-between items-center">
               <h2 className="text-lg font-semibold truncate capitalize max-w-60">
                 {discount.name}
@@ -46,18 +49,20 @@ export const Flashdeal: React.FC<Props> = ({ discount }) => {
                   {discount.branch.name}
                 </p>
               </div>
-              {discount.distance && (
-                <div className="flex items-center cursor-pointer gap-2">
-                  <div className="flex items-center gap-1">
-                    <div>
-                      <Icons.navigation className="fill-white h-4 w-4 text-current-2" />
-                    </div>
-                    <p className="text-sm   text-ellipsis truncate  text-secondary-text ">
-                      {calculateDistance(discount.distance)}
-                    </p>
+              <div className="flex items-center cursor-pointer gap-2">
+                <div className="flex items-center gap-1">
+                  <div>
+                    <Icons.navigation className="fill-white h-4 w-4 text-current-2" />
                   </div>
+                  <p className="text-sm   text-ellipsis truncate  text-secondary-text ">
+                    {getDistance(
+                      discount.distance,
+                      discount.branch?.latitude,
+                      discount.branch?.longitude,
+                    )}
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>

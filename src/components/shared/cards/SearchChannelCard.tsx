@@ -1,6 +1,8 @@
+'use client';
 import defaultImage from '@/assets/images/restaurant.png';
 import { Icons } from '@/components/general';
 import { PAGE_RESTAURANT } from '@/lib/constant';
+import { useLocation } from '@/lib/providers';
 import { EsChannel, TableInfo } from '@/lib/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -35,6 +37,7 @@ function getAvailabilityStatus(tableInfo: TableInfo): AvailabilityStatus {
 
 export function SearchChannelCard({ place }: Props) {
   const { color } = getAvailabilityStatus(place?.tableInfo);
+  const { getDistance } = useLocation();
 
   return (
     <Link
@@ -83,7 +86,7 @@ export function SearchChannelCard({ place }: Props) {
             </div>
             <div className="w-[4px] h-[4px] rounded-full bg-secondary-text"></div>
             <p className="text-sm  xl:text-base text-ellipsis truncate  text-secondary-text">
-              {Math.floor(Number(place.distance) * 10) / 10} km
+              {getDistance(place?.distance, place?.latitude, place?.longitude)}
             </p>
           </div>
         </div>

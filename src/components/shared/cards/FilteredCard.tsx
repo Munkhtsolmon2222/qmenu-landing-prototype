@@ -4,11 +4,10 @@ import defaultImage from '@/assets/images/restaurant.png';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { calculateDistance } from '@/lib/utils';
 import { Icons, MotionCard } from '@/components/general';
 import { PAGE_RESTAURANT } from '@/lib/constant';
 import nProgress from 'nprogress';
-import { useFavourite } from '@/lib/providers';
+import { useFavourite, useLocation } from '@/lib/providers';
 import { Loader } from '../loader';
 
 interface Props {
@@ -40,6 +39,7 @@ export function FilteredCard(props: Props) {
   const router = useRouter();
   const { t } = useTranslation();
   const { editFavourite, isFavourite, editing: loading, loadingId } = useFavourite();
+  const { getDistance } = useLocation();
 
   const like = isFavourite(FavouriteItemType.BRANCH, channel.branch);
 
@@ -127,7 +127,7 @@ export function FilteredCard(props: Props) {
               <Icons.navigation className="text-primary h-4 w-4" />
             </div>
             <p className="text-sm  xl:text-base text-ellipsis truncate  text-primary font-medium opacity-75 ">
-              {calculateDistance(channel.distance)}
+              {getDistance(channel.distance, channel.latitude, channel.longitude)}
             </p>
           </div>
           <div className="w-[4px] h-[4px] rounded-full bg-secondary-text mx-0.5"></div>

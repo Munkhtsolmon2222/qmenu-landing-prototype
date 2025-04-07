@@ -16,11 +16,11 @@ const Component: React.FC<Props> = async ({ positionStr }) => {
   const { data: banners = [] } = await GET_BANNERS();
   const { data: list = [] } = await GET_ES_CHANNEL_LIST(positionStr);
   const { data: webTags = [] } = await GET_TAGS_BY_TYPE(TagType.W);
-  const { data: { discounts: hotdeals = [] } = {} } = await GET_ES_DISCOUNTS({
-    types: [DiscountType.HOT],
-    size: 10,
-    itemSize: 4,
-  });
+  // const { data: { discounts: hotdeals = [] } = {} } = await GET_ES_DISCOUNTS({
+  //   types: [DiscountType.HOT],
+  //   size: 10,
+  //   itemSize: 4,
+  // });
   const { data: { discounts: flashdeals = [] } = {} } = await GET_ES_DISCOUNTS({
     types: [DiscountType.FLD],
     size: 10,
@@ -29,9 +29,9 @@ const Component: React.FC<Props> = async ({ positionStr }) => {
 
   return list.map((item, index) => (
     <Fragment key={index}>
-      {index === 0 && (
+      {/* {index === 0 && (
         <DiscountsCarousel discounts={hotdeals} name="Hot Deals 🍔" type={DiscountType.HOT} />
-      )}
+      )} */}
 
       {index === 2 && <SmartBanner banners={banners} types={[BannerType.M]} dot />}
 

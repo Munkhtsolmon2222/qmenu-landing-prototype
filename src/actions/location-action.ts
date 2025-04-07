@@ -20,13 +20,17 @@ export async function fetchLocation(query: string): Promise<GoogleLocationPlace[
     },
   };
 
-  const response = await axios.post('https://places.googleapis.com/v1/places:searchText', data, {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Goog-Api-Key': process.env.GOOGLE_MAPS_API,
-      'X-Goog-FieldMask': 'places.location,places.formattedAddress,places.displayName',
-    },
-  });
+  try {
+    const response = await axios.post('https://places.googleapis.com/v1/places:searchText', data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': process.env.GOOGLE_MAPS_API,
+        'X-Goog-FieldMask': 'places.location,places.formattedAddress,places.displayName',
+      },
+    });
 
-  return response?.data?.places;
+    return response?.data?.places ?? [];
+  } catch (error) {
+    return [];
+  }
 }

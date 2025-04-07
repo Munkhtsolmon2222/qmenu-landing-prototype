@@ -56,7 +56,7 @@ const Index: React.FC = () => {
     }
   }, []);
 
-  const onFinish = (e: TakeAwayInput) => {
+  const onFinish = async (e: TakeAwayInput) => {
     if (!input) return;
 
     const items = getOrderItemsInput();
@@ -70,11 +70,15 @@ const Index: React.FC = () => {
     };
 
     setInput(() => orderInput);
-    createOrder(orderInput, id, {
-      onSuccess(order) {
-        navigate(`${PAGE_RESTAURANT}/${id}/${PAGE_PAYMENT}/${order?.id}`);
+
+    const order = await createOrder(orderInput, id, {
+      onError(error) {
+        showToast(error.message);
       },
     });
+
+    if (!order) return;
+    navigate(`${PAGE_RESTAURANT}/${id}/${PAGE_PAYMENT}/${order.id}`);
   };
 
   useEffect(() => {

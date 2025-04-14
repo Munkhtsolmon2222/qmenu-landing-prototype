@@ -17,7 +17,7 @@ const total = size * itemSize;
 const Page: React.FC<Props> = async ({ ...props }) => {
   const backPath = PAGE_DISCOUNT;
 
-  let searchParams = await props.searchParams;
+  const searchParams = await props.searchParams;
 
   const keywords = Object.entries(searchParams).reduce((res: string[], [key, value]) => {
     if (key === ParamFilter.DISCOUNT) return res;

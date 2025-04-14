@@ -1,4 +1,4 @@
-import { GET_ES_CHANNELS, GET_TAGS_BY_TYPE } from '@/actions';
+import { GET_ES_CHANNELS, GET_TAGS_BY_TYPE, getPositionStorage } from '@/actions';
 import { DrawerFilter, FilterControl, Loader } from '@/components/shared';
 import { PAGE_MAP, POSITION } from '@/lib/constant';
 import { withSuspense } from '@/lib/helpers';
@@ -22,15 +22,10 @@ interface Props {
 }
 
 const Page: React.FC<Props> = async (props) => {
-  const cookie = await cookies();
-
-  const positionStr = cookie.get(POSITION)?.value;
-  if (!positionStr) return <Loader className="h-screen" />;
-
-  const position = JSON.parse(positionStr);
+  const position = await getPositionStorage();
   const { lat, lon: lng } = position;
 
-  let searchParams = await props.searchParams;
+  const searchParams = await props.searchParams;
 
   const { data: { channels = [] } = {} } = await GET_ES_CHANNELS({
     lat,

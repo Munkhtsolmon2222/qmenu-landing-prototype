@@ -16,13 +16,7 @@ export async function GET_ES_CHANNELS(input: EsQueryInputWithParams) {
   });
 }
 
-export const GET_ES_CHANNEL_LIST = async (positionStr: string) => {
-  let position: PositionStorage | undefined;
-
-  try {
-    position = JSON.parse(positionStr);
-  } catch (error) {}
-
+export const GET_ES_CHANNEL_LIST = async (position: PositionStorage) => {
   return query<EsQueryResult[]>({
     query: CHANNEL_QUERY.GET_ES_CHANNEL_LIST,
     variables: { input: { lat: position?.lat, lon: position?.lon } },

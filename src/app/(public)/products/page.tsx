@@ -16,7 +16,7 @@ const total = size * itemSize;
 const Page: React.FC<Props> = async ({ ...props }) => {
   const backPath = PAGE_PRODUCTS;
 
-  let searchParams = await props.searchParams;
+  const searchParams = await props.searchParams;
 
   let hasMore = true;
   let products: EsProduct[] = [];

@@ -10,11 +10,9 @@ import { DiscountType, TagType } from '@/lib/types';
 
 interface Props extends HomeProps {}
 
-const Component: React.FC<Props> = async ({ positionStr }) => {
-  if (!positionStr) return <HomeLoader />;
-
+const Component: React.FC<Props> = async ({ position }) => {
   const { data: banners = [] } = await GET_BANNERS();
-  const { data: list = [] } = await GET_ES_CHANNEL_LIST(positionStr);
+  const { data: list = [] } = await GET_ES_CHANNEL_LIST(position);
   const { data: webTags = [] } = await GET_TAGS_BY_TYPE(TagType.W);
   // const { data: { discounts: hotdeals = [] } = {} } = await GET_ES_DISCOUNTS({
   //   types: [DiscountType.HOT],

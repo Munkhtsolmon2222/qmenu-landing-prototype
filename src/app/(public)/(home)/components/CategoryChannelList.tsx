@@ -10,10 +10,7 @@ interface Props extends HomeProps {}
 const channelSize = 20;
 const productSize = 30;
 
-const Component: React.FC<Props> = async ({ positionStr, awaitedSearchParams }) => {
-  if (!positionStr) return <ResultListSkeleton />;
-
-  const position = JSON.parse(positionStr);
+const Component: React.FC<Props> = async ({ position, awaitedSearchParams }) => {
   const { lat, lon } = position;
 
   const { data: { products = [] } = {} } = await GET_ES_PRODUCTS({

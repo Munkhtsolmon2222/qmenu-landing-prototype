@@ -128,24 +128,26 @@ export const LocationProvider = ({ children }: React.PropsWithChildren) => {
       setCookie(JSON.stringify(storedPosition));
       setPosition(true);
     } else {
-      navigator.geolocation.getCurrentPosition(handleGeolocationSuccess, handleGeolocationError);
-
-      setTimeout(() => {
-        const cookieStore = getCookieStore();
-        let storedPosition: PositionStorage | undefined;
-
-        try {
-          storedPosition = JSON.parse(cookieStore[POSITION] || '{}');
-        } catch (error) {}
-
-        if (!storedPosition || !storedPosition.lat || !storedPosition.lon) {
-          handleGeolocationError();
-        }
-      }, 5000);
+      try {
+        navigator.geolocation.getCurrentPosition(handleGeolocationSuccess, handleGeolocationError);
+      } catch (error) {}
     }
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      const cookieStore = getCookieStore();
+      let storedPosition: PositionStorage | undefined;
+
+      try {
+        storedPosition = JSON.parse(cookieStore[POSITION] || '{}');
+      } catch (error) {}
+
+      if (!storedPosition || !storedPosition.lat || !storedPosition.lon) {
+        handleGeolocationError();
+      }
+    }, 4000);
+
     processLocation();
   }, []);
 

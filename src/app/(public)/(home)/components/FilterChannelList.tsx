@@ -7,10 +7,7 @@ interface Props extends HomeProps {}
 
 const limit = 50;
 
-const Component: React.FC<Props> = async ({ awaitedSearchParams, positionStr }) => {
-  if (!positionStr) return <BranchListSkeleton />;
-
-  const position = JSON.parse(positionStr);
+const Component: React.FC<Props> = async ({ awaitedSearchParams, position }) => {
   const { lat, lon } = position;
 
   const { data: { channels = [] } = {} } = await GET_ES_CHANNELS({

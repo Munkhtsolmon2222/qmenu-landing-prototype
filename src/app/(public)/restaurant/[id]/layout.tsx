@@ -6,7 +6,7 @@ import {
   RestaurantLoader,
   RestaurantTabs,
 } from '../components';
-import { isUserAuthenticated } from '@/actions';
+import { getPositionStorage, isUserAuthenticated } from '@/actions';
 import { GET_PARTICIPANT } from '@/actions';
 import { cookies } from 'next/headers';
 import { POSITION } from '@/lib/constant';
@@ -22,16 +22,9 @@ interface Props extends React.PropsWithChildren {
 
 const Layout: React.FC<Props> = async ({ params, children }) => {
   const { id } = await params;
-  const cookiePosition = (await cookies()).get(POSITION)?.value;
-
-  const { data } = await GET_PARTICIPANT(id);
+  const position = await getPositionStorage();
   const isAuthenticated = await isUserAuthenticated();
-
-  let position: PositionStorage | undefined;
-
-  try {
-    position = JSON.parse(cookiePosition ?? '');
-  } catch (error) {}
+  const { data } = await GET_PARTICIPANT(id);
 
   const latitude = position?.lat;
   const longitude = position?.lon;

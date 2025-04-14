@@ -10,6 +10,7 @@ interface Props {
 export const AvailableTable = (props: Props) => {
   const { channel } = props;
   const { t } = useTranslation();
+
   const getAvailable = () => {
     if (!channel?.tableInfo) return;
     const seated = channel.tableInfo.seated || 0;
@@ -20,10 +21,8 @@ export const AvailableTable = (props: Props) => {
   };
 
   return (
-    <div>
-      <div className="rounded-sm text-xs text-white font-semibold  backdrop-brightness-50 px-1">
-        {getAvailable() ? t('Available table') + ':' + getAvailable() : t('BranchOpen')}
-      </div>
+    <div className="rounded-sm text-xs text-white font-semibold  backdrop-brightness-50 px-1">
+      {getAvailable() ? t('Available table') + ':' + getAvailable() : t('BranchOpen')}
     </div>
   );
 };

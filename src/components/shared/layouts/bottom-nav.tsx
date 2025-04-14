@@ -84,7 +84,7 @@ const BottomNavbar: React.FC = async () => {
 const NavItem = ({ path, isActive, name, nav }: any) => {
   return (
     <Link
-      className="flex flex-col items-center justify-center text-sm font-medium py-2"
+      className="flex w-full flex-col items-center justify-center text-sm font-medium py-2"
       href={path}
     >
       <div

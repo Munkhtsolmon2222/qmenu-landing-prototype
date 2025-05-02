@@ -19,7 +19,11 @@ const Page: React.FC<Props> = async (props) => {
     return <FilterChannelList {...props} awaitedSearchParams={searchParams} position={position} />;
   }
 
-  return <Home position={position} searchParams={props.searchParams} />;
+  return (
+    <div>
+      <Home position={position} searchParams={props.searchParams} />
+    </div>
+  );
 };
 
 // export default withSuspense(Page, <Loader className="h-96" />);

@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import DeviceShowcase from './DeviceShowcase';
 import SolutionIcon from './SolutionIcon';
 
 export const SolutionSection = () => {
@@ -37,7 +36,6 @@ export const SolutionSection = () => {
                 />
               </div>
               <div className="mx-auto mb-12 lg:mb-0 w-[80%] lg:w-2/4">
-                {/* <DeviceShowcase /> */}
                 <Image src={'./other/Banner.svg'} alt="device showcase" width={1000} height={600} />
               </div>
 

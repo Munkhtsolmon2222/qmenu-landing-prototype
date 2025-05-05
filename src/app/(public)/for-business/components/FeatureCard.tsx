@@ -1,7 +1,5 @@
 import type React from 'react';
-import { Button } from '@/components/ui/button';
 import { Rocket, TrendingUp, PieChart, CheckCircle2, Phone } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface FeatureCardProps {
   icon: string;
@@ -13,15 +11,13 @@ interface FeatureCardProps {
   contactNumber?: string;
 }
 
-export default function FeatureCard({
+export const FeatureCard = ({
   icon,
   title,
   description,
   bulletPoints,
-  ctaText,
-  ctaLink,
   contactNumber,
-}: FeatureCardProps) {
+}: FeatureCardProps) => {
   const icons: Record<string, React.ReactNode> = {
     rocket: <Rocket className="h-6 w-6 text-black" />,
     'trending-up': <TrendingUp className="h-6 w-6 text-black" />,
@@ -29,12 +25,7 @@ export default function FeatureCard({
   };
 
   return (
-    <motion.section
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 1, ease: 'easeInOut' }}
-      className="rounded-lg border bg-white text-black shadow-sm overflow-hidden"
-    >
+    <section className="rounded-lg border bg-white text-black shadow-sm overflow-hidden">
       <div className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-full">
@@ -64,6 +55,6 @@ export default function FeatureCard({
           </div>
         )}
       </div>
-    </motion.section>
+    </section>
   );
-}
+};

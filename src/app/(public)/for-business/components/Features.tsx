@@ -1,13 +1,10 @@
 import { Check } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
 
 const FeatureSection = ({ header, imageSrc, altText, title, description, advantages, index }) => (
   <div className="mb-12">
     <div className="grid grid-cols-1 gap-12 items-center max-w-6xl mt-6 md:grid-cols-2">
       {index % 2 === 0 ? (
         <>
-          {/* Content and Header */}
           <div>
             <header className="pt-4 pb-6">
               <h1 className="text-xl md:text-2xl font-bold uppercase text-black">{header}</h1>
@@ -32,19 +29,16 @@ const FeatureSection = ({ header, imageSrc, altText, title, description, advanta
             </div>
           </div>
 
-          {/* Image */}
           <div className="order-last md:order-none">
             <img src={imageSrc} alt={altText} className="w-[560px] h-[400px] mt-[-30px]" />
           </div>
         </>
       ) : (
         <>
-          {/* Image */}
           <div className="order-last md:order-none md:order-first">
             <img src={imageSrc} alt={altText} className="w-[560px] h-[400px] mt-[-30px]" />
           </div>
 
-          {/* Content and Header */}
           <div>
             <header className="pt-4 pb-6">
               <h1 className="text-xl md:text-2xl font-bold uppercase text-black">{header}</h1>

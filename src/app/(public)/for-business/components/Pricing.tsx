@@ -4,10 +4,9 @@ import { useState, useEffect } from 'react';
 import { Check, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function PricingPage({ bgColor }: { bgColor: string }) {
+export default function PricingPage() {
   const [activeTab, setActiveTab] = useState('сар');
   const [activeAddOnTab, setActiveAddOnTab] = useState('сар');
-  // Pricing data for different time periods
   const pricingData = {
     сар: {
       lite: {
@@ -107,10 +106,8 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
     },
   };
 
-  // Get current pricing based on active tab
   const currentPricing = pricingData[activeTab as keyof typeof pricingData];
 
-  // Add-on module data
   const [addonModules, setAddonModules] = useState([
     { name: 'Гал тогоо удирдлага (KDS)', price: currentPricing.addons.small },
     { name: 'Ухаалаг тайлан', price: currentPricing.addons.small },
@@ -134,9 +131,8 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
   }, [activeAddOnTab]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: bgColor }}>
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8 max-w-6xl rounded-xl bg-white">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-xl font-bold uppercase">Үнийн санал</h1>
           <p className="text-gray-600 mt-1">
@@ -144,7 +140,6 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
           </p>
         </div>
 
-        {/* Tabs */}
         <div className="flex rounded-full bg-gray-100 p-1 mb-12 max-w-md">
           <button
             className={cn(
@@ -184,9 +179,7 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
           </button>
         </div>
 
-        {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {/* Lite Package */}
           <div className="border rounded-3xl p-6 flex flex-col">
             <div className="bg-black text-center py-3 rounded-full mb-6">
               <h3 className="font-bold text-white">LITE БАГЦ</h3>
@@ -217,7 +210,6 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
             </div>
           </div>
 
-          {/* Standard Package */}
           <div className="border rounded-3xl p-6 flex flex-col relative">
             <div className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-14 h-14 flex items-center justify-center">
               <div className="text-center">
@@ -254,7 +246,6 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
             </div>
           </div>
 
-          {/* Plus Package */}
           <div className="border rounded-3xl p-6 flex flex-col">
             <div className="bg-black text-center py-3 rounded-full mb-6">
               <h3 className="font-bold text-white">PLUS БАГЦ</h3>
@@ -287,7 +278,6 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
           </div>
         </div>
 
-        {/* Add-ons Section */}
         <div className="border rounded-3xl p-6">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
@@ -318,7 +308,6 @@ export default function PricingPage({ bgColor }: { bgColor: string }) {
             </div>
           </div>
 
-          {/* Add-on Items */}
           <div className="space-y-4">
             {addonModules.map((addon, index) => (
               <div key={index} className="flex justify-between items-center py-2">

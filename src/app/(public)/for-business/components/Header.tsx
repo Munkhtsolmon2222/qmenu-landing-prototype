@@ -12,10 +12,24 @@ export const Header = () => {
   const { device } = useMediaQuery();
 
   useEffect(() => {
+    const headerElement = document.querySelector('.header');
+
+    gsap.set(headerElement, {
+      opacity: 0,
+      y: -100,
+    });
+
+    const timeout = setTimeout(() => {
+      gsap.to(headerElement, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+      });
+    }, 3500); // 3.5 seconds
+
     const handleScroll = () => {
-      const headerElement = document.querySelector('.header');
       if (window.scrollY > 50) {
-        // Adjust the scroll threshold as needed
         gsap.to(headerElement, {
           opacity: 1,
           y: 0,
@@ -35,12 +49,13 @@ export const Header = () => {
     window.addEventListener('scroll', handleScroll);
 
     return () => {
+      clearTimeout(timeout);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 px-4 md:px-10">
+    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 px-4 md:px-10 header">
       <div className="container flex h-16 items-center justify-between mx-auto gap-2">
         <Link href="/" className="flex items-center gap-2">
           <Image

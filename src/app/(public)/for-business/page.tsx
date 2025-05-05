@@ -1,93 +1,34 @@
-'use client';
-import Link from 'next/link';
-import FeatureCard from './components/FeatureCard';
 import { Footer } from './components/Footer';
 import { Features } from './components/Features';
 import PlatformInfo from './components/PlatformInfo';
-import PricingPage from './components/Pricing';
-import { Header } from './components/Header';
 import FAQSection from './components/FaqSection';
-import { useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import Partners from './components/Partners';
 import { SolutionSection } from './components/SolutionSection';
-import gsap from 'gsap';
-import { useRef } from 'react';
+import PricingWrapper from './components/PricingWrapper';
+import PartnersWrapper from './components/PartnersWrapper';
+import { FeatureCard } from './components/FeatureCard';
+import HeaderWrapper from './components/HeaderWrapper';
+import BackgroundRevealWrapper from './components/BackgroundRevealWrapper';
 
 export default function Page() {
-  const { scrollYProgress } = useScroll();
-  const staticBgColor = 'white'; // Set a static background color
-
-  // Transform for moving the Hero section up
-  const heroTranslateY = useTransform(scrollYProgress, [0, 0.05], [0, -500]);
-  const panelsRef = useRef<HTMLDivElement[]>([]);
-  const [isRevealed, setIsRevealed] = useState(false);
-
-  useEffect(() => {
-    if (!isRevealed) {
-      gsap.to(panelsRef.current, {
-        yPercent: -1000,
-        stagger: 0.2,
-        duration: 5,
-        ease: 'power4.inOut',
-        onComplete: () => setIsRevealed(true),
-      });
-
-      // Text reveal animation
-      gsap.fromTo(
-        '.reveal-text',
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.5,
-          ease: 'power2.out',
-          delay: 2, // Start after the panel animation
-          stagger: 0.3,
-        },
-      );
-    }
-  }, [isRevealed]);
-
   return (
-    <motion.div
-      className="flex min-h-screen flex-col"
-      style={{
-        backgroundColor: staticBgColor,
-      }}
-    >
-      {!isRevealed && (
-        <div className="fixed inset-0 z-[9999] flex flex-row" id="reveal">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              ref={(el: any) => (panelsRef.current[i] = el!)}
-              className="flex-1 bg-current-2"
-            />
-          ))}
-        </div>
-      )}
-
-      {isRevealed ? <Header /> : <div className="h-16"></div>}
+    <div className="flex min-h-screen flex-col">
+      <HeaderWrapper />
       <main className="flex-1">
-        <motion.section
-          style={{ y: heroTranslateY }}
-          className="flex flex-col items-center justify-center text-center px-4 md:px-8 h-[80vh]"
-        >
+        <section className="flex flex-col items-center justify-center text-center px-4 md:px-8 h-[80vh] reveal-text">
           <div className="flex flex-col items-center">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4 reveal-text">
+            <h1 className="text-3xl md:text-5xl font-bold mb-4">
               #1 Ресторан удирдлагын цогц систем
             </h1>
-            <p className="text-base md:text-lg mb-8 reveal-text">
-              Таны бизнест зориулсан энгийн, уян хатан, хүчирхэг удирдлагын программ хангамж{' '}
+            <p className="text-base md:text-lg mb-8">
+              Таны бизнест зориулсан энгийн, уян хатан, хүчирхэг удирдлагын программ хангамж
             </p>
-            <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 reveal-text">
+            <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               <a href="tel:77772040">
                 <button className="bg-black text-white px-6 py-3 rounded-full">Бүртгүүлэх</button>
               </a>
             </div>
           </div>
-        </motion.section>
+        </section>
         <section id="products" className="">
           <div className="pt-4 pb-6">
             <h1 className="text-xl font-bold w-fit mx-auto reveal-text">БҮТЭЭГДЭХҮҮН</h1>
@@ -98,22 +39,12 @@ export default function Page() {
           <Features />
         </section>
         <SolutionSection />
-        <motion.section
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1, ease: 'easeInOut' }}
-          id="partners"
-        >
-          <Partners />
-        </motion.section>
-        <PlatformInfo bgColor={staticBgColor} />
 
-        {/* Benefits Section */}
-        <section
-          id="benefits"
-          className="py-16 md:py-24"
-          style={{ backgroundColor: staticBgColor }}
-        >
+        <PartnersWrapper />
+
+        <PlatformInfo />
+
+        <section id="benefits" className="py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <section
               id="knowledge"
@@ -129,6 +60,7 @@ export default function Page() {
                   'Захиалга таних код',
                   'Тайлан, дүн шинжилгээ',
                   'Бараа материалын хяналт',
+                  'Кассийн систем',
                 ]}
                 ctaText="Дэлгэрэнгүй"
                 ctaLink="#"
@@ -168,11 +100,12 @@ export default function Page() {
         </section>
 
         <section id="pricing">
-          <PricingPage bgColor={staticBgColor} />
+          <PricingWrapper />
         </section>
-        <FAQSection bgColor={staticBgColor} />
+        <FAQSection />
       </main>
       <Footer />
-    </motion.div>
+      <BackgroundRevealWrapper />
+    </div>
   );
 }

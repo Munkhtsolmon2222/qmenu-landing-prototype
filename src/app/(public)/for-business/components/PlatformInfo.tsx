@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-const PlatformInfo = ({ bgColor }: { bgColor: string }) => {
+const PlatformInfo = () => {
   return (
     <section className="flex flex-col items-center justify-center text-center py-16 mt-4">
       <h2 className="text-4xl font-bold mb-4"></h2>
